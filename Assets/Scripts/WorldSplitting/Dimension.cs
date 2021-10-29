@@ -19,6 +19,16 @@ public class Dimension : MonoBehaviour {
     }
 
     public static List<Color> BaseColor = new List<Color> {Color.RED, Color.GREEN, Color.BLUE};
+    public static Dictionary<Dimension.Color, UnityEngine.Color> MaterialColor = new Dictionary<Dimension.Color, UnityEngine.Color> {
+        {Color.RED,     new UnityEngine.Color(0.588f, 0.196f, 0.196f, 1.0f)}, // #963232
+        {Color.GREEN,   new UnityEngine.Color(0.196f, 0.588f, 0.196f, 1.0f)}, // #329632
+        {Color.BLUE,    new UnityEngine.Color(0.196f, 0.196f, 0.588f, 1.0f)}, // #323296
+        {Color.CYAN,    new UnityEngine.Color(0.196f, 0.588f, 0.588f, 1.0f)}, // #329696
+        {Color.MAGENTA, new UnityEngine.Color(0.588f, 0.196f, 0.588f, 1.0f)}, // #963296
+        {Color.YELLOW,  new UnityEngine.Color(0.588f, 0.588f, 0.196f, 1.0f)}, // #969632
+        {Color.WHITE,   new UnityEngine.Color(0.882f, 0.882f, 0.882f, 1.0f)}, // #E1E1E1
+        {Color.BLACK,   new UnityEngine.Color(0.235f, 0.235f, 0.235f, 1.0f)}, // #3C3C3C
+    };
 
     public static Color AddColor(Color col1, Color col2) {
         if ((col1 & col2) > 0) {

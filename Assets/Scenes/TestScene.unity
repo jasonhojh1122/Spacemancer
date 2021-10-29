@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1
+  m_AmbientIntensity: 4.11
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
   m_SkyboxMaterial: {fileID: 0}
@@ -282,6 +282,7 @@ GameObject:
   - component: {fileID: 341023553}
   - component: {fileID: 341023552}
   - component: {fileID: 341023551}
+  - component: {fileID: 341023555}
   m_Layer: 0
   m_Name: Cube1
   m_TagString: Untagged
@@ -297,8 +298,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 341023549}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -1, y: 1.5, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1663976606}
   m_RootOrder: 2
@@ -315,7 +316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e466774c787a5045b13c3e25ab572d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Color: 7
+  objectColor: {fileID: 0}
   world: {fileID: 0}
 --- !u!65 &341023552
 BoxCollider:
@@ -349,7 +350,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3e0633a97eb1a4846a3b67840497ca2a, type: 2}
+  - {fileID: 2100000, guid: c846dd059ba44b54cbf7603cdd73ebd8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -379,6 +380,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 341023549}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &341023555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341023549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c2a62da7b4ad0c41ba5c6c17f6c1e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 7
 --- !u!1 &412623671
 GameObject:
   m_ObjectHideFlags: 0
@@ -392,6 +406,7 @@ GameObject:
   - component: {fileID: 412623675}
   - component: {fileID: 412623674}
   - component: {fileID: 412623673}
+  - component: {fileID: 412623677}
   m_Layer: 0
   m_Name: Cube0
   m_TagString: Untagged
@@ -407,8 +422,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 412623671}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: -1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -1, y: 1.5, z: -2}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1663976606}
   m_RootOrder: 1
@@ -425,7 +440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e466774c787a5045b13c3e25ab572d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Color: 7
+  objectColor: {fileID: 0}
   world: {fileID: 0}
 --- !u!65 &412623674
 BoxCollider:
@@ -459,7 +474,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a336ce9f286e7ab4aaa9f4604e472e96, type: 2}
+  - {fileID: 2100000, guid: c846dd059ba44b54cbf7603cdd73ebd8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -489,6 +504,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 412623671}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &412623677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412623671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c2a62da7b4ad0c41ba5c6c17f6c1e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 7
 --- !u!1 &440334577
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,7 +694,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 782701281}
   m_LocalRotation: {x: 0.35355338, y: 0.35355338, z: -0.1464466, w: 0.8535535}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 3, z: -7.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -745,6 +773,7 @@ GameObject:
   - component: {fileID: 1032806812}
   - component: {fileID: 1032806811}
   - component: {fileID: 1032806814}
+  - component: {fileID: 1032806815}
   m_Layer: 0
   m_Name: W
   m_TagString: Untagged
@@ -798,7 +827,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 52f6319f36abbb84ca3133cbe4ccf33e, type: 2}
+  - {fileID: 2100000, guid: c846dd059ba44b54cbf7603cdd73ebd8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -840,8 +869,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e466774c787a5045b13c3e25ab572d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Color: 7
+  objectColor: {fileID: 0}
   world: {fileID: 0}
+--- !u!114 &1032806815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032806809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c2a62da7b4ad0c41ba5c6c17f6c1e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 7
 --- !u!1 &1413426914
 GameObject:
   m_ObjectHideFlags: 0
@@ -855,6 +897,7 @@ GameObject:
   - component: {fileID: 1413426918}
   - component: {fileID: 1413426917}
   - component: {fileID: 1413426916}
+  - component: {fileID: 1413426920}
   m_Layer: 0
   m_Name: Cube2
   m_TagString: Untagged
@@ -871,7 +914,7 @@ Transform:
   m_GameObject: {fileID: 1413426914}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1, y: 1.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1663976606}
   m_RootOrder: 3
@@ -888,7 +931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e466774c787a5045b13c3e25ab572d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Color: 7
+  objectColor: {fileID: 0}
   world: {fileID: 0}
 --- !u!65 &1413426917
 BoxCollider:
@@ -922,7 +965,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e82a3840c5e3f6a48ba48366cb296dbc, type: 2}
+  - {fileID: 2100000, guid: c846dd059ba44b54cbf7603cdd73ebd8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -952,6 +995,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1413426914}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1413426920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413426914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c2a62da7b4ad0c41ba5c6c17f6c1e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 7
 --- !u!1 &1420126369
 GameObject:
   m_ObjectHideFlags: 0
@@ -987,8 +1043,8 @@ MonoBehaviour:
   - {fileID: 493824983}
   - {fileID: 1519670633}
   - {fileID: 440334578}
-  moveSpeed: 25
-  trunSpeed: 120
+  moveSpeed: 40
+  trunSpeed: 180
   OnMergeTransitionStart:
     m_PersistentCalls:
       m_Calls: []

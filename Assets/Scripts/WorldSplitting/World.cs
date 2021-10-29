@@ -44,14 +44,6 @@ public class World : MonoBehaviour
 
         OnMergeTransitionEnd.AddListener(MergeObjects);
         splitted = false;
-
-        // StartCoroutine(test());
-    }
-
-    IEnumerator test() {
-        SplitDimensions();
-        yield return new WaitForSeconds(5);
-        // MergeDimensions();
     }
 
     public void SplitObjects() {
@@ -68,7 +60,7 @@ public class World : MonoBehaviour
         while (splittedObjects.Count > 0) {
             var so = splittedObjects.FirstOrDefault();
             if (so == null) break;
-            if (so.Color == Dimension.Color.BLACK) {
+            if (so.objectColor.GetColor() == Dimension.Color.BLACK) {
                 so.IsMerged = false;
                 blackOutObjects.Add(so);
             }
