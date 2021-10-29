@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,130 +6,135 @@ using UnityEngine.Events;
 
 public class World : MonoBehaviour
 {
-    [SerializeField] Transform whiteRoot;
-    [SerializeField] Transform redRoot;
-    [SerializeField] Transform greenRoot;
-    [SerializeField] Transform blueRoot;
+
+    [SerializeField] List<Dimension> dimensions;
     [SerializeField] float moveSpeed;
     [SerializeField] float trunSpeed;
-    [SerializeField] Dimension whiteDimension;
-    [SerializeField] List<Dimension> splittedDimensions;
 
-    public UnityEvent OnMergingStart;
-    public UnityEvent OnMergingEnd;
-    public UnityEvent OnSplittingStart;
-    public UnityEvent OnSplittingEnd;
+    public UnityEvent OnMergeTransitionStart;
+    public UnityEvent OnMergeTransitionEnd;
+    public UnityEvent OnSplitTransitionStart;
+    public UnityEvent OnSplitTransitionEnd;
 
-    Dictionary<Dimension.Color, Transform> roots;
+    Dictionary<Dimension.Color, Dimension> dimensionMap;
+
+    HashSet<SplitableObject> mergedObjects;
+    HashSet<SplitableObject> splittedObjects;
+    HashSet<SplitableObject> toBeDestroyedObjects;
+    HashSet<SplitableObject> blackOutObjects;
 
     bool splitted;
 
 
     void Start() {
+        dimensionMap = new Dictionary<Dimension.Color, Dimension>();
+        foreach (Dimension d in dimensions) {
+            dimensionMap.Add(d.GetColor(), d);
+        }
 
-        roots = new Dictionary<Dimension.Color, Transform>();
-        roots.Add(Dimension.Color.WHITE, whiteRoot);
-        roots.Add(Dimension.Color.RED, redRoot);
-        roots.Add(Dimension.Color.GREEN, greenRoot);
-        roots.Add(Dimension.Color.BLUE, blueRoot);
+        mergedObjects = new HashSet<SplitableObject>();
+        splittedObjects = new HashSet<SplitableObject>();
+        toBeDestroyedObjects = new HashSet<SplitableObject>();
+        blackOutObjects = new HashSet<SplitableObject>();
+
+        SplitableObject[] so = FindObjectsOfType<SplitableObject>();
+        foreach (SplitableObject s in so) {
+            mergedObjects.Add(s);
+        }
+
+        OnMergeTransitionEnd.AddListener(MergeObjects);
+        splitted = false;
 
         // StartCoroutine(test());
-        splitted = true;
     }
 
     IEnumerator test() {
-        MergeDimensions();
-        yield return new WaitForSeconds(5);
         SplitDimensions();
+        yield return new WaitForSeconds(5);
+        // MergeDimensions();
     }
 
-    void Update() {
+    public void SplitObjects() {
+        while (mergedObjects.Count > 0) {
+            var so = mergedObjects.FirstOrDefault();
+            if (so == null) break;
+            so.Split(mergedObjects, splittedObjects, blackOutObjects, toBeDestroyedObjects);
+        }
+        StartCoroutine(DestoryObjects());
+        Log();
+    }
 
+    public void MergeObjects() {
+        while (splittedObjects.Count > 0) {
+            var so = splittedObjects.FirstOrDefault();
+            if (so == null) break;
+            if (so.Color == Dimension.Color.BLACK) {
+                so.IsMerged = false;
+                blackOutObjects.Add(so);
+            }
+            else {
+                so.Merge(null, mergedObjects, splittedObjects, blackOutObjects, toBeDestroyedObjects);
+            }
+        }
+        StartCoroutine(DestoryObjects());
+        Log();
+    }
+
+    public IEnumerator DestoryObjects() {
+        while (toBeDestroyedObjects.Count > 0) {
+            var so = toBeDestroyedObjects.FirstOrDefault();
+            toBeDestroyedObjects.Remove(so);
+            Destroy(so.gameObject);
+        }
+        yield return null;
     }
 
     public void SplitDimensions() {
-        foreach (Dimension dimension in splittedDimensions) {
-            SplitColor(dimension.color);
-        }
-        StartCoroutine(Splitting());
-        Destroy(roots[Dimension.Color.WHITE].gameObject);
-    }
-
-    void SplitColor(Dimension.Color color) {
-        roots[color] = Instantiate(roots[Dimension.Color.WHITE]);
-        roots[color].name = color.ToString();
-        SplitableObject[] objects = roots[color].GetComponentsInChildren<SplitableObject>();
-        foreach (SplitableObject so in objects) {
-            if (so.GetColor() == Dimension.Color.BLACK)
-                continue;
-            else if ((so.GetColor() & color) == 0)
-                Destroy(so.gameObject);
-            else {
-                so.Split();
-                so.SetColor(color);
-            }
-        }
+        SplitObjects();
+        StartCoroutine(SplitTransition());
     }
 
     public void MergeDimensions() {
-        StartCoroutine(Merging());
+        StartCoroutine(MergeTransition());
     }
 
-    public void Merge() {
-        roots[Dimension.Color.WHITE] = new GameObject(Dimension.Color.WHITE.ToString()).transform;
-        roots[Dimension.Color.WHITE].position = whiteDimension.position;
-        roots[Dimension.Color.WHITE].rotation = whiteDimension.rotation;
 
-        foreach(Dimension spliited in splittedDimensions) {
-            MergeColor(spliited.color);
-        }
-    }
-
-    void MergeColor(Dimension.Color color) {
-        SplitableObject[] objects = roots[color].GetComponentsInChildren<SplitableObject>();
-        foreach (SplitableObject so in objects) {
-            if (so == null || so.gameObject == null) continue;
-            so.Merge(null, roots[Dimension.Color.WHITE]);
-        }
-        Destroy(roots[color].gameObject);
-    }
-
-    IEnumerator Splitting() {
-        OnSplittingStart.Invoke();
+    IEnumerator SplitTransition() {
+        OnSplitTransitionStart.Invoke();
         while (true) {
             int c = 0;
-
-            foreach (Dimension dimension in splittedDimensions) {
-                bool r = MoveDimension(roots[dimension.color], dimension.position, dimension.rotation);
+            foreach (Dimension.Color color in Dimension.BaseColor) {
+                bool r = MoveDimension(dimensionMap[color].transform, dimensionMap[color].targetPosition,
+                            dimensionMap[color].targetRotation);
                 if (r) c++;
             }
-
-            if (c == splittedDimensions.Count) break;
+            if (c == Dimension.BaseColor.Count) break;
             else yield return null;
         }
-        OnSplittingEnd.Invoke();
+        Physics.SyncTransforms();
+        OnSplitTransitionEnd.Invoke();
     }
 
-    IEnumerator Merging() {
-        OnMergingStart.Invoke();
+    IEnumerator MergeTransition() {
+        OnMergeTransitionStart.Invoke();
         while (true) {
             int c = 0;
-
-            foreach (Dimension dimension in splittedDimensions) {
-                bool r = MoveDimension(roots[dimension.color], whiteDimension.position, whiteDimension.rotation);
+            foreach (Dimension.Color color in Dimension.BaseColor) {
+                bool r = MoveDimension(dimensionMap[color].transform, dimensionMap[Dimension.Color.WHITE].targetPosition,
+                            dimensionMap[Dimension.Color.WHITE].targetRotation);
                 if (r) c++;
             }
-
-            if (c == splittedDimensions.Count) break;
+            if (c == Dimension.BaseColor.Count) break;
             else yield return null;
         }
-        OnMergingEnd.Invoke();
+        Physics.SyncTransforms();
+        OnMergeTransitionEnd.Invoke();
     }
 
     bool MoveDimension(Transform t, Vector3 tarPos, Quaternion tarRot) {
         t.position = Vector3.MoveTowards(t.position, tarPos, moveSpeed * Time.deltaTime);
         t.rotation = Quaternion.RotateTowards(t.rotation, tarRot, trunSpeed * Time.deltaTime);
-        return (((t.position - tarPos).magnitude < 0.1f) && (Quaternion.Angle(t.rotation, tarRot) < 0.1f));
+        return (Fuzzy.CloseVector3(t.position, tarPos) && Fuzzy.CloseQuaternion(t.rotation, tarRot));
     }
 
     public void Toggle() {
@@ -140,6 +146,34 @@ public class World : MonoBehaviour
             SplitDimensions();
             splitted = true;
         }
+    }
+
+    public Dimension GetDimension(Dimension.Color color) {
+        return dimensionMap[color];
+    }
+
+    void Log() {
+        Debug.Log("");
+        Debug.Log("-----Merged Object-----");
+        foreach (SplitableObject so in mergedObjects) {
+            Debug.Log(so.gameObject.name + ", " + so.gameObject.GetInstanceID());
+        }
+        Debug.Log("");
+        Debug.Log("-----Splitted Object-----");
+        foreach (SplitableObject so in splittedObjects) {
+            Debug.Log(so.gameObject.name + ", " + so.gameObject.GetInstanceID());
+        }
+        Debug.Log("");
+        Debug.Log("-----BlackOut Object-----");
+        foreach (SplitableObject so in blackOutObjects) {
+            Debug.Log(so.gameObject.name + ", " + so.gameObject.GetInstanceID());
+        }
+        Debug.Log("");
+        Debug.Log("-----To be destoryed Object-----");
+        foreach (SplitableObject so in toBeDestroyedObjects) {
+            Debug.Log(so.gameObject.name + ", " + so.gameObject.GetInstanceID());
+        }
+        Debug.Log("");
     }
 
 }
