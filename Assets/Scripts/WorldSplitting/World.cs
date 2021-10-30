@@ -8,15 +8,26 @@ public class World : MonoBehaviour
 {
 
     [SerializeField] List<Dimension> dimensions;
-    [SerializeField] float moveSpeed;
-    [SerializeField] float trunSpeed;
+    [SerializeField] float radius = 30.0f;
+    [SerializeField] float transitionDuration = 1.0f;
+    [SerializeField] float fadeDuration = 0.2f;
+    [SerializeField] DimensionTransition dimensionTransition;
 
-    public UnityEvent OnMergeTransitionStart;
-    public UnityEvent OnMergeTransitionEnd;
-    public UnityEvent OnSplitTransitionStart;
-    public UnityEvent OnSplitTransitionEnd;
+    public float Radius {
+        get => radius;
+    }
+
+    public float TransitionDur {
+        get => transitionDuration;
+    }
+    public float FadeDur {
+        get => fadeDuration;
+    }
 
     Dictionary<Dimension.Color, Dimension> dimensionMap;
+    public Dictionary<Dimension.Color, Dimension> Dims {
+        get => dimensionMap;
+    }
 
     HashSet<SplitableObject> mergedObjects;
     HashSet<SplitableObject> splittedObjects;
@@ -24,13 +35,14 @@ public class World : MonoBehaviour
     HashSet<SplitableObject> blackOutObjects;
 
     bool splitted;
+    public bool Splitted {
+        get => splitted;
+    }
 
-
-    void Start() {
+    void Awake() {
         dimensionMap = new Dictionary<Dimension.Color, Dimension>();
-        foreach (Dimension d in dimensions) {
+        foreach (Dimension d in dimensions)
             dimensionMap.Add(d.GetColor(), d);
-        }
 
         mergedObjects = new HashSet<SplitableObject>();
         splittedObjects = new HashSet<SplitableObject>();
@@ -38,11 +50,9 @@ public class World : MonoBehaviour
         blackOutObjects = new HashSet<SplitableObject>();
 
         SplitableObject[] so = FindObjectsOfType<SplitableObject>();
-        foreach (SplitableObject s in so) {
+        foreach (SplitableObject s in so)
             mergedObjects.Add(s);
-        }
 
-        OnMergeTransitionEnd.AddListener(MergeObjects);
         splitted = false;
     }
 
@@ -52,8 +62,6 @@ public class World : MonoBehaviour
             if (so == null) break;
             so.Split(mergedObjects, splittedObjects, blackOutObjects, toBeDestroyedObjects);
         }
-        StartCoroutine(DestoryObjects());
-        Log();
     }
 
     public void MergeObjects() {
@@ -68,75 +76,37 @@ public class World : MonoBehaviour
                 so.Merge(null, mergedObjects, splittedObjects, blackOutObjects, toBeDestroyedObjects);
             }
         }
-        StartCoroutine(DestoryObjects());
-        Log();
     }
 
-    public IEnumerator DestoryObjects() {
+    public void DestoryObjects() {
         while (toBeDestroyedObjects.Count > 0) {
             var so = toBeDestroyedObjects.FirstOrDefault();
             toBeDestroyedObjects.Remove(so);
             Destroy(so.gameObject);
         }
-        yield return null;
     }
 
-    public void SplitDimensions() {
-        SplitObjects();
-        StartCoroutine(SplitTransition());
+    void SplitDimensions() {
+        StartCoroutine(dimensionTransition.SplitTransition());
     }
 
-    public void MergeDimensions() {
-        StartCoroutine(MergeTransition());
+    void MergeDimensions() {
+        StartCoroutine(dimensionTransition.MergeTransition());
     }
 
-
-    IEnumerator SplitTransition() {
-        OnSplitTransitionStart.Invoke();
-        while (true) {
-            int c = 0;
-            foreach (Dimension.Color color in Dimension.BaseColor) {
-                bool r = MoveDimension(dimensionMap[color].transform, dimensionMap[color].targetPosition,
-                            dimensionMap[color].targetRotation);
-                if (r) c++;
-            }
-            if (c == Dimension.BaseColor.Count) break;
-            else yield return null;
-        }
-        Physics.SyncTransforms();
-        OnSplitTransitionEnd.Invoke();
-    }
-
-    IEnumerator MergeTransition() {
-        OnMergeTransitionStart.Invoke();
-        while (true) {
-            int c = 0;
-            foreach (Dimension.Color color in Dimension.BaseColor) {
-                bool r = MoveDimension(dimensionMap[color].transform, dimensionMap[Dimension.Color.WHITE].targetPosition,
-                            dimensionMap[Dimension.Color.WHITE].targetRotation);
-                if (r) c++;
-            }
-            if (c == Dimension.BaseColor.Count) break;
-            else yield return null;
-        }
-        Physics.SyncTransforms();
-        OnMergeTransitionEnd.Invoke();
-    }
-
-    bool MoveDimension(Transform t, Vector3 tarPos, Quaternion tarRot) {
-        t.position = Vector3.MoveTowards(t.position, tarPos, moveSpeed * Time.deltaTime);
-        t.rotation = Quaternion.RotateTowards(t.rotation, tarRot, trunSpeed * Time.deltaTime);
-        return (Fuzzy.CloseVector3(t.position, tarPos) && Fuzzy.CloseQuaternion(t.rotation, tarRot));
+    public void RotateDimensions(int dir) {
+        if (!Splitted) return;
+        StartCoroutine(dimensionTransition.RotationTransition(dir));
     }
 
     public void Toggle() {
         if (splitted) {
-            MergeDimensions();
             splitted = false;
+            MergeDimensions();
         }
         else {
-            SplitDimensions();
             splitted = true;
+            SplitDimensions();
         }
     }
 

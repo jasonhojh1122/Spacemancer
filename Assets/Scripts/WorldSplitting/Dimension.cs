@@ -68,15 +68,14 @@ public class Dimension : MonoBehaviour {
         return ret;
     }
 
-    [SerializeField] GameObject target;
     [SerializeField] Color color;
+    [SerializeField] float targetAngle;
 
-    public Vector3 targetPosition {
-        get => target.transform.position;
+    public float TargetAngle {
+        get => targetAngle;
+        set => targetAngle = value;
     }
-    public Quaternion targetRotation {
-        get => target.transform.rotation;
-    }
+
     public Color GetColor() {
         return color;
     }

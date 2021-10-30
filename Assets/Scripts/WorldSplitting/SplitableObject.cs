@@ -159,6 +159,7 @@ public class SplitableObject : MonoBehaviour {
 
         for (int i = 0; i < siblings.Count; i++) {
             siblings[i].MoveToDimension(splittedColor[i]);
+            siblings[i].objectColor.SetColor(splittedColor[i]);
             mergedObjects.Add(siblings[i]);
             splittedObjects.Remove(siblings[i]);
             parent.splitted[splittedColor[i]] = siblings[i];
