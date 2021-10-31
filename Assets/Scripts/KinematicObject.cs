@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-    /// <summary>
-    /// Implements game physics for some in game entity.
-    /// </summary>
+/// <summary>
+/// Implements game physics for some in game entity.
+/// </summary>
 public class KinematicObject : MonoBehaviour
 {
     /// <summary>
@@ -28,6 +28,7 @@ public class KinematicObject : MonoBehaviour
     /// </summary>
     /// <value></value>
     public bool IsGrounded { get; private set; }
+    public bool paused;
 
     protected Vector3 targetVelocity;
     protected Vector3 groundNormal;
@@ -36,6 +37,7 @@ public class KinematicObject : MonoBehaviour
 
     protected const float minMoveDistance = 0.001f;
     protected const float shellRadius = 0.01f;
+
 
 
     /// <summary>
@@ -87,6 +89,10 @@ public class KinematicObject : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (paused)
+        {
+            return;
+        }
         targetVelocity = Vector3.zero;
         ComputeVelocity();
     }
@@ -98,6 +104,11 @@ public class KinematicObject : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
+        if (paused)
+        {
+            return;
+        }
+            
         //if already falling, fall faster than the jump speed, otherwise use normal gravity.
         
         if (velocity.y < 0)

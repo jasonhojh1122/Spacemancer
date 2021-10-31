@@ -44,6 +44,11 @@ public class PlayerController : KinematicObject
 
     protected override void Update()
     {
+        if (paused)
+        {
+            return;
+        }
+            
         if (controlEnabled)
         {
             move.x = Input.GetAxis("Horizontal");

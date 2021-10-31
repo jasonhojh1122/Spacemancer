@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Coloring : MonoBehaviour
 {
     [SerializeField] private Color _color;
-    [SerializeField] private SpriteRenderer _sprite;
+    [SerializeField] private Renderer _renderer;
     private const float threshhold = 0.1f;
     private const float mergeDistance = 1f;
     public Color color
@@ -15,7 +15,10 @@ public class Coloring : MonoBehaviour
         set
         {
             _color = value;
-            _sprite.color = _color;
+            foreach(Material mat in _renderer.materials)
+            {
+                mat.color = _color;
+            }
         }
     }
     void OnMouseDown()
@@ -83,8 +86,8 @@ public class Coloring : MonoBehaviour
         }
         if (split)
         {
-            //gameObject.SetActive(false);
-            _sprite.enabled = false;
+            gameObject.SetActive(false);
+            //_renderer.enabled = false;
         }
         return rgbObject;
     }
