@@ -54,7 +54,6 @@ public class PlayerController : KinematicObject
         {
             return;
         }
-            
         if (controlEnabled)
         {
             move.x = Input.GetAxis("Horizontal");
