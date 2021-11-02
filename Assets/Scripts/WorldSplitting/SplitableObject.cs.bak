@@ -9,9 +9,11 @@ public class SplitableObject : MonoBehaviour {
     [SerializeField] World world;
     Collider col;
     Rigidbody rb;
-    public bool isPickUp = false;
-    public bool canPickUp = true;
-
+    [SerializeField] bool floor;
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
     bool _IsMerged;
     public bool IsMerged {
         get => _IsMerged;
@@ -22,11 +24,18 @@ public class SplitableObject : MonoBehaviour {
         col = GetComponent<Collider>();
         objectColor = GetComponent<ObjectColor>();
         world = FindObjectOfType<World>();
-        rb = GetComponent<Rigidbody>();
         splitted = new Dictionary<Dimension.Color, SplitableObject>();
         foreach (Dimension.Color bc in Dimension.BaseColor)
             splitted.Add(bc, null);
         IsMerged = false;
+    }
+    private void Update()
+    {
+        if (rb != null)
+        {
+            rb.velocity *= 0;
+            rb.isKinematic = false;
+        }
     }
 
     public void Split(HashSet<SplitableObject> mergedObjects, HashSet<SplitableObject> splittedObjects,
@@ -191,15 +200,41 @@ public class SplitableObject : MonoBehaviour {
         transform.localPosition = localPos;
         transform.localRotation = localRot;
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if(other.gameObject.tag != "Player" || gameObject.tag == "Floor")
+        if (floor)
         {
             return;
         }
-        Debug.Log("Player Enter");
-    }
-    private void OnTriggerExit(Collider other)
-    {
+        TestCharacter m = collision.gameObject.GetComponent<TestCharacter>();
+
+        Vector3 v = collision.relativeVelocity;
+        Vector3 f = collision.impulse;
+        if (m != null)
+        {
+            f = m.movDir;
+            m.movDir *= 0;
+        }
+        Debug.Log("On collision");
+        Debug.Log(f);
+        Debug.Log(v);
+        if(Mathf.Abs(f.x) < Mathf.Abs(f.z))
+        {
+            Vector3 moveZ = new Vector3(0, 0, 1);
+            if(f.z < 0)
+            {
+                moveZ *= -1;
+            }
+            transform.position += moveZ;
+        }
+        else if(Mathf.Abs(f.x) > Mathf.Abs(f.z))
+        {
+            Vector3 moveX = new Vector3(1, 0, 0);
+            if (f.x < 0)
+            {
+                moveX *= -1;
+            }
+            transform.position += moveX;
+        }
     }
 }
