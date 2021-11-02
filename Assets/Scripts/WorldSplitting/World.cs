@@ -50,8 +50,10 @@ public class World : MonoBehaviour
         blackOutObjects = new HashSet<SplitableObject>();
 
         SplitableObject[] so = FindObjectsOfType<SplitableObject>();
-        foreach (SplitableObject s in so)
+        foreach (SplitableObject s in so) {
+            s.Dim = dimensionMap[Dimension.Color.WHITE];
             mergedObjects.Add(s);
+        }
 
         splitted = false;
     }

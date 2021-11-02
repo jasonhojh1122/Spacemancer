@@ -29,6 +29,7 @@ public class DimensionTransition : MonoBehaviour{
     }
 
     public IEnumerator SplitTransition() {
+        SetPhysics(false);
         yield return StartCoroutine(FadeMainDimension(false));
         world.SplitObjects();
         world.DestoryObjects();
@@ -66,10 +67,12 @@ public class DimensionTransition : MonoBehaviour{
         }
 
         material.SetFloat(dissolveName, 0.0f);
+        SetPhysics(true);
         Physics.SyncTransforms();
     }
 
     public IEnumerator MergeTransition() {
+        SetPhysics(false);
         StartCoroutine(cameraTransition.Transition());
         VecDic startPos = new VecDic();
         QuaDic startRot = new QuaDic();
@@ -105,6 +108,7 @@ public class DimensionTransition : MonoBehaviour{
 
         yield return StartCoroutine(FadeMainDimension(true));
         material.SetFloat(dissolveName, 0.0f);
+        SetPhysics(true);
     }
 
     public IEnumerator RotationTransition(int dir) {
@@ -155,6 +159,10 @@ public class DimensionTransition : MonoBehaviour{
         foreach (Dimension.Color bc in Dimension.BaseColor) {
             world.Dims[bc].gameObject.SetActive(active);
         }
+    }
+
+    void SetPhysics(bool state) {
+        Physics.autoSimulation = state;
     }
 
 }

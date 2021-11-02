@@ -7,12 +7,17 @@ public class SplitableObject : MonoBehaviour {
     [SerializeField] public ObjectColor objectColor;
     [SerializeField] public Dictionary<Dimension.Color, SplitableObject> splitted;
     [SerializeField] World world;
+    Dimension dimension;
     Collider col;
 
     bool _IsMerged;
     public bool IsMerged {
         get => _IsMerged;
         set => _IsMerged = value;
+    }
+    public Dimension Dim {
+        get => dimension;
+        set => dimension = value;
     }
 
     void Awake() {
@@ -62,6 +67,7 @@ public class SplitableObject : MonoBehaviour {
             }
             else {
                 s.transform.localPosition = transform.localPosition;
+                s.Dim = world.GetDimension(sc);
                 s.IsMerged = false;
                 mergedObjects.Remove(s);
                 splittedObjects.Add(s);
@@ -170,9 +176,11 @@ public class SplitableObject : MonoBehaviour {
         var so = Instantiate<SplitableObject>(this);
         so.gameObject.name = gameObject.name;
         so.objectColor.SetColor(color);
-        so.transform.SetParent(world.GetDimension(color).transform);
+        var dim = world.GetDimension(color);
+        so.transform.SetParent(dim.transform);
         so.transform.localPosition = transform.localPosition;
         so.transform.localRotation = transform.localRotation;
+        so.Dim = dim;
         return so;
     }
 
@@ -183,9 +191,11 @@ public class SplitableObject : MonoBehaviour {
     public void MoveToDimension(Dimension.Color color) {
         Vector3 localPos = transform.localPosition;
         Quaternion localRot = transform.localRotation;
-        transform.SetParent(world.GetDimension(color).transform);
+        var dim = world.GetDimension(color);
+        transform.SetParent(dim.transform);
         transform.localPosition = localPos;
         transform.localRotation = localRot;
+        Dim = dim;
     }
 
 }
