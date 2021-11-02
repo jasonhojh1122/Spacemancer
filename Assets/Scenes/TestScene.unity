@@ -380,6 +380,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectColor: {fileID: 0}
   world: {fileID: 0}
+  fallingDown: 0
   isPickUp: 0
   canPickUp: 1
 --- !u!65 &341023552
@@ -471,7 +472,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 122
   m_CollisionDetection: 0
 --- !u!65 &341023557
 BoxCollider:
@@ -537,6 +538,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectColor: {fileID: 0}
   world: {fileID: 0}
+  fallingDown: 0
   isPickUp: 0
   canPickUp: 1
 --- !u!65 &412623674
@@ -628,7 +630,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 122
   m_CollisionDetection: 0
 --- !u!65 &412623679
 BoxCollider:
@@ -937,6 +939,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectColor: {fileID: 0}
   world: {fileID: 0}
+  fallingDown: 0
   isPickUp: 0
   canPickUp: 1
 --- !u!114 &1032806815
@@ -1064,6 +1067,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectColor: {fileID: 0}
   world: {fileID: 0}
+  fallingDown: 0
   isPickUp: 0
   canPickUp: 1
 --- !u!65 &1413426917
@@ -1155,7 +1159,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 122
   m_CollisionDetection: 0
 --- !u!65 &1413426922
 BoxCollider:

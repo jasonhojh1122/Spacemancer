@@ -9,6 +9,7 @@ public class SplitableObject : MonoBehaviour {
     [SerializeField] World world;
     Collider col;
     Rigidbody rb;
+    public bool fallingDown = false;
     public bool isPickUp = false;
     public bool canPickUp = true;
 
@@ -17,7 +18,6 @@ public class SplitableObject : MonoBehaviour {
         get => _IsMerged;
         set => _IsMerged = value;
     }
-
     void Awake() {
         col = GetComponent<Collider>();
         objectColor = GetComponent<ObjectColor>();
@@ -27,6 +27,7 @@ public class SplitableObject : MonoBehaviour {
         foreach (Dimension.Color bc in Dimension.BaseColor)
             splitted.Add(bc, null);
         IsMerged = false;
+
     }
 
     public void Split(HashSet<SplitableObject> mergedObjects, HashSet<SplitableObject> splittedObjects,
@@ -183,7 +184,6 @@ public class SplitableObject : MonoBehaviour {
     public SplitableObject InstantiateAsParent() {
         return InstantiateToDimension(Dimension.Color.WHITE);
     }
-
     public void MoveToDimension(Dimension.Color color) {
         Vector3 localPos = transform.localPosition;
         Quaternion localRot = transform.localRotation;
@@ -191,13 +191,15 @@ public class SplitableObject : MonoBehaviour {
         transform.localPosition = localPos;
         transform.localRotation = localRot;
     }
+
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag != "Player" || gameObject.tag == "Floor")
+        if(gameObject.tag == "Floor")
         {
             return;
         }
-        Debug.Log("Player Enter");
+        if(other.gameObject.tag == "Player")
+            Debug.Log("Player Enter");
     }
     private void OnTriggerExit(Collider other)
     {

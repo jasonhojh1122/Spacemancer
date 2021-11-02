@@ -174,8 +174,10 @@ public class PlayerController : KinematicObject
         Vector3 localPos = pickGo.transform.localPosition;
         so.canPickUp = true;
         handEmpty = true;
-        pickGo.transform.localPosition = new Vector3(Mathf.RoundToInt(localPos.x), 1.5f, Mathf.RoundToInt(localPos.z));
+        pickGo.transform.localPosition = new Vector3(Mathf.RoundToInt(localPos.x), Mathf.RoundToInt(localPos.y), Mathf.RoundToInt(localPos.z));
         pickGo.transform.localRotation = new Quaternion(0, 0, 0, 0);
+        Rigidbody childRb = so.GetComponent<Rigidbody>();
+        childRb.isKinematic = false;
         pickGo = null;
     }
     private void OnTriggerEnter(Collider other)
