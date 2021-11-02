@@ -8,9 +8,6 @@ public class SplitableObject : MonoBehaviour {
     [SerializeField] public Dictionary<Dimension.Color, SplitableObject> splitted;
     [SerializeField] World world;
     Collider col;
-    Rigidbody rb;
-    public bool isPickUp = false;
-    public bool canPickUp = true;
 
     bool _IsMerged;
     public bool IsMerged {
@@ -22,7 +19,6 @@ public class SplitableObject : MonoBehaviour {
         col = GetComponent<Collider>();
         objectColor = GetComponent<ObjectColor>();
         world = FindObjectOfType<World>();
-        rb = GetComponent<Rigidbody>();
         splitted = new Dictionary<Dimension.Color, SplitableObject>();
         foreach (Dimension.Color bc in Dimension.BaseColor)
             splitted.Add(bc, null);
@@ -191,15 +187,5 @@ public class SplitableObject : MonoBehaviour {
         transform.localPosition = localPos;
         transform.localRotation = localRot;
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.gameObject.tag != "Player" || gameObject.tag == "Floor")
-        {
-            return;
-        }
-        Debug.Log("Player Enter");
-    }
-    private void OnTriggerExit(Collider other)
-    {
-    }
+
 }

@@ -26,20 +26,14 @@ public class PlayerController : KinematicObject
     /*internal new*/
     //public Health health;
     public bool controlEnabled = true;
-    private Rigidbody rb;
-    bool ObjectCanBePick = false;
+
     bool jump;
-    public bool handEmpty=true;
     Vector3 move;
     SpriteRenderer spriteRenderer;
-    GameObject pickGo;
     //internal Animator animator;
-
+    
     //public Bounds Bounds => collider2d.bounds;
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
+
     void Awake()
     {
         //health = GetComponent<Health>();
@@ -64,18 +58,6 @@ public class PlayerController : KinematicObject
             else if (Input.GetButtonUp("Jump"))
             {
                 stopJump = true;
-            }
-            else if (Input.GetButtonDown("Pickup"))
-            {
-                if (handEmpty&&ObjectCanBePick)
-                {
-                    PickUp();
-                }
-                else if(!handEmpty)
-                {
-                    PutDown();
-                }
-
             }
             // change face direction when moveing
             if (move.x != 0 || move.y != 0)
@@ -150,53 +132,7 @@ public class PlayerController : KinematicObject
 
         targetVelocity = move * maxSpeed;
     }
-    void PickUp()
-    {
-        SplitableObject so = pickGo.GetComponent<SplitableObject>();
-        if (!so.isPickUp&&handEmpty)
-        {
-            so.isPickUp = true;
-            Vector3 localPos = so.transform.localPosition;
-            Quaternion localRot = so.transform.localRotation;
-            so.transform.SetParent(transform);
-            so.transform.localPosition = localPos;
-            so.transform.localRotation = localRot;
-            so.transform.localPosition = new Vector3(0, 3, 0);
-            handEmpty = false;
-            Debug.Log("Picked Up");
-        }
-    }
-    void PutDown()
-    {
-        SplitableObject so = pickGo.GetComponent<SplitableObject>();
-        so.isPickUp = false;
-        pickGo.transform.SetParent(transform.parent);
-        Debug.Log("Put Down");
-        Vector3 localPos = pickGo.transform.localPosition;
-        so.canPickUp = true;
-        handEmpty = true;
-        pickGo.transform.localPosition = new Vector3(Mathf.RoundToInt(localPos.x), 1.5f, Mathf.RoundToInt(localPos.z));
-        pickGo.transform.localRotation = new Quaternion(0, 0, 0, 0);
-        pickGo = null;
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.gameObject.tag == "Boxes")
-        {
-            if(handEmpty)
-                pickGo = other.gameObject;
-            ObjectCanBePick = true;
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.tag == "Boxes")
-        {
-            if(handEmpty)
-                pickGo = null;
-            ObjectCanBePick = false;
-        }
-    }
+
     public enum JumpState
     {
         Grounded,

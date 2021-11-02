@@ -15,13 +15,13 @@ public class InputManager : MonoBehaviour {
     private void Update() {
         if (locked) return;
 
-        if (Input.GetButtonUp("Toggle")) {
+        if (Input.GetKeyUp(KeyCode.Space)) {
             world.Toggle();
         }
-        else if (Input.GetButtonUp("L-Rotate")) {
+        else if (Input.GetKeyUp(KeyCode.Q)) {
             world.RotateDimensions(-1);
         }
-        else if (Input.GetButtonUp("R-Rotate")) {
+        else if (Input.GetKeyUp(KeyCode.E)) {
             world.RotateDimensions(1);
         }
     }

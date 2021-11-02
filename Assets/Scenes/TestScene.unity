@@ -253,82 +253,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   world: {fileID: 1420126370}
---- !u!1 &300174197 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7019088425620113033, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-  m_PrefabInstance: {fileID: 1200281305}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &300174198
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 300174197}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ad9b07a7b44a1c43b443dd1a456159f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  minGroundNormalY: 0.65
-  gravityModifier: 1
-  velocity: {x: 0, y: 0, z: 0}
-  paused: 0
-  maxSpeed: 7
-  jumpTakeOffSpeed: 7
-  jumpDeceleration: 0.5
-  jumpState: 0
-  playerCollider: {fileID: 300174199}
-  controlEnabled: 1
-  handEmpty: 1
---- !u!136 &300174199
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 300174197}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 1.7989082
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.8377142, z: 0}
---- !u!54 &300174200
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 300174197}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!65 &300174201
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 300174197}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2, y: 1, z: 2}
-  m_Center: {x: 0, y: 0.5, z: 0}
---- !u!4 &300174202 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-  m_PrefabInstance: {fileID: 1200281305}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &341023549
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,11 +267,9 @@ GameObject:
   - component: {fileID: 341023552}
   - component: {fileID: 341023551}
   - component: {fileID: 341023555}
-  - component: {fileID: 341023556}
-  - component: {fileID: 341023557}
   m_Layer: 0
-  m_Name: Boxes
-  m_TagString: Boxes
+  m_Name: Cube1
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -380,8 +302,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectColor: {fileID: 0}
   world: {fileID: 0}
-  isPickUp: 0
-  canPickUp: 1
 --- !u!65 &341023552
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -457,35 +377,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: 7
---- !u!54 &341023556
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 341023549}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
---- !u!65 &341023557
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 341023549}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.2, y: 1.2, z: 1.2}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &412623671
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,11 +391,9 @@ GameObject:
   - component: {fileID: 412623674}
   - component: {fileID: 412623673}
   - component: {fileID: 412623677}
-  - component: {fileID: 412623678}
-  - component: {fileID: 412623679}
   m_Layer: 0
-  m_Name: Boxes
-  m_TagString: Boxes
+  m_Name: Cube0
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -537,8 +426,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectColor: {fileID: 0}
   world: {fileID: 0}
-  isPickUp: 0
-  canPickUp: 1
 --- !u!65 &412623674
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -614,35 +501,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: 7
---- !u!54 &412623678
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 412623671}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
---- !u!65 &412623679
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 412623671}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.2, y: 1.2, z: 1.2}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &440334577
 GameObject:
   m_ObjectHideFlags: 0
@@ -842,7 +700,7 @@ GameObject:
   - component: {fileID: 1032806815}
   m_Layer: 0
   m_Name: W
-  m_TagString: Floor
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -937,8 +795,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectColor: {fileID: 0}
   world: {fileID: 0}
-  isPickUp: 0
-  canPickUp: 1
 --- !u!114 &1032806815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -952,67 +808,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: 7
---- !u!1001 &1200281305
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1663976606}
-    m_Modifications:
-    - target: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.51
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620020073, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620113033, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_Name
-      value: Male 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7019088425620113033, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
-      propertyPath: m_TagString
-      value: Player
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 5da73550c90a266498e0fcd9c6437148, type: 3}
 --- !u!1 &1413426914
 GameObject:
   m_ObjectHideFlags: 0
@@ -1027,11 +822,9 @@ GameObject:
   - component: {fileID: 1413426917}
   - component: {fileID: 1413426916}
   - component: {fileID: 1413426920}
-  - component: {fileID: 1413426921}
-  - component: {fileID: 1413426922}
   m_Layer: 0
-  m_Name: Boxes
-  m_TagString: Boxes
+  m_Name: Cube2
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1064,8 +857,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectColor: {fileID: 0}
   world: {fileID: 0}
-  isPickUp: 0
-  canPickUp: 1
 --- !u!65 &1413426917
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1141,35 +932,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: 7
---- !u!54 &1413426921
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1413426914}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
---- !u!65 &1413426922
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1413426914}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.2, y: 1.2, z: 1.2}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1420126369
 GameObject:
   m_ObjectHideFlags: 0
@@ -1330,7 +1092,6 @@ Transform:
   - {fileID: 412623672}
   - {fileID: 341023550}
   - {fileID: 1413426915}
-  - {fileID: 300174202}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
