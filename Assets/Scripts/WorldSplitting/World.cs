@@ -35,12 +35,6 @@ public class World : MonoBehaviour
     HashSet<SplitableObject> blackOutObjects;
 
     bool splitted;
-    bool _playerCanToggle;
-    public bool playerCanToggle
-    {
-        get => _playerCanToggle;
-        set => _playerCanToggle = value;
-    }
     public bool Splitted {
         get => splitted;
     }
@@ -106,11 +100,6 @@ public class World : MonoBehaviour
     }
 
     public void Toggle() {
-        playerCanToggle = FindObjectOfType<PlayerController>().handEmpty;
-        if (!playerCanToggle)
-        {
-            return;
-        }
         if (splitted) {
             splitted = false;
             MergeDimensions();
