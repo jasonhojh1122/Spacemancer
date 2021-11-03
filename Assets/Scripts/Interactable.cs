@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface Interaction 
+public interface Interactable
 {
     bool Interact();
-    bool interactable { get; set; }
 
 }

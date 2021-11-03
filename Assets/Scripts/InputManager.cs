@@ -13,31 +13,22 @@ public class InputManager : MonoBehaviour {
     [SerializeField] PlayerInteraction playerInteraction;
 
     private void Update() {
-        if (locked) return;
-        if (!playerInteraction.alreadyInterate)
+        if (Input.GetButtonUp("Toggle"))
         {
-            if (Input.GetButtonUp("Toggle"))
-            {
-                world.Toggle();
-            }
-            else if (Input.GetButtonUp("L-Rotate"))
-            {
-                world.RotateDimensions(-1);
-            }
-            else if (Input.GetButtonUp("R-Rotate"))
-            {
-                world.RotateDimensions(1);
-            }
+            world.Toggle();
         }
-        if (Input.GetButtonDown("Interact"))
+        else if (Input.GetButtonUp("L-Rotate"))
+        {
+            world.RotateDimensions(-1);
+        }
+        else if (Input.GetButtonUp("R-Rotate"))
+        {
+            world.RotateDimensions(1);
+        }
+        else if (Input.GetButtonDown("Interact"))
         {
             playerInteraction.Interact();
         }
     }
-
-    public void ToggleLock() {
-        locked = !locked;
-    }
-
 
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boxes : MonoBehaviour,Interaction
+public class Boxes : MonoBehaviour, Interactable
 {
     Rigidbody rb;
     void Start()
@@ -11,7 +11,7 @@ public class Boxes : MonoBehaviour,Interaction
     }
     public bool Interact()
     {
-        if (interactable || isPickUp)
+        if (isPickUp)
         {
             PickupEvent();
             return true;
@@ -21,12 +21,7 @@ public class Boxes : MonoBehaviour,Interaction
             return false;
         }
     }
-    public bool interactable
-    {
-        set => _interactable = value;
-        get => _interactable;
-    }
-    bool _interactable;
+
     public bool fallingDown = false;
     private bool isPickUp = false;
     GameObject possibleParent;
@@ -44,7 +39,6 @@ public class Boxes : MonoBehaviour,Interaction
     void PickUp()
     {
         isPickUp = true;
-        interactable = true;
         rb.isKinematic = true;
         Vector3 localPos = transform.localPosition;
         Quaternion localRot = transform.localRotation;
@@ -68,7 +62,6 @@ public class Boxes : MonoBehaviour,Interaction
     {
         if(other.gameObject.tag == "Player")
         {
-            interactable = true;
             possibleParent = other.gameObject;
             Debug.Log("Player Enter Box");
         }
@@ -77,9 +70,7 @@ public class Boxes : MonoBehaviour,Interaction
     {
         if(other.gameObject.tag == "Player")
         {
-            interactable = false;
             possibleParent = null;
         }
     }
-    // Start is called before the first frame update
 }
