@@ -19,6 +19,7 @@ public class PlayerController : KinematicObject
     /// </summary>
     public float jumpTakeOffSpeed = 3.5f;
     public float jumpDeceleration = 0.7f;
+    public float rotateSpeed = 20.0f;
     public JumpState jumpState = JumpState.Grounded;
     public Collider playerCollider;
     public bool controlEnabled = true;
@@ -64,7 +65,9 @@ public class PlayerController : KinematicObject
             {
                 //transform.localRotation = Quaternion.LookRotation(new Vector3(move.x, 0, move.z));
                 //transform.rotation = Quaternion.LookRotation(new Vector3(move.x, 0, move.z));
-                transform.forward = new Vector3(move.x, 0, move.z);
+                // transform.forward = new Vector3(move.x, 0, move.z);
+                Vector3 target = new Vector3(move.x, 0.0f, move.z);
+                transform.forward = Vector3.RotateTowards(transform.forward, target, rotateSpeed * Time.deltaTime, 0.0f);
                 if (jumpState == JumpState.Grounded) {
                     animator.runtimeAnimatorController = walkAC;
                 }

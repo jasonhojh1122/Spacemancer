@@ -5,9 +5,11 @@ using UnityEngine;
 namespace Interaction {
 public class Boxes : Interactable
 {
+    [SerializeField] Vector3 pickUpOffset;
     Rigidbody rb;
     private bool isPickUp = false;
-    GameObject possibleParent;
+    Transform player;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -25,25 +27,24 @@ public class Boxes : Interactable
         }
     }
 
-
     void PickUp()
     {
         isPickUp = true;
         rb.isKinematic = true;
         Vector3 pos = transform.position;
         Quaternion rot = transform.rotation;
-        transform.SetParent(possibleParent.transform);
-        transform.position = pos;
+        transform.SetParent(player);
+        transform.position = pos + pickUpOffset;
         transform.rotation = rot;
-        // transform.localPosition = new Vector3(0, 3, 0);
         Debug.Log("Picked Up");
     }
+
     void PutDown()
     {
         Debug.Log("Put Down");
         rb.isKinematic = false;
         isPickUp = false;
-        transform.SetParent(transform.parent.transform.parent);
+        transform.SetParent(player.parent.transform.parent);
         Vector3 localPos = transform.localPosition;
         transform.localPosition = new Vector3(Mathf.RoundToInt(localPos.x), Mathf.RoundToInt(localPos.y), Mathf.RoundToInt(localPos.z));
         transform.localRotation = new Quaternion(0, 0, 0, 0);
@@ -52,7 +53,7 @@ public class Boxes : Interactable
     public override void OnZoneEnter(Collider other) {
         if(other.gameObject.tag == "Player")
         {
-            possibleParent = other.gameObject;
+            player = other.gameObject.transform;
             Debug.Log("Player Enter Box");
         }
     }
@@ -63,8 +64,12 @@ public class Boxes : Interactable
     public override void OnZoneExit(Collider other) {
         if(other.gameObject.tag == "Player")
         {
-            possibleParent = null;
+            player = null;
         }
+    }
+
+    public override bool IsInteracting() {
+        return isPickUp;
     }
 }
 }

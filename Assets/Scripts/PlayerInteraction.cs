@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     Interaction.Interactable interactable;
+
     public void Interact()
     {
         if (interactable != null)
@@ -12,6 +13,12 @@ public class PlayerInteraction : MonoBehaviour
             interactable.Interact();
         }
     }
+
+    public bool IsInteracting() {
+        if (interactable == null) return false;
+        else return interactable.IsInteracting();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         Interaction.Zone zone = other.GetComponent<Interaction.Zone>();
