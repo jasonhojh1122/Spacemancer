@@ -108,9 +108,9 @@ public class KinematicObject : MonoBehaviour
         {
             return;
         }
-            
+
         //if already falling, fall faster than the jump speed, otherwise use normal gravity.
-        
+
         if (velocity.y < 0)
             velocity += gravityModifier * Physics.gravity * Time.deltaTime;
         else
@@ -135,7 +135,7 @@ public class KinematicObject : MonoBehaviour
 
     void PerformMovement(Vector3 move, bool yMovement)
     {
-        
+
         var distance = move.magnitude;
 
         if (distance > minMoveDistance)
@@ -144,6 +144,8 @@ public class KinematicObject : MonoBehaviour
             var hitBuffer = body.SweepTestAll(move, distance + shellRadius);
             for (var i = 0; i < hitBuffer.Length; i++)
             {
+                if (hitBuffer[i].collider.isTrigger) continue;
+
                 var currentNormal = hitBuffer[i].normal;
 
                 //is this surface flat enough to land on?
