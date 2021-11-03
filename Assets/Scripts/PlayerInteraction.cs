@@ -4,40 +4,25 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    bool interactable = false;
-    public bool alreadyInterate = false;
-    Interaction interactableObject;
-    Interaction child;
+    Interactable interactableObject;
     public void Interact()
     {
-        if (alreadyInterate)
+        if (interactableObject != null)
         {
-            alreadyInterate = false;
             interactableObject.Interact();
         }
-        else if (interactable)
-        {
-            interactable = interactableObject.Interact();
-            alreadyInterate = !alreadyInterate;
-            
-        }
-
     }
     private void OnTriggerEnter(Collider other)
     {
-
-        if (alreadyInterate)
+        Interactable _interactableObject = other.GetComponent<Interactable>();
+        if(_interactableObject != null && interactableObject != null)
         {
-            return;
-        }
-        if(other.gameObject.tag == "Boxes")
-        {
-            interactableObject = other.gameObject.GetComponent<Interaction>();
-            interactable = interactableObject.interactable;
+            interactableObject = _interactableObject;
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
-        interactable = false;
+        interactableObject = null;
     }
 }

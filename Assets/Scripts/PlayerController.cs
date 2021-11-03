@@ -13,32 +13,32 @@ public class PlayerController : KinematicObject
     /// <summary>
     /// Max horizontal speed of the player.
     /// </summary>
-    public float maxSpeed = 7;
+    public float maxSpeed = 5;
     /// <summary>
     /// Initial jump velocity at the start of a jump.
     /// </summary>
-    public float jumpTakeOffSpeed = 7;
-    public float jumpDeceleration = 0.5f;
+    public float jumpTakeOffSpeed = 3.5f;
+    public float jumpDeceleration = 0.7f;
     public JumpState jumpState = JumpState.Grounded;
-    private bool stopJump;
-    /*internal new*/
     public Collider playerCollider;
-    /*internal new*/
-    //public Health health;
     public bool controlEnabled = true;
 
+    [SerializeField] RuntimeAnimatorController idleAC;
+    [SerializeField] RuntimeAnimatorController walkAC;
+    [SerializeField] RuntimeAnimatorController jumpAC;
+
     bool jump;
+    bool stopJump;
     Vector3 move;
     SpriteRenderer spriteRenderer;
-    //internal Animator animator;
-    
-    //public Bounds Bounds => collider2d.bounds;
+    Animator animator;
+
     void Awake()
     {
-        //health = GetComponent<Health>();
         playerCollider = GetComponent<Collider>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        //animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
+        animator.runtimeAnimatorController = idleAC;
     }
 
     protected override void Update()
@@ -52,17 +52,25 @@ public class PlayerController : KinematicObject
             move.x = Input.GetAxis("Horizontal");
             move.z = Input.GetAxis("Vertical");
             if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
+            {
                 jumpState = JumpState.PrepareToJump;
+                animator.runtimeAnimatorController = jumpAC;
+            }
             else if (Input.GetButtonUp("Jump"))
             {
                 stopJump = true;
             }
-            if (move.x != 0 || move.z != 0)
-            // change face direction when moveing
+            if (move.x != 0 || move.z != 0) // change face direction when moveing
             {
-                transform.localRotation = Quaternion.LookRotation(new Vector3(move.x, 0, move.z));
+                //transform.localRotation = Quaternion.LookRotation(new Vector3(move.x, 0, move.z));
                 //transform.rotation = Quaternion.LookRotation(new Vector3(move.x, 0, move.z));
-                //transform.forward = new Vector3(move.x, 0, move.z);
+                transform.forward = new Vector3(move.x, 0, move.z);
+                if (jumpState == JumpState.Grounded) {
+                    animator.runtimeAnimatorController = walkAC;
+                }
+            }
+            else if (jumpState == JumpState.Grounded){
+                animator.runtimeAnimatorController = idleAC;
             }
         }
         else
@@ -99,6 +107,7 @@ public class PlayerController : KinematicObject
                 }
                 break;
             case JumpState.Landed:
+                animator.runtimeAnimatorController = idleAC;
                 jumpState = JumpState.Grounded;
                 break;
         }

@@ -12,6 +12,7 @@ public class DimensionTransition : MonoBehaviour{
     [SerializeField] CameraTransition cameraTransition;
     [SerializeField] Material material;
     static string dissolveName = "_Dissolve";
+    public bool Transitting;
 
     void Start() {
         Init();
@@ -19,7 +20,6 @@ public class DimensionTransition : MonoBehaviour{
 
     public void Init() {
         float rot = 0f;
-        Vector3 pos = new Vector3(0f, 0f, -world.Radius);
         foreach (Dimension.Color bc in Dimension.BaseColor) {
             world.Dims[bc].TargetAngle = rot;
             rot += 120f;
@@ -29,14 +29,23 @@ public class DimensionTransition : MonoBehaviour{
     }
 
     public IEnumerator SplitTransition() {
+        Transitting = true;
         SetPhysics(false);
+
+        // Fade out the main dimension
         yield return StartCoroutine(FadeMainDimension(false));
+
+        // Perform actual splitting
         world.SplitObjects();
         world.DestoryObjects();
 
+        // Set active of base color dimensions
         DimensionsSetActive(true);
+
+        // Move the camera together
         StartCoroutine(cameraTransition.Transition());
 
+        // Calculate the target position
         VecDic targetPos = new VecDic();
         foreach (Dimension.Color bc in Dimension.BaseColor) {
             Vector3 VecDic = new Vector3(0, 0, -world.Radius);
@@ -44,6 +53,7 @@ public class DimensionTransition : MonoBehaviour{
             targetPos.Add(bc, rot * VecDic);
         }
 
+        // Gradully move the dimensions to target position
         float t = 0.0f;
         while (t < world.TransitionDur) {
             t += Time.deltaTime;
@@ -58,28 +68,36 @@ public class DimensionTransition : MonoBehaviour{
             }
             yield return null;
         }
-
+        // Set the final pos/rot of dimensions
         foreach (Dimension.Color bc in Dimension.BaseColor) {
             var dim = world.Dims[bc];
             dim.transform.position = targetPos[bc];
             dim.transform.rotation = Quaternion.identity;
             dim.transform.RotateAround(dim.transform.position, Vector3.up, dim.TargetAngle);
         }
+        Physics.SyncTransforms();
 
         material.SetFloat(dissolveName, 0.0f);
         SetPhysics(true);
-        Physics.SyncTransforms();
+        Transitting = false;
     }
 
     public IEnumerator MergeTransition() {
+        Transitting = true;
         SetPhysics(false);
+
+        // Move the camera together
         StartCoroutine(cameraTransition.Transition());
+
+        // Save the start status of dimension
         VecDic startPos = new VecDic();
         QuaDic startRot = new QuaDic();
         foreach (Dimension.Color bc in Dimension.BaseColor) {
             startRot.Add(bc, world.Dims[bc].transform.rotation);
             startPos.Add(bc, world.Dims[bc].transform.position);
         }
+
+        // Gradully move the dimensions to center
         float t = 0.0f;
         while (t < world.TransitionDur) {
             t += Time.deltaTime;
@@ -94,24 +112,31 @@ public class DimensionTransition : MonoBehaviour{
             }
             yield return null;
         }
+        // Set the final pos/rot of dimensions
         foreach (Dimension.Color bc in Dimension.BaseColor) {
             var dim = world.Dims[bc];
             dim.transform.position = Vector3.zero;
             dim.transform.rotation = Quaternion.identity;
         }
 
+        // Perform actual merge of objects
         world.Dims[Dimension.Color.WHITE].gameObject.SetActive(true);
         Physics.SyncTransforms();
         world.MergeObjects();
         world.DestoryObjects();
-        t = 0.0f;
 
+        // Fade in the main dimension
         yield return StartCoroutine(FadeMainDimension(true));
-        material.SetFloat(dissolveName, 0.0f);
         SetPhysics(true);
+        Transitting = false;
     }
 
+    // Rotate the splitted dimensions
     public IEnumerator RotationTransition(int dir) {
+        Transitting = true;
+        SetPhysics(false);
+
+        // Save the start status of dimension
         VecDic startPos = new VecDic();
         QuaDic startRot = new QuaDic();
         foreach (Dimension.Color bc in Dimension.BaseColor) {
@@ -120,6 +145,7 @@ public class DimensionTransition : MonoBehaviour{
             startRot.Add(bc, world.Dims[bc].transform.rotation);
         }
 
+        // Gradully rotate the dimensions
         float t = 0.0f;
         while (t < world.TransitionDur) {
             t += Time.deltaTime;
@@ -132,15 +158,19 @@ public class DimensionTransition : MonoBehaviour{
             }
             yield return null;
         }
-        foreach (Dimension.Color bc in Dimension.BaseColor) {
-                var dimTran = world.Dims[bc].transform;
-                dimTran.position = startPos[bc];
-                dimTran.rotation = startRot[bc];
-                dimTran.RotateAround(Vector3.zero, Vector3.up, dir * 120.0f);
-            }
 
+        // Set the final status of dimensions
+        foreach (Dimension.Color bc in Dimension.BaseColor) {
+            var dimTran = world.Dims[bc].transform;
+            dimTran.position = startPos[bc];
+            dimTran.rotation = startRot[bc];
+            dimTran.RotateAround(Vector3.zero, Vector3.up, dir * 120.0f);
+        }
+        SetPhysics(true);
+        Transitting = false;
     }
 
+    // Gradully fade in/out main dimension
     IEnumerator FadeMainDimension(bool active) {
         DimensionsSetActive(false);
         float t = 0.0f;
@@ -155,13 +185,19 @@ public class DimensionTransition : MonoBehaviour{
         material.SetFloat(dissolveName, p);
     }
 
+    // Set base color dimensions to active
     void DimensionsSetActive(bool active) {
         foreach (Dimension.Color bc in Dimension.BaseColor) {
             world.Dims[bc].gameObject.SetActive(active);
         }
     }
 
+    // Set physics simulation on or off
     void SetPhysics(bool state) {
+        if (state)
+            Physics.gravity = new Vector3(0f, -9.8f, 0f);
+        else
+            Physics.gravity = Vector3.zero;
         Physics.autoSimulation = state;
     }
 

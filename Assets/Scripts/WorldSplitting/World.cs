@@ -97,11 +97,12 @@ public class World : MonoBehaviour
     }
 
     public void RotateDimensions(int dir) {
-        if (!Splitted) return;
+        if (!Splitted || dimensionTransition.Transitting) return;
         StartCoroutine(dimensionTransition.RotationTransition(dir));
     }
 
     public void Toggle() {
+        if (dimensionTransition.Transitting) return;
         if (splitted) {
             splitted = false;
             MergeDimensions();
