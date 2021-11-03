@@ -10,7 +10,7 @@ public class InputManager : MonoBehaviour {
     [SerializeField] World world;
 
     [SerializeField] bool locked;
-
+    [SerializeField] PlayerController player;
 
     private void Update() {
         if (locked) return;
@@ -23,6 +23,10 @@ public class InputManager : MonoBehaviour {
         }
         else if (Input.GetButtonUp("R-Rotate")) {
             world.RotateDimensions(1);
+        }
+        else if (Input.GetButtonDown("Pickup"))
+        {
+            player.PickupEvent();
         }
     }
 

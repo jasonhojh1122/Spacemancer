@@ -64,18 +64,6 @@ public class PlayerController : KinematicObject
             {
                 stopJump = true;
             }
-            else if (Input.GetButtonDown("Pickup"))
-            {
-                if (handEmpty&&ObjectCanBePick)
-                {
-                    PickUp();
-                }
-                else if(!handEmpty)
-                {
-                    PutDown();
-                }
-
-            }
             // change face direction when moveing
             if (move.x != 0 || move.y != 0)
             {
@@ -122,7 +110,6 @@ public class PlayerController : KinematicObject
                 break;
         }
     }
-
     protected override void ComputeVelocity()
     {
         if (jump && IsGrounded)
@@ -149,34 +136,45 @@ public class PlayerController : KinematicObject
 
         targetVelocity = move * maxSpeed;
     }
+    public void PickupEvent()
+    {
+        if (handEmpty && ObjectCanBePick)
+        {
+            PickUp();
+        }
+        else if (!handEmpty)
+        {
+            PutDown();
+        }
+    }
     void PickUp()
     {
-        SplitableObject so = pickGo.GetComponent<SplitableObject>();
-        if (!so.isPickUp&&handEmpty)
+        MovableItemsInteraction mii = pickGo.GetComponent<MovableItemsInteraction>();
+        if (!mii.isPickUp&&handEmpty)
         {
-            so.isPickUp = true;
-            Vector3 localPos = so.transform.localPosition;
-            Quaternion localRot = so.transform.localRotation;
-            so.transform.SetParent(transform);
-            so.transform.localPosition = localPos;
-            so.transform.localRotation = localRot;
-            so.transform.localPosition = new Vector3(0, 3, 0);
+            mii.isPickUp = true;
+            Vector3 localPos = mii.transform.localPosition;
+            Quaternion localRot = mii.transform.localRotation;
+            mii.transform.SetParent(transform);
+            mii.transform.localPosition = localPos;
+            mii.transform.localRotation = localRot;
+            mii.transform.localPosition = new Vector3(0, 3, 0);
             handEmpty = false;
             Debug.Log("Picked Up");
         }
     }
     void PutDown()
     {
-        SplitableObject so = pickGo.GetComponent<SplitableObject>();
-        so.isPickUp = false;
+        MovableItemsInteraction mii = pickGo.GetComponent<MovableItemsInteraction>();
+        mii.isPickUp = false;
         pickGo.transform.SetParent(transform.parent);
         Debug.Log("Put Down");
         Vector3 localPos = pickGo.transform.localPosition;
-        so.canPickUp = true;
+        mii.canPickUp = true;
         handEmpty = true;
         pickGo.transform.localPosition = new Vector3(Mathf.RoundToInt(localPos.x), Mathf.RoundToInt(localPos.y), Mathf.RoundToInt(localPos.z));
         pickGo.transform.localRotation = new Quaternion(0, 0, 0, 0);
-        Rigidbody childRb = so.GetComponent<Rigidbody>();
+        Rigidbody childRb = mii.GetComponent<Rigidbody>();
         childRb.isKinematic = false;
         pickGo = null;
     }
