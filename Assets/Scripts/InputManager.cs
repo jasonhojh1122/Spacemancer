@@ -10,19 +10,28 @@ public class InputManager : MonoBehaviour {
     [SerializeField] World world;
 
     [SerializeField] bool locked;
-
+    [SerializeField] PlayerInteraction playerInteraction;
 
     private void Update() {
         if (locked) return;
-
-        if (Input.GetKeyUp(KeyCode.Space)) {
-            world.Toggle();
+        if (!playerInteraction.alreadyInterate)
+        {
+            if (Input.GetButtonUp("Toggle"))
+            {
+                world.Toggle();
+            }
+            else if (Input.GetButtonUp("L-Rotate"))
+            {
+                world.RotateDimensions(-1);
+            }
+            else if (Input.GetButtonUp("R-Rotate"))
+            {
+                world.RotateDimensions(1);
+            }
         }
-        else if (Input.GetKeyUp(KeyCode.Q)) {
-            world.RotateDimensions(-1);
-        }
-        else if (Input.GetKeyUp(KeyCode.E)) {
-            world.RotateDimensions(1);
+        if (Input.GetButtonDown("Interact"))
+        {
+            playerInteraction.Interact();
         }
     }
 

@@ -33,7 +33,6 @@ public class PlayerController : KinematicObject
     //internal Animator animator;
     
     //public Bounds Bounds => collider2d.bounds;
-
     void Awake()
     {
         //health = GetComponent<Health>();
@@ -48,7 +47,6 @@ public class PlayerController : KinematicObject
         {
             return;
         }
-            
         if (controlEnabled)
         {
             move.x = Input.GetAxis("Horizontal");
@@ -60,6 +58,7 @@ public class PlayerController : KinematicObject
                 stopJump = true;
             }
             if (move.x != 0 || move.z != 0)
+            // change face direction when moveing
             {
                 transform.localRotation = Quaternion.LookRotation(new Vector3(move.x, 0, move.z));
                 //transform.rotation = Quaternion.LookRotation(new Vector3(move.x, 0, move.z));
@@ -104,7 +103,6 @@ public class PlayerController : KinematicObject
                 break;
         }
     }
-
     protected override void ComputeVelocity()
     {
         if (jump && IsGrounded)
@@ -131,7 +129,6 @@ public class PlayerController : KinematicObject
 
         targetVelocity = move * maxSpeed;
     }
-
     public enum JumpState
     {
         Grounded,

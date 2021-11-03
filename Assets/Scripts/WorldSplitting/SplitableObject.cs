@@ -28,6 +28,7 @@ public class SplitableObject : MonoBehaviour {
         foreach (Dimension.Color bc in Dimension.BaseColor)
             splitted.Add(bc, null);
         IsMerged = false;
+
     }
 
     public void Split(HashSet<SplitableObject> mergedObjects, HashSet<SplitableObject> splittedObjects,
@@ -187,7 +188,6 @@ public class SplitableObject : MonoBehaviour {
     public SplitableObject InstantiateAsParent() {
         return InstantiateToDimension(Dimension.Color.WHITE);
     }
-
     public void MoveToDimension(Dimension.Color color) {
         Vector3 localPos = transform.localPosition;
         Quaternion localRot = transform.localRotation;
@@ -197,5 +197,4 @@ public class SplitableObject : MonoBehaviour {
         transform.localRotation = localRot;
         Dim = dim;
     }
-
 }
