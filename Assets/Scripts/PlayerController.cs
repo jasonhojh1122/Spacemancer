@@ -59,13 +59,12 @@ public class PlayerController : KinematicObject
             {
                 stopJump = true;
             }
-            // change face direction when moveing
-            if (move.x != 0 || move.y != 0)
+            if (move.x != 0 || move.z != 0)
             {
+                transform.localRotation = Quaternion.LookRotation(new Vector3(move.x, 0, move.z));
                 //transform.rotation = Quaternion.LookRotation(new Vector3(move.x, 0, move.z));
-                transform.forward = new Vector3(move.x, 0, move.z);
+                //transform.forward = new Vector3(move.x, 0, move.z);
             }
-
         }
         else
         {
