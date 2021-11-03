@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    Interactable interactableObject;
+    Interaction.Interactable interactable;
     public void Interact()
     {
-        if (interactableObject != null)
+        if (interactable != null)
         {
-            interactableObject.Interact();
+            interactable.Interact();
         }
     }
     private void OnTriggerEnter(Collider other)
     {
-        Interactable _interactableObject = other.GetComponent<Interactable>();
-        if(_interactableObject != null && interactableObject != null)
+        Interaction.Zone zone = other.GetComponent<Interaction.Zone>();
+        if(zone != null)
         {
-            interactableObject = _interactableObject;
+            interactable = zone.InteractableObect;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        interactableObject = null;
+        interactable = null;
     }
 }

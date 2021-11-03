@@ -70,7 +70,7 @@ public class World : MonoBehaviour
         while (splittedObjects.Count > 0) {
             var so = splittedObjects.FirstOrDefault();
             if (so == null) break;
-            if (so.objectColor.GetColor() == Dimension.Color.BLACK) {
+            if (so.ObjectColor == Dimension.Color.BLACK) {
                 so.IsMerged = false;
                 blackOutObjects.Add(so);
             }

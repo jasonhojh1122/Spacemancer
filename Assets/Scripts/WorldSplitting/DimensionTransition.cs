@@ -11,14 +11,17 @@ public class DimensionTransition : MonoBehaviour{
     [SerializeField] World world;
     [SerializeField] CameraTransition cameraTransition;
     [SerializeField] Material material;
-    static string dissolveName = "_Dissolve";
+    [SerializeField] PlayerController playerController;
+    Dimension.Color activeColor;
     public bool Transitting;
+    static string dissolveName = "_Dissolve";
 
     void Start() {
         Init();
     }
 
     public void Init() {
+        activeColor = Dimension.Color.WHITE;
         float rot = 0f;
         foreach (Dimension.Color bc in Dimension.BaseColor) {
             world.Dims[bc].TargetAngle = rot;
@@ -29,8 +32,7 @@ public class DimensionTransition : MonoBehaviour{
     }
 
     public IEnumerator SplitTransition() {
-        Transitting = true;
-        SetPhysics(false);
+        OnTransitionStartEnd(true);
 
         // Fade out the main dimension
         yield return StartCoroutine(FadeMainDimension(false));
@@ -51,6 +53,9 @@ public class DimensionTransition : MonoBehaviour{
             Vector3 VecDic = new Vector3(0, 0, -world.Radius);
             Quaternion rot = Quaternion.AngleAxis(world.Dims[bc].TargetAngle, Vector3.up);
             targetPos.Add(bc, rot * VecDic);
+            if (Fuzzy.CloseFloat(world.Dims[bc].TargetAngle, 0.0f)) {
+                activeColor = bc;
+            }
         }
 
         // Gradully move the dimensions to target position
@@ -78,13 +83,11 @@ public class DimensionTransition : MonoBehaviour{
         Physics.SyncTransforms();
 
         material.SetFloat(dissolveName, 0.0f);
-        SetPhysics(true);
-        Transitting = false;
+        OnTransitionStartEnd(false);
     }
 
     public IEnumerator MergeTransition() {
-        Transitting = true;
-        SetPhysics(false);
+        OnTransitionStartEnd(true);
 
         // Move the camera together
         StartCoroutine(cameraTransition.Transition());
@@ -127,14 +130,12 @@ public class DimensionTransition : MonoBehaviour{
 
         // Fade in the main dimension
         yield return StartCoroutine(FadeMainDimension(true));
-        SetPhysics(true);
-        Transitting = false;
+        OnTransitionStartEnd(false);
     }
 
     // Rotate the splitted dimensions
     public IEnumerator RotationTransition(int dir) {
-        Transitting = true;
-        SetPhysics(false);
+        OnTransitionStartEnd(true);
 
         // Save the start status of dimension
         VecDic startPos = new VecDic();
@@ -166,8 +167,7 @@ public class DimensionTransition : MonoBehaviour{
             dimTran.rotation = startRot[bc];
             dimTran.RotateAround(Vector3.zero, Vector3.up, dir * 120.0f);
         }
-        SetPhysics(true);
-        Transitting = false;
+        OnTransitionStartEnd(false);
     }
 
     // Gradully fade in/out main dimension
@@ -192,13 +192,11 @@ public class DimensionTransition : MonoBehaviour{
         }
     }
 
-    // Set physics simulation on or off
-    void SetPhysics(bool state) {
-        if (state)
-            Physics.gravity = new Vector3(0f, -9.8f, 0f);
-        else
-            Physics.gravity = Vector3.zero;
-        Physics.autoSimulation = state;
+    void OnTransitionStartEnd(bool isStart) {
+        Physics.gravity = isStart ? Vector3.zero : new Vector3(0f, -9.8f, 0f);
+        Physics.autoSimulation = !isStart;
+        playerController.paused = isStart;
+        Transitting = isStart;
     }
 
 }
