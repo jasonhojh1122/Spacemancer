@@ -10,4 +10,8 @@ public static class Fuzzy {
         return Quaternion.Angle(a, b) < 0.01f;
     }
 
+    public static bool CloseFloat(float a, float b) {
+        return Mathf.Abs(a-b) < 0.01f;
+    }
+
 }

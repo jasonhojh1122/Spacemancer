@@ -11,14 +11,18 @@ public class DimensionTransition : MonoBehaviour{
     [SerializeField] World world;
     [SerializeField] CameraTransition cameraTransition;
     [SerializeField] Material material;
-    static string dissolveName = "_Dissolve";
+    [SerializeField] PlayerController playerController;
+    Camera cam;
+    Dimension.Color activeColor;
     public bool Transitting;
+    static string dissolveName = "_Dissolve";
 
     void Start() {
         Init();
     }
 
     public void Init() {
+        activeColor = Dimension.Color.WHITE;
         float rot = 0f;
         foreach (Dimension.Color bc in Dimension.BaseColor) {
             world.Dims[bc].TargetAngle = rot;
@@ -26,11 +30,11 @@ public class DimensionTransition : MonoBehaviour{
         }
         world.Dims[Dimension.Color.WHITE].TargetAngle = 0f;
         material.SetFloat(dissolveName, 0.0f);
+        cam = Camera.main;
     }
 
     public IEnumerator SplitTransition() {
-        Transitting = true;
-        SetPhysics(false);
+        OnTransitionStartEnd(true);
 
         // Fade out the main dimension
         yield return StartCoroutine(FadeMainDimension(false));
@@ -39,11 +43,7 @@ public class DimensionTransition : MonoBehaviour{
         world.SplitObjects();
         world.DestoryObjects();
 
-        // Set active of base color dimensions
         DimensionsSetActive(true);
-
-        // Move the camera together
-        StartCoroutine(cameraTransition.Transition());
 
         // Calculate the target position
         VecDic targetPos = new VecDic();
@@ -51,6 +51,10 @@ public class DimensionTransition : MonoBehaviour{
             Vector3 VecDic = new Vector3(0, 0, -world.Radius);
             Quaternion rot = Quaternion.AngleAxis(world.Dims[bc].TargetAngle, Vector3.up);
             targetPos.Add(bc, rot * VecDic);
+            if (Fuzzy.CloseFloat(world.Dims[bc].TargetAngle, 0.0f)) {
+                activeColor = bc;
+                MoveCamera();
+            }
         }
 
         // Gradully move the dimensions to target position
@@ -78,16 +82,11 @@ public class DimensionTransition : MonoBehaviour{
         Physics.SyncTransforms();
 
         material.SetFloat(dissolveName, 0.0f);
-        SetPhysics(true);
-        Transitting = false;
+        OnTransitionStartEnd(false);
     }
 
     public IEnumerator MergeTransition() {
-        Transitting = true;
-        SetPhysics(false);
-
-        // Move the camera together
-        StartCoroutine(cameraTransition.Transition());
+        OnTransitionStartEnd(true);
 
         // Save the start status of dimension
         VecDic startPos = new VecDic();
@@ -118,23 +117,24 @@ public class DimensionTransition : MonoBehaviour{
             dim.transform.position = Vector3.zero;
             dim.transform.rotation = Quaternion.identity;
         }
+        Physics.SyncTransforms();
+
+        world.Dims[Dimension.Color.WHITE].gameObject.SetActive(true);
+        activeColor = Dimension.Color.WHITE;
+        MoveCamera();
 
         // Perform actual merge of objects
-        world.Dims[Dimension.Color.WHITE].gameObject.SetActive(true);
-        Physics.SyncTransforms();
         world.MergeObjects();
         world.DestoryObjects();
 
-        // Fade in the main dimension
+        DimensionsSetActive(false);
         yield return StartCoroutine(FadeMainDimension(true));
-        SetPhysics(true);
-        Transitting = false;
+        OnTransitionStartEnd(false);
     }
 
     // Rotate the splitted dimensions
     public IEnumerator RotationTransition(int dir) {
-        Transitting = true;
-        SetPhysics(false);
+        OnTransitionStartEnd(true);
 
         // Save the start status of dimension
         VecDic startPos = new VecDic();
@@ -143,6 +143,9 @@ public class DimensionTransition : MonoBehaviour{
             world.Dims[bc].TargetAngle = (world.Dims[bc].TargetAngle + dir * 120.0f) % 360.0f;
             startPos.Add(bc, world.Dims[bc].transform.position);
             startRot.Add(bc, world.Dims[bc].transform.rotation);
+            if (Fuzzy.CloseFloat(world.Dims[bc].TargetAngle, 0.0f)) {
+                activeColor = bc;
+            }
         }
 
         // Gradully rotate the dimensions
@@ -166,13 +169,12 @@ public class DimensionTransition : MonoBehaviour{
             dimTran.rotation = startRot[bc];
             dimTran.RotateAround(Vector3.zero, Vector3.up, dir * 120.0f);
         }
-        SetPhysics(true);
-        Transitting = false;
+        MoveCamera();
+        OnTransitionStartEnd(false);
     }
 
     // Gradully fade in/out main dimension
     IEnumerator FadeMainDimension(bool active) {
-        DimensionsSetActive(false);
         float t = 0.0f;
         float p;
         while (t < world.FadeDur) {
@@ -192,13 +194,19 @@ public class DimensionTransition : MonoBehaviour{
         }
     }
 
-    // Set physics simulation on or off
-    void SetPhysics(bool state) {
-        if (state)
-            Physics.gravity = new Vector3(0f, -9.8f, 0f);
-        else
-            Physics.gravity = Vector3.zero;
-        Physics.autoSimulation = state;
+    void OnTransitionStartEnd(bool isStart) {
+        Physics.gravity = isStart ? Vector3.zero : new Vector3(0f, -9.8f, 0f);
+        Physics.autoSimulation = !isStart;
+        playerController.paused = isStart;
+        Transitting = isStart;
+    }
+
+    void MoveCamera() {
+        Vector3 localPos = cam.transform.localPosition;
+        Quaternion localRot = cam.transform.localRotation;
+        cam.transform.SetParent(world.Dims[activeColor].transform);
+        cam.transform.localPosition = localPos;
+        cam.transform.localRotation = localRot;
     }
 
 }

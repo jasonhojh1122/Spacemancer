@@ -2,30 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boxes : MonoBehaviour, Interactable
+namespace Interaction {
+public class Boxes : Interactable
 {
+    [SerializeField] Vector3 pickUpOffset;
     Rigidbody rb;
+    private bool isPickUp = false;
+    Transform player;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
-    public bool Interact()
-    {
-        if (isPickUp)
-        {
-            PickupEvent();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
 
-    public bool fallingDown = false;
-    private bool isPickUp = false;
-    GameObject possibleParent;
-    public void PickupEvent()
+    public override void Interact()
     {
         if (!isPickUp)
         {
@@ -36,41 +26,50 @@ public class Boxes : MonoBehaviour, Interactable
             PutDown();
         }
     }
+
     void PickUp()
     {
         isPickUp = true;
         rb.isKinematic = true;
-        Vector3 localPos = transform.localPosition;
-        Quaternion localRot = transform.localRotation;
-        transform.SetParent(possibleParent.transform);
-        transform.localPosition = localPos;
-        transform.localRotation = localRot;
-        transform.localPosition = new Vector3(0, 3, 0);
+        Vector3 pos = transform.position;
+        Quaternion rot = transform.rotation;
+        transform.SetParent(player);
+        transform.position = pos + pickUpOffset;
+        transform.rotation = rot;
         Debug.Log("Picked Up");
     }
+
     void PutDown()
     {
+        Debug.Log("Put Down");
         rb.isKinematic = false;
         isPickUp = false;
-        transform.SetParent(transform.parent.transform.parent);
-        Debug.Log("Put Down");
+        transform.SetParent(player.parent.transform.parent);
         Vector3 localPos = transform.localPosition;
         transform.localPosition = new Vector3(Mathf.RoundToInt(localPos.x), Mathf.RoundToInt(localPos.y), Mathf.RoundToInt(localPos.z));
         transform.localRotation = new Quaternion(0, 0, 0, 0);
     }
-    void OnTriggerEnter(Collider other)
-    {
+
+    public override void OnZoneEnter(Collider other) {
         if(other.gameObject.tag == "Player")
         {
-            possibleParent = other.gameObject;
+            player = other.gameObject.transform;
             Debug.Log("Player Enter Box");
         }
     }
-    void OnTriggerExit(Collider other)
-    {
+    public override void OnZoneStay(Collider other) {
+        return;
+    }
+
+    public override void OnZoneExit(Collider other) {
         if(other.gameObject.tag == "Player")
         {
-            possibleParent = null;
+            player = null;
         }
     }
+
+    public override bool IsInteracting() {
+        return isPickUp;
+    }
+}
 }
