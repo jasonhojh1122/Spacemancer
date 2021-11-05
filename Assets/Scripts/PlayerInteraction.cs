@@ -21,6 +21,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (interactable != null)
+            return;
         Interaction.Zone zone = other.GetComponent<Interaction.Zone>();
         if(zone != null)
         {
@@ -30,6 +32,10 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        interactable = null;
+        if (interactable != null && other.transform.parent.gameObject == interactable.gameObject)
+        {
+            interactable = null;
+        }
+        
     }
 }
