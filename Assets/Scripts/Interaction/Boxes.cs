@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Interaction {
 public class Boxes : Interactable
 {
-    [SerializeField] Vector3 pickUpOffset;
+    [SerializeField] float pickUpOffset = 0.1f;
     Rigidbody rb;
     private bool isPickUp = false;
     Transform player;
@@ -29,12 +29,15 @@ public class Boxes : Interactable
 
     void PickUp()
     {
+        
         isPickUp = true;
         rb.isKinematic = true;
         Vector3 pos = transform.position;
         Quaternion rot = transform.rotation;
         transform.SetParent(player);
-        transform.position = pos + pickUpOffset;
+
+        Vector3 relativeDis = transform.position - player.transform.position; 
+        transform.position = pos + pickUpOffset * (relativeDis / relativeDis.magnitude);
         transform.rotation = rot;
         Debug.Log("Picked Up");
     }
