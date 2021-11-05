@@ -5,11 +5,11 @@ using UnityEngine;
 namespace Interaction {
 public class Boxes : Interactable
 {
-    [SerializeField] float pickUpOffset = 0.05f;
+    [SerializeField] float pickUpOffset = 0.1f;
     Rigidbody rb;
     private bool isPickUp = false;
     Transform player;
-
+    
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -65,7 +65,7 @@ public class Boxes : Interactable
     }
 
     public override void OnZoneExit(Collider other) {
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject.tag == "Player" && !isPickUp)
         {
             player = null;
         }
