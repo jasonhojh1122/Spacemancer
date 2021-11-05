@@ -34,6 +34,7 @@ public class SplitableObject : MonoBehaviour {
     }
 
     void Awake() {
+
         col = GetComponent<Collider>();
         if (world == null)
             world = FindObjectOfType<World>();
@@ -43,6 +44,7 @@ public class SplitableObject : MonoBehaviour {
         foreach (Dimension.Color bc in Dimension.BaseColor)
             splitted.Add(bc, null);
         IsMerged = false;
+        ObjectColor = color;
     }
 
     public void Split(HashSet<SplitableObject> mergedObjects, HashSet<SplitableObject> splittedObjects,
