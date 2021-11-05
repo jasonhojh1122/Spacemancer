@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Interaction {
 public class Boxes : Interactable
 {
-    [SerializeField] float pickUpOffset = 0.1f;
+    [SerializeField] float pickUpOffset = 0.05f;
     Rigidbody rb;
     private bool isPickUp = false;
     Transform player;
