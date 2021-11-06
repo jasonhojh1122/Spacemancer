@@ -670,6 +670,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: 7
+  staticObject: 1
   world: {fileID: 1420126370}
 --- !u!1 &1032806809
 GameObject:
@@ -780,6 +781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: 7
+  staticObject: 1
   world: {fileID: 1420126370}
 --- !u!114 &1284783204 stripped
 MonoBehaviour:
@@ -917,6 +919,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: 7
+  staticObject: 1
   world: {fileID: 1420126370}
 --- !u!82 &1298200404
 AudioSource:
@@ -1321,7 +1324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d11594e20188e6d4fa750e7c1395beee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toggleObject: {fileID: 891254565}
+  toggleObject: {fileID: 891254571}
   desiredObjectTag: Boxes
   desiredObjectColor: 7
   activeColor: 0
@@ -1483,6 +1486,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1663976606}
     m_Modifications:
+    - target: {fileID: 5193872502119518540, guid: 5e8c85eb5d81f2147956e200b00c4268, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5193872502119518543, guid: 5e8c85eb5d81f2147956e200b00c4268, type: 3}
       propertyPath: world
       value: 
@@ -1505,7 +1512,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7468460389792406063, guid: 5e8c85eb5d81f2147956e200b00c4268, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 7468460389792406063, guid: 5e8c85eb5d81f2147956e200b00c4268, type: 3}
       propertyPath: m_LocalScale.z
@@ -1517,7 +1524,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7468460389792406063, guid: 5e8c85eb5d81f2147956e200b00c4268, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 7468460389792406063, guid: 5e8c85eb5d81f2147956e200b00c4268, type: 3}
       propertyPath: m_LocalPosition.z
