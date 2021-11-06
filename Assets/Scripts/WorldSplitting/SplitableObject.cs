@@ -2,6 +2,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+using Set = System.Collections.Generic.HashSet<SplitableObject>;
+
 public class SplitableObject : MonoBehaviour {
 
     [SerializeField] Dimension.Color color;
@@ -47,82 +49,74 @@ public class SplitableObject : MonoBehaviour {
         ObjectColor = color;
     }
 
-    public void Split(HashSet<SplitableObject> mergedObjects, HashSet<SplitableObject> splittedObjects,
-                        HashSet<SplitableObject> blackOutObjects, HashSet<SplitableObject> toBeDestroyedObjects) {
-        if (ObjectColor == Dimension.Color.BLACK)
-            SplitBlack(mergedObjects, blackOutObjects);
-        else if (staticObject && Dim.GetColor() != Dimension.Color.WHITE) {
-            mergedObjects.Remove(this);
-            splittedObjects.Add(this);
-        }
-        else
-            SplitColor(mergedObjects, splittedObjects, toBeDestroyedObjects);
+    private void Start() {
+        // world.AddToUnprocessed(this);
     }
 
-    void SplitBlack(HashSet<SplitableObject> mergedObjects, HashSet<SplitableObject> blackOutObjects) {
+    private void OnDisable() {
+        world.RemoveFromSet(this);
+    }
+
+    public void Split() {
+        if (ObjectColor == Dimension.Color.BLACK)
+            SplitBlack();
+        else if (staticObject && Dim.GetColor() != Dimension.Color.WHITE)
+            world.MoveToProcessed(this);
+        else
+            SplitColor();
+    }
+
+    void SplitBlack() {
         foreach (Dimension.Color sc in Dimension.BaseColor) {
             var s = Splitted[sc];
             if (s == null) {
                 var so = InstantiateToDimension(sc);
                 Splitted[sc] = so;
-                blackOutObjects.Add(so);
+                world.MoveToBlackOut(so);
             }
             else {
                 s.transform.localPosition = transform.localPosition;
             }
         }
-        mergedObjects.Remove(this);
-        blackOutObjects.Add(this);
+        world.MoveToBlackOut(this);
     }
 
-    void SplitColor(HashSet<SplitableObject> mergedObjects,
-            HashSet<SplitableObject> splittedObjects, HashSet<SplitableObject> toBeDestroyedObjects) {
+    void SplitColor() {
 
         var splittedColor = Dimension.SplitColor(ObjectColor);
         var missingColor = Dimension.MissingColor(ObjectColor);
         foreach (Dimension.Color sc in splittedColor) {
-            var s = Splitted[sc];
-            if (s == null) {
-                var so = InstantiateToDimension(sc);
-                splittedObjects.Add(so);
+            if (Splitted[sc] == null) {
+                Splitted[sc] = InstantiateToDimension(sc);
             }
             else {
-                s.transform.localPosition = transform.localPosition;
-                s.Dim = world.GetDimension(sc);
-                s.IsMerged = false;
-                mergedObjects.Remove(s);
-                splittedObjects.Add(s);
+                Splitted[sc].transform.localPosition = transform.localPosition;
+                Splitted[sc].Dim = world.GetDimension(sc);
+                Splitted[sc].IsMerged = false;
             }
+            world.MoveToProcessed(Splitted[sc]);
         }
-        foreach (Dimension.Color sc in missingColor) {
-            var s = Splitted[sc];
-            if (s != null) {
-                mergedObjects.Remove(s);
-                toBeDestroyedObjects.Add(s);
-            }
-        }
-        mergedObjects.Remove(this);
-        if (staticObject) {
-            splittedObjects.Add(this);
-        }
-        else {
-            toBeDestroyedObjects.Add(this);
-        }
+
+        foreach (Dimension.Color sc in missingColor)
+            if (Splitted[sc] != null)
+                world.MoveToBeDestoryed(Splitted[sc]);
+
+        if (staticObject)
+            world.MoveToProcessed(this);
+        else
+            world.MoveToBeDestoryed(this);
     }
 
-    public void Merge(SplitableObject parent, HashSet<SplitableObject> mergedObjects, HashSet<SplitableObject> splittedObjects,
-            HashSet<SplitableObject> blackOutObjects, HashSet<SplitableObject> toBeDestroyedObjects) {
+    public void Merge(SplitableObject parent) {
 
         if (staticObject && dimension.GetColor() != Dimension.Color.WHITE) {
-            splittedObjects.Remove(this);
-            mergedObjects.Add(this);
+            world.MoveToProcessed(this);
             return;
         }
 
         IsMerged = true;
 
-        Dimension.Color mergedColor = ObjectColor;
-        if (staticObject) mergedColor = Dimension.Color.NONE;
+        Dimension.Color mergedColor = (staticObject) ? Dimension.Color.NONE : ObjectColor;
 
         if (parent != null && parent.ObjectColor == Dimension.Color.BLACK)
             mergedColor = Dimension.Color.BLACK;
@@ -145,19 +139,18 @@ public class SplitableObject : MonoBehaviour {
             }
             else {
                 mergedColor = Dimension.Color.BLACK;
-                so.Merge(this, mergedObjects, splittedObjects, blackOutObjects, toBeDestroyedObjects);
+                so.Merge(this);
             }
         }
         if (mergedColor == Dimension.Color.BLACK)
-            MergeToBlack(siblings, mergedObjects, splittedObjects, blackOutObjects);
+            MergeToBlack(siblings);
         else if (staticObject)
-            MergeToStaticObject(mergedColor, siblings, mergedObjects, splittedObjects);
+            MergeToStaticObject(mergedColor);
         else
-            MergeToNewParent(mergedColor, siblings, mergedObjects, splittedObjects);
+            MergeToNewParent(mergedColor, siblings);
     }
 
-    private void MergeToBlack(List<SplitableObject> siblings, HashSet<SplitableObject> mergedObjects,
-            HashSet<SplitableObject> splittedObjects, HashSet<SplitableObject> blackOutObjects) {
+    private void MergeToBlack(List<SplitableObject> siblings) {
 
         var parent = InstantiateAsParent();
         parent.ObjectColor = Dimension.Color.BLACK;
@@ -167,23 +160,21 @@ public class SplitableObject : MonoBehaviour {
         for (int i = 0 ; i < siblings.Count; i++) {
             siblings[i].ObjectColor = Dimension.Color.BLACK;
             siblings[i].IsMerged = false;
-            blackOutObjects.Add(siblings[i]);
-            splittedObjects.Remove(siblings[i]);
             parent.Splitted[Dimension.BaseColor[i]] = siblings[i];
+            world.MoveToBlackOut(siblings[i]);
         }
 
         if (siblings.Count == Dimension.BaseColor.Count)
-            blackOutObjects.Add(parent);
+            world.MoveToBlackOut(parent);
         else
-            mergedObjects.Add(parent);
+            world.MoveToProcessed(parent);
     }
 
-    private void MergeToNewParent(Dimension.Color mergedColor, List<SplitableObject> siblings,
-                    HashSet<SplitableObject> mergedObjects, HashSet<SplitableObject> splittedObjects) {
+    private void MergeToNewParent(Dimension.Color mergedColor, List<SplitableObject> siblings) {
 
         var parent = InstantiateAsParent();
         parent.ObjectColor = mergedColor;
-        mergedObjects.Add(parent);
+        world.MoveToProcessed(parent);
 
         siblings.Add(this);
 
@@ -192,17 +183,14 @@ public class SplitableObject : MonoBehaviour {
         for (int i = 0; i < siblings.Count; i++) {
             siblings[i].MoveToDimension(splittedColor[i]);
             siblings[i].ObjectColor = splittedColor[i];
-            mergedObjects.Add(siblings[i]);
-            splittedObjects.Remove(siblings[i]);
             parent.Splitted[splittedColor[i]] = siblings[i];
+            world.MoveToProcessed(siblings[i]);
         }
     }
 
-    private void MergeToStaticObject(Dimension.Color mergedColor, List<SplitableObject> siblings,
-                    HashSet<SplitableObject> mergedObjects, HashSet<SplitableObject> splittedObjects) {
+    private void MergeToStaticObject(Dimension.Color mergedColor) {
         ObjectColor = mergedColor;
-        splittedObjects.Remove(this);
-        mergedObjects.Add(this);
+        world.MoveToProcessed(this);
     }
 
     public SplitableObject InstantiateToDimension(Dimension.Color color) {
@@ -228,4 +216,9 @@ public class SplitableObject : MonoBehaviour {
         transform.localPosition = localPos;
         transform.localRotation = localRot;
     }
+
+    public bool IsInCorrectDim() {
+        return ObjectColor == Dim.GetColor();
+    }
+
 }
