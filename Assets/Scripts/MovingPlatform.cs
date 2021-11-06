@@ -6,69 +6,39 @@ public class MovingPlatform : MonoBehaviour
 {
     [SerializeField] Transform startPoint;
     [SerializeField] Transform endPoint;
-    [SerializeField] Dimension.Color activeColor; // None if no restriction
+    // [SerializeField] Dimension.Color activeColor; // None if no restriction
     [SerializeField] float moveSpeed = 3f;
+
+    Vector3 startPos;
+    Vector3 endPos;
+    SplitableObject so;
     Rigidbody rb;
     bool moveToEnd = true;
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        StartCoroutine(Vector3LerpCoroutine(transform, endPoint.localPosition, moveSpeed));
+        so = GetComponent<SplitableObject>();
+        startPos = startPoint.localPosition;
+        endPos = endPoint.localPosition;
     }
+
     private void Update()
     {
-        startPoint = transform.Find("RefPoints").Find("startRefPoint");
-        endPoint = transform.Find("RefPoints").Find("endRefPoint");
-        //   startPoint = transform.parent.Find("startRefPoint");
-        //  endPoint = transform.parent.Find("endRefPoint");
+        if (so.IsInCorrectDim())
+            Move();
+    }
 
-        Debug.Log("Active Color:");
-        Debug.Log(activeColor);
-        Debug.Log("Dimension Color:");
-        Debug.Log(transform.parent.GetComponent<Dimension>().GetColor());
-        if (activeColor != Dimension.Color.NONE  && activeColor!=transform.parent.GetComponent<Dimension>().GetColor())
-            return;
-        if (transform.localPosition == endPoint.localPosition)
-        {
+    void Move() {
+        Vector3 target = (moveToEnd) ? endPos : startPos;
+        transform.localPosition = Vector3.MoveTowards(transform.localPosition, target, moveSpeed*Time.deltaTime);
+        if (moveToEnd && Fuzzy.CloseVector3(transform.localPosition, endPos)) {
             moveToEnd = false;
-            StartCoroutine(Vector3LerpCoroutine(transform, startPoint.localPosition, moveSpeed));
         }
-        else if (transform.localPosition == startPoint.localPosition)
-        {
+        else if (!moveToEnd && Fuzzy.CloseVector3(transform.localPosition, startPos)) {
             moveToEnd = true;
-            StartCoroutine(Vector3LerpCoroutine(transform, endPoint.localPosition, moveSpeed));
-        }
-        else
-        {
-            Vector3 tmpPos = startPoint.localPosition;
-            if (moveToEnd)
-            {
-                tmpPos = endPoint.localPosition;
-            }
-            StartCoroutine(Vector3LerpCoroutine(transform, tmpPos, moveSpeed));
         }
     }
-    IEnumerator Vector3LerpCoroutine(Transform t, Vector3 target, float speed)
-    {
-        Vector3 startPosition = t.localPosition;
-        float time = 0f;
 
-        while (t.localPosition != target)
-        {
-            if (activeColor != Dimension.Color.NONE && activeColor != transform.parent.GetComponent<Dimension>().GetColor())
-            {
-                speed = 0;
-                Debug.Log("Sleep");
-            }
-            else
-            {
-                speed = moveSpeed;
-            }
-            t.localPosition = Vector3.Lerp(startPosition, target, (time / Vector3.Distance(startPosition, target)) * speed);
-            time += Time.deltaTime;
-            yield return null;
-        }
-    }
     private void OnTriggerEnter(Collider other)
     {
         if(other.transform.tag == "Player")
@@ -80,7 +50,7 @@ public class MovingPlatform : MonoBehaviour
     {
        if(other.transform.tag == "Player")
         {
-            
+
         }
     }
 }

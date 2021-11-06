@@ -32,10 +32,11 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (interactable != null && other.transform.parent.gameObject == interactable.gameObject)
+        interactable = null;
+        /* if (interactable != null && other.transform.parent.gameObject == interactable.gameObject)
         {
             interactable = null;
-        }
-        
+        } */
+
     }
 }
