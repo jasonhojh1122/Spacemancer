@@ -17,8 +17,10 @@ public class MovingPlatform : MonoBehaviour
     }
     private void Update()
     {
-        startPoint = transform.parent.Find("startRefPoint");
-        endPoint = transform.parent.Find("endRefPoint");
+        startPoint = transform.Find("RefPoints").Find("startRefPoint");
+        endPoint = transform.Find("RefPoints").Find("endRefPoint");
+        //   startPoint = transform.parent.Find("startRefPoint");
+        //  endPoint = transform.parent.Find("endRefPoint");
 
         Debug.Log("Active Color:");
         Debug.Log(activeColor);
