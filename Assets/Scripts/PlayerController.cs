@@ -27,7 +27,7 @@ public class PlayerController : KinematicObject
     [SerializeField] RuntimeAnimatorController idleAC;
     [SerializeField] RuntimeAnimatorController walkAC;
     [SerializeField] RuntimeAnimatorController jumpAC;
-
+    
     bool jump;
     bool stopJump;
     Vector3 move;

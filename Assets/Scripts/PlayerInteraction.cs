@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     Interaction.Interactable interactable;
-
+    bool exit = false;
     public void Interact()
     {
         if (interactable != null)
@@ -21,6 +21,11 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (exit && interactable.IsInteracting())
+        {
+            interactable = null;
+            exit = false;
+        }
         if (interactable != null)
             return;
         Interaction.Zone zone = other.GetComponent<Interaction.Zone>();
@@ -32,11 +37,17 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        interactable = null;
-        /* if (interactable != null && other.transform.parent.gameObject == interactable.gameObject)
+        if (interactable != null  && other.transform.parent.gameObject == interactable.gameObject)
         {
-            interactable = null;
-        } */
-
+            if (interactable.IsInteracting())
+            {
+                exit = true;
+            }
+            else
+            {
+                interactable = null;
+            }
+            
+        }
     }
 }
