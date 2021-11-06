@@ -9,7 +9,7 @@ public class Boxes : Interactable
     Rigidbody rb;
     private bool isPickUp = false;
     Transform player;
-    
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -29,14 +29,13 @@ public class Boxes : Interactable
 
     void PickUp()
     {
-        
         isPickUp = true;
         rb.isKinematic = true;
         Vector3 pos = transform.position;
         Quaternion rot = transform.rotation;
         transform.SetParent(player);
 
-        Vector3 relativeDis = transform.position - player.transform.position; 
+        Vector3 relativeDis = transform.position - player.transform.position;
         transform.position = pos + pickUpOffset * (relativeDis / relativeDis.magnitude);
         transform.rotation = rot;
         Debug.Log("Picked Up");

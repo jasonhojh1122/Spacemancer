@@ -42,6 +42,7 @@ public class DimensionTransition : MonoBehaviour{
         // Perform actual splitting
         world.SplitObjects();
         world.DestoryObjects();
+        world.Dims[Dimension.Color.WHITE].gameObject.SetActive(false);
 
         DimensionsSetActive(true);
 
