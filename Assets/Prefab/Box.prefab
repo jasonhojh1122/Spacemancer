@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04887dabbbb36db439a5830815da14c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactable: {fileID: 4584941447150785245}
+  interactable: {fileID: 0}
 --- !u!65 &4584941446217796488
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4584941447150785244}
   - component: {fileID: 4584941447150785240}
   - component: {fileID: 4584941447150785243}
-  - component: {fileID: 4584941447150785245}
+  - component: {fileID: 2052255746441555185}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -187,7 +187,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 7
   world: {fileID: 0}
---- !u!114 &4584941447150785245
+--- !u!114 &2052255746441555185
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -199,4 +199,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dee6c27206b9734f954cfeba3464135, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickUpOffset: {x: 0, y: 0, z: 0}
+  activeColor: 0
+  pickUpOffset: 0.1
