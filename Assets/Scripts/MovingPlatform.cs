@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[RequireComponent(typeof(SplitableObject))]
+[RequireComponent(typeof(Core.SplittableObject))]
 public class MovingPlatform : MonoBehaviour
 {
     [SerializeField] Transform startPoint;
@@ -11,13 +11,13 @@ public class MovingPlatform : MonoBehaviour
 
     Vector3 startPos;
     Vector3 endPos;
-    SplitableObject so;
+    Core.SplittableObject so;
     Rigidbody rb;
     bool moveToEnd = true;
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        so = GetComponent<SplitableObject>();
+        so = GetComponent<Core.SplittableObject>();
         startPos = startPoint.localPosition;
         endPos = endPoint.localPosition;
     }

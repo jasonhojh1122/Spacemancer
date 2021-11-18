@@ -4,20 +4,22 @@ using UnityEngine;
 using Interaction;
 //activate obj when desired object enter zone
 
-[RequireComponent(typeof(SplitableObject))]
+using Core;
+
+[RequireComponent(typeof(Core.SplittableObject))]
 public class Button : MonoBehaviour
 {
 
-    [SerializeField] SplitableObject toggleObject;
+    [SerializeField] Core.SplittableObject toggleObject;
     [SerializeField] string desiredObjectTag;
     [SerializeField] Dimension.Color desiredObjectColor; //set none if no restriction
     [SerializeField] Dimension.Color activeColor;        //should be same as desired color(?
     [SerializeField] bool isTriggered = false;
 
-    SplitableObject so;
+    Core.SplittableObject so;
 
     private void Awake() {
-        so = GetComponent<SplitableObject>();
+        so = GetComponent<Core.SplittableObject>();
         toggleObject.gameObject.SetActive(isTriggered);
     }
 
@@ -25,7 +27,7 @@ public class Button : MonoBehaviour
     {
         if (desiredObjectColor != Dimension.Color.NONE)
         {
-            if (obj.GetComponent<SplitableObject>() == null || obj.GetComponent<SplitableObject>().ObjectColor != desiredObjectColor)
+            if (obj.GetComponent<Core.SplittableObject>() == null || obj.GetComponent<Core.SplittableObject>().ObjectColor.Color != desiredObjectColor)
             {
                 return false;
             }
@@ -35,7 +37,7 @@ public class Button : MonoBehaviour
     }
 
     private void OnCollisionEnter(Collision other) {
-        if (activeColor != Dimension.Color.NONE && so.ObjectColor != activeColor)
+        if (activeColor != Dimension.Color.NONE && so.ObjectColor.Color != activeColor)
             return;
 
         if (match(other.gameObject))
@@ -46,7 +48,7 @@ public class Button : MonoBehaviour
     }
 
     private void OnCollisionExit(Collision other) {
-        if (activeColor != Dimension.Color.NONE && GetComponent<SplitableObject>().ObjectColor != activeColor)
+        if (activeColor != Dimension.Color.NONE && GetComponent<Core.SplittableObject>().ObjectColor.Color != activeColor)
             return;
 
         Debug.Log("button Zone Exit");
@@ -59,7 +61,7 @@ public class Button : MonoBehaviour
 
     /* void OnTriggerEnter(Collider other)
     {
-        if (activeColor != Dimension.Color.NONE && GetComponent<SplitableObject>().ObjectColor != activeColor)
+        if (activeColor != Dimension.Color.NONE && GetComponent<SplittableObject>().ObjectColor != activeColor)
             return;
 
         if (match(other.gameObject))
@@ -71,7 +73,7 @@ public class Button : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (activeColor != Dimension.Color.NONE && GetComponent<SplitableObject>().ObjectColor != activeColor)
+        if (activeColor != Dimension.Color.NONE && GetComponent<SplittableObject>().ObjectColor != activeColor)
             return;
 
         Debug.Log("button Zone Exit");
