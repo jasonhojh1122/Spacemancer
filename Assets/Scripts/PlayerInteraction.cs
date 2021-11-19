@@ -5,12 +5,17 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     Interaction.Interactable interactable;
+    public float interactAngle = 50f;
     bool exit = false;
     public void Interact()
     {
         if (interactable != null)
         {
-            interactable.Interact();
+            if(Vector3.Angle(interactable.gameObject.transform.position - gameObject.transform.position,gameObject.transform.forward ) < interactAngle)
+            {
+                interactable.Interact();
+            }
+            
         }
     }
 
