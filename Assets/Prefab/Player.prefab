@@ -951,6 +951,7 @@ MonoBehaviour:
   maxSpeed: 5
   jumpTakeOffSpeed: 7
   jumpDeceleration: 0.5
+  rotateSpeed: 20
   jumpState: 0
   playerCollider: {fileID: 4502632518641064800}
   controlEnabled: 1
@@ -969,6 +970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb401e2dfcf7ef24aa9ce665459cce86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactAngle: 50
 --- !u!1 &4501607250884789232
 GameObject:
   m_ObjectHideFlags: 0
