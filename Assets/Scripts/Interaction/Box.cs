@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using Core;
 using Invector.vCharacterController;
 
-namespace Interaction {    
-    [RequireComponent(typeof(SplitableObject))]
+namespace Interaction {
+    [RequireComponent(typeof(Core.SplittableObject))]
     public class Box : Interactable
     {
         [SerializeField] Dimension.Color activeColor; // None if no restriction
@@ -16,7 +18,7 @@ namespace Interaction {
 
         void Start()
         {
-            player = FindObjectsOfType<PlayerInteraction>()[0].transform;
+            player = FindObjectsOfType<Character.PlayerController>()[0].transform;
             rb = GetComponent<Rigidbody>();
         }
         /*void Update()
@@ -52,7 +54,7 @@ namespace Interaction {
             Quaternion rot = transform.rotation;
             transform.SetParent(player);
 
-            Vector3 relativeDis = transform.position - player.transform.position; 
+            Vector3 relativeDis = transform.position - player.transform.position;
             transform.position = pos + pickUpOffset * (relativeDis / relativeDis.magnitude);
             transform.rotation = rot;
             Debug.Log("Picked Up");

@@ -11,29 +11,27 @@ public class KinematicObject : MonoBehaviour
     /// <summary>
     /// The minimum normal (dot product) considered suitable for the entity sit on.
     /// </summary>
-    public float minGroundNormalY = .65f;
+    [SerializeField] protected float minGroundNormalY = .65f;
 
     /// <summary>
     /// A custom gravity coefficient applied to this entity.
     /// </summary>
-    public float gravityModifier = 1f;
+    [SerializeField] protected float gravityModifier = 1f;
 
     /// <summary>
     /// The current velocity of the entity.
     /// </summary>
-    public Vector3 velocity;
+    [SerializeField] protected Vector3 velocity;
 
     /// <summary>
     /// Is the entity currently sitting on a surface?
     /// </summary>
-    /// <value></value>
     public bool IsGrounded { get; private set; }
     public bool paused;
 
     protected Vector3 targetVelocity;
     protected Vector3 groundNormal;
     protected Rigidbody body;
-    protected RaycastHit[] hitBuffer = new RaycastHit[16];
 
     protected const float minMoveDistance = 0.001f;
     protected const float shellRadius = 0.01f;
@@ -99,7 +97,6 @@ public class KinematicObject : MonoBehaviour
 
     protected virtual void ComputeVelocity()
     {
-
     }
 
     protected virtual void FixedUpdate()

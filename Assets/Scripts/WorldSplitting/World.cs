@@ -4,68 +4,69 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-using Set = System.Collections.Generic.HashSet<SplitableObject>;
+using Set = System.Collections.Generic.HashSet<Core.SplittableObject>;
 
+namespace Core {
 public class World : MonoBehaviour
 {
 
     [SerializeField] List<Dimension> dimensions;
-    [SerializeField] float radius = 30.0f;
-    [SerializeField] float transitionDuration = 1.0f;
-    [SerializeField] float fadeDuration = 0.2f;
+    [SerializeField] Transform inactivePoolRoot;
     [SerializeField] DimensionTransition dimensionTransition;
 
     Dictionary<Dimension.Color, Dimension> dimensionMap;
-    Set processedObjects;
-    Set unprocessedObjects;
-    Set toBeDestroyedObjects;
-    Set blackOutObjects;
+    SplittableObjectPool objectPool;
+    Set processedObjects, unprocessedObjects;
     bool splitted;
 
-    public float Radius {
-        get => radius;
-    }
-    public float TransitionDur {
-        get => transitionDuration;
-    }
-    public float FadeDur {
-        get => fadeDuration;
-    }
     public Dictionary<Dimension.Color, Dimension> Dims {
         get => dimensionMap;
     }
     public bool Splitted {
         get => splitted;
     }
+    public Dimension ActiveDimension {
+        get {
+            if (splitted) return GetDimension(dimensionTransition.ActiveDimensionColor);
+            else return GetDimension(Dimension.Color.WHITE);
+        }
+    }
+    public bool Transitting {
+        get => dimensionTransition.Transitting;
+    }
 
-    void Awake() {
+    void Awake()
+    {
         dimensionMap = new Dictionary<Dimension.Color, Dimension>();
         foreach (Dimension d in dimensions)
             dimensionMap.Add(d.GetColor(), d);
 
         processedObjects = new Set();
         unprocessedObjects = new Set();
-        blackOutObjects = new Set();
-        toBeDestroyedObjects = new Set();
+
+        objectPool = new SplittableObjectPool();
 
         splitted = false;
-        Debug.Log("World Awkae");
+        Debug.Log("World Awake");
     }
 
-    private void OnEnable() {
-
-    }
-
-    private void Start() {
-        SplitableObject[] so = FindObjectsOfType<SplitableObject>();
-        foreach (SplitableObject s in so) {
+    private void Start()
+    {
+        SplittableObject[] so = FindObjectsOfType<SplittableObject>();
+        foreach (SplittableObject s in so)
+        {
             s.Dim = dimensionMap[Dimension.Color.WHITE];
+            s.ObjectColor.Init();
             unprocessedObjects.Add(s);
+            objectPool.SetActive(s);
         }
+        dimensionTransition.Init();
     }
 
-    public void SplitObjects() {
-        while (unprocessedObjects.Count > 0) {
+    public void SplitObjects()
+    {
+        while (unprocessedObjects.Count > 0)
+        {
             var so = unprocessedObjects.FirstOrDefault();
             if (so == null) break;
             so.Split();
@@ -73,8 +74,10 @@ public class World : MonoBehaviour
         SwapSet();
     }
 
-    public void MergeObjects() {
-        while (unprocessedObjects.Count > 0) {
+    public void MergeObjects()
+    {
+        while (unprocessedObjects.Count > 0)
+        {
             var so = unprocessedObjects.FirstOrDefault();
             if (so == null) break;
             so.Merge(null);
@@ -82,98 +85,123 @@ public class World : MonoBehaviour
         SwapSet();
     }
 
-    private void SwapSet() {
+    public void RotateDimensions(int dir)
+    {
+        if (!Splitted || dimensionTransition.Transitting) return;
+        StartCoroutine(dimensionTransition.RotateTransition(dir));
+    }
+
+    public Dimension GetDimension(Dimension.Color color)
+    {
+        return dimensionMap[color];
+    }
+
+    public void MoveToProcessed(SplittableObject so)
+    {
+        unprocessedObjects.Remove(so);
+        if (!processedObjects.Add(so))
+        {
+            Debug.Log("Existed " + so.gameObject.name + " " + so.Dim.GetColor().ToString());
+        }
+    }
+
+    public void RemoveFromSet(SplittableObject so)
+    {
+        unprocessedObjects.Remove(so);
+        processedObjects.Remove(so);
+    }
+
+    public void AddToUnprocessed(SplittableObject so)
+    {
+        unprocessedObjects.Add(so);
+    }
+
+    public SplittableObject InstantiateNewObjectToDimension(SplittableObject so, Dimension.Color color)
+    {
+        var newSo = objectPool.Instantiate(so.name);
+        newSo.gameObject.name = so.name;
+        newSo.Dim = GetDimension(color);
+        MoveTransformToNewParent(newSo.transform, newSo.Dim.transform, so.transform.localPosition, so.transform.localRotation);
+        return newSo;
+    }
+
+    public void MoveObjectToDimension(SplittableObject so, Dimension.Color color)
+    {
+        Vector3 localPos = so.transform.localPosition;
+        Quaternion localRot = so.transform.localRotation;
+        so.Dim = GetDimension(color);
+        MoveTransformToNewParent(so.transform, so.Dim.transform, localPos, localRot);
+    }
+
+    public void MoveObjectToDimension(GameObject go, Dimension.Color color)
+    {
+        Vector3 localPos = go.transform.localPosition;
+        Quaternion localRot = go.transform.localRotation;
+        MoveTransformToNewParent(go.transform, GetDimension(color).transform, localPos, localRot);
+    }
+
+    public void DeleteObject(SplittableObject so)
+    {
+        RemoveFromSet(so);
+        Vector3 localPos = so.transform.localPosition;
+        Quaternion localRot = so.transform.localRotation;
+        MoveTransformToNewParent(so.transform, inactivePoolRoot, localPos, localRot);
+        objectPool.SetInactive(so);
+    }
+
+    void MoveTransformToNewParent(Transform child, Transform parent, Vector3 localPos, Quaternion localRot)
+    {
+        child.SetParent(parent);
+        child.localPosition = localPos;
+        child.localRotation = localRot;
+    }
+
+    void SwapSet()
+    {
         Set tmp = unprocessedObjects;
         unprocessedObjects = processedObjects;
         processedObjects = tmp;
     }
 
-    public void DestoryObjects() {
-        while (toBeDestroyedObjects.Count > 0) {
-            var so = toBeDestroyedObjects.FirstOrDefault();
-            toBeDestroyedObjects.Remove(so);
-            Destroy(so.gameObject);
-        }
-    }
-
-    void SplitDimensions() {
+    void SplitDimensions()
+    {
         StartCoroutine(dimensionTransition.SplitTransition());
     }
 
-    void MergeDimensions() {
+    void MergeDimensions()
+    {
         StartCoroutine(dimensionTransition.MergeTransition());
     }
 
-    public void RotateDimensions(int dir) {
-        if (!Splitted || dimensionTransition.Transitting) return;
-        StartCoroutine(dimensionTransition.RotationTransition(dir));
-    }
-
-    public void Toggle() {
+    public void Toggle()
+    {
         if (dimensionTransition.Transitting) return;
-        if (splitted) {
+        if (splitted)
+        {
             splitted = false;
             MergeDimensions();
         }
-        else {
+        else
+        {
             splitted = true;
             SplitDimensions();
         }
     }
 
-    public Dimension GetDimension(Dimension.Color color) {
-        return dimensionMap[color];
-    }
-
-    public void MoveToProcessed(SplitableObject so) {
-        unprocessedObjects.Remove(so);
-        if (!processedObjects.Add(so)) {
-            Debug.Log("Existed " + so.gameObject.name + " " + so.Dim.GetColor().ToString());
-        }
-    }
-
-    public void MoveToBeDestoryed(SplitableObject so) {
-        unprocessedObjects.Remove(so);
-        toBeDestroyedObjects.Add(so);
-    }
-
-    public void MoveToBlackOut(SplitableObject so) {
-        unprocessedObjects.Remove(so);
-        blackOutObjects.Add(so);
-    }
-
-    public void RemoveFromSet(SplitableObject so) {
-        unprocessedObjects.Remove(so);
-        processedObjects.Remove(so);
-        blackOutObjects.Remove(so);
-    }
-
-    public void AddToUnprocessed(SplitableObject so) {
-        unprocessedObjects.Add(so);
-    }
-
-    void Log() {
+    void Log()
+    {
         Debug.Log("");
         Debug.Log("-----processed Object-----");
-        foreach (SplitableObject so in processedObjects) {
+        foreach (SplittableObject so in processedObjects) {
             Debug.Log(so.gameObject.name + ", " + so.Dim.GetColor().ToString());
         }
         Debug.Log("");
         Debug.Log("-----unprocessedObjects Object-----");
-        foreach (SplitableObject so in unprocessedObjects) {
+        foreach (SplittableObject so in unprocessedObjects) {
             Debug.Log(so.gameObject.name + ", " + so.Dim.GetColor().ToString());
         }
-        Debug.Log("");
-        Debug.Log("-----BlackOut Object-----");
-        foreach (SplitableObject so in blackOutObjects) {
-            Debug.Log(so.gameObject.name + ", " + so.Dim.GetColor().ToString());
-        }
-        Debug.Log("");
-        Debug.Log("-----To be destoryed Object-----");
-        foreach (SplitableObject so in toBeDestroyedObjects) {
-            Debug.Log(so.gameObject.name + ", " + so.Dim.GetColor().ToString());
-        }
-        Debug.Log("");
     }
+
+}
 
 }

@@ -884,11 +884,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1298200398}
   - component: {fileID: 1298200404}
-  - component: {fileID: 1298200403}
-  - component: {fileID: 1298200402}
   - component: {fileID: 1298200401}
   - component: {fileID: 1298200400}
   - component: {fileID: 1298200399}
+  - component: {fileID: 1298200402}
+  - component: {fileID: 1298200405}
+  - component: {fileID: 1298200403}
   m_Layer: 0
   m_Name: VictoryZone
   m_TagString: Untagged
@@ -995,12 +996,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1298200397}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e466774c787a5045b13c3e25ab572d3, type: 3}
+  m_Script: {fileID: 11500000, guid: 327a39762b97de54b9d04d49eb9d4b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 7
-  staticObject: 1
-  world: {fileID: 1420126370}
+  persistentColor: 0
 --- !u!82 &1298200404
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1097,6 +1096,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1298200405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1298200397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c2a62da7b4ad0c41ba5c6c17f6c1e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 7
 --- !u!1 &1420126369
 GameObject:
   m_ObjectHideFlags: 0
@@ -1133,6 +1145,7 @@ MonoBehaviour:
   - {fileID: 493824983}
   - {fileID: 1519670633}
   - {fileID: 440334578}
+  inactivePoolRoot: {fileID: 0}
   radius: 28
   transitionDuration: 0.4
   fadeDuration: 0.2
@@ -1430,6 +1443,32 @@ MonoBehaviour:
   desiredObjectColor: 7
   activeColor: 0
   isTriggered: 0
+--- !u!114 &3202402029425296716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3202402029425296714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 327a39762b97de54b9d04d49eb9d4b0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  persistentColor: 0
+--- !u!114 &3202402029425296717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3202402029425296714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c2a62da7b4ad0c41ba5c6c17f6c1e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 0
 --- !u!1001 &4502632518279370531
 PrefabInstance:
   m_ObjectHideFlags: 0

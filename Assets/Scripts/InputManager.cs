@@ -7,7 +7,7 @@ public class InputManager : MonoBehaviour {
     // spliting or merging
     // moving character
 
-    [SerializeField] World world;
+    [SerializeField] Core.World world;
 
     [SerializeField] bool locked;
     [SerializeField] PlayerInteraction playerInteraction;
