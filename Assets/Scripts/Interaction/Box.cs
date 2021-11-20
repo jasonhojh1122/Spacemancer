@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Core;
+using Invector.vCharacterController;
 
 namespace Interaction {
     [RequireComponent(typeof(Core.SplittableObject))]
@@ -47,7 +48,8 @@ namespace Interaction {
         void PickUp()
         {
             pickUpBox = this;
-            rb.isKinematic = true;
+            //rb.isKinematic = true;
+            Destroy(rb);
             Vector3 pos = transform.position;
             Quaternion rot = transform.rotation;
             transform.SetParent(player);
@@ -60,8 +62,9 @@ namespace Interaction {
 
         public void PutDown()
         {
+            rb = gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
             Debug.Log("Put Down");
-            rb.isKinematic = false;
+            //rb.isKinematic = false;
             pickUpBox = null;
             transform.SetParent(player.parent.transform.parent);
             Vector3 localPos = transform.localPosition;
