@@ -3,6 +3,23 @@
 #ifndef NOISE_INCLUDED
 #define NOISE_INCLUDED
 
+void Hash2_float(float2 seed, out float noise)
+{
+    noise = frac(sin(dot(seed, float2(12.9898, 78.233))) * 43758.5453123);
+}
+
+float Hash2(float2 seed)
+{
+    float noise;
+    Hash2_float(seed, noise);
+    return noise;
+}
+
+float Hash(float seed)
+{
+    return Hash2(float2(seed, 1.0));
+}
+
 void Noise2_float(float2 seed, float time, out float noise)
 {
     noise = frac(sin(dot(seed * floor(time * 30.0), float2(127.1, 311.7))) * 43758.5453123);

@@ -9,13 +9,28 @@ using QuaDic = System.Collections.Generic.Dictionary<Core.Dimension.Color, Unity
 namespace Core {
     public class DimensionTransition : MonoBehaviour{
 
+        [System.Serializable]
+        class GlitchSetting
+        {
+            public Material mat;
+            public Vector2 amount = new Vector2(0.01f, 0.05f);
+            public Vector2 freq = new Vector2(0.5f, 1.5f);
+            public Vector2 splitCnt = new Vector2(10f, 80f);
+            public AnimationCurve curve;
+        }
+
         [SerializeField] World world;
-        [SerializeField] Material material;
         [SerializeField] Character.PlayerController playerController;
-        [SerializeField] List<Transform> dimensionPos;
-        [SerializeField] List<Dimension.Color> dimensionOrder;
-        Camera cam;
-        public bool Transitting;
+        [SerializeField] List<Transform> targetPos;
+        [SerializeField] float transitionDuration = 1.0f;
+        [SerializeField] GlitchSetting glitchSetting;
+
+        List<Dimension.Color> dimensionOrder;
+        bool transitting;
+
+        public bool Transitting {
+            get => transitting;
+        }
 
         public Dimension.Color ActiveDimensionColor {
             get => dimensionOrder[0];
@@ -33,238 +48,105 @@ namespace Core {
             {
                 dimensionOrder.Add(color);
             }
-            cam = Camera.main;
         }
 
         public IEnumerator SplitTransition()
         {
             OnTransitionStartEnd(true);
+            StartCoroutine(Glitch());
+
             world.SplitObjects();
             ToggleDimensionActivation(true);
-            MoveDimensions(false);
+            yield return StartCoroutine(MoveAnimation(false));
             world.GetDimension(Dimension.Color.WHITE).gameObject.SetActive(false);
             Physics.SyncTransforms();
+
             OnTransitionStartEnd(false);
-            yield return null;
         }
 
         public IEnumerator MergeTransition()
         {
             OnTransitionStartEnd(true);
-            MoveDimensions(true);
+            StartCoroutine(Glitch());
+            yield return StartCoroutine(MoveAnimation(true));
             Physics.SyncTransforms();
             world.GetDimension(Dimension.Color.WHITE).gameObject.SetActive(true);
             world.MergeObjects();
             ToggleDimensionActivation(false);
             OnTransitionStartEnd(false);
-            yield return null;
         }
 
         public IEnumerator RotateTransition(int direction)
         {
             OnTransitionStartEnd(true);
-            if (direction > 0)
-            {
-                Dimension.Color end = dimensionOrder[dimensionOrder.Count - 1];
-                for (int i = dimensionOrder.Count-1; i >= 1; i--)
-                {
-                    dimensionOrder[i] = dimensionOrder[i-1];
-                }
-                dimensionOrder[0] = end;
-            }
-            else
-            {
-                Dimension.Color start = dimensionOrder[0];
-                for (int i = 0; i < dimensionOrder.Count-1; i++)
-                {
-                    dimensionOrder[i] = dimensionOrder[i+1];
-                }
-                dimensionOrder[dimensionOrder.Count - 1] = start;
-            }
-            MoveDimensions(false);
+            StartCoroutine(Glitch());
+            yield return StartCoroutine(RotateAnimation(direction));
             OnTransitionStartEnd(false);
-
-            yield return null;
         }
 
-        void MoveDimensions(bool ToCenter)
+        IEnumerator MoveAnimation(bool ToCenter)
         {
+            float t = 0.0f;
+            while (t < transitionDuration)
+            {
+                t += Time.deltaTime;
+                for (int i = 0; i < dimensionOrder.Count; i++)
+                {
+                    Transform dim = world.GetDimension(dimensionOrder[i]).transform;
+                    Vector3 start, end;
+                    if (ToCenter)
+                    {
+                        start = targetPos[i].position;
+                        end = world.GetDimension(Dimension.Color.WHITE).transform.position;
+                    }
+                    else
+                    {
+                        start = world.GetDimension(Dimension.Color.WHITE).transform.position;
+                        end = targetPos[i].position;
+                    }
+                    dim.position = Vector3.Lerp(start, end, t / transitionDuration);
+                }
+                yield return null;
+            }
+        }
+
+        IEnumerator RotateAnimation(int direction)
+        {
+            Dictionary<Dimension.Color, int> newOrder = new Dictionary<Dimension.Color, int>();
             for (int i = 0; i < dimensionOrder.Count; i++)
             {
-                if (ToCenter)
-                    world.GetDimension(dimensionOrder[i]).transform.position = dimensionPos[0].position;
+                if (direction > 0)
+                {
+                    int n = (i-1) < 0 ? (i-1) + dimensionOrder.Count : (i-1);
+                    newOrder.Add(dimensionOrder[i], n);
+                }
                 else
-                    world.GetDimension(dimensionOrder[i]).transform.position = dimensionPos[i].position;
-            }
-        }
-
-        /* public IEnumerator SplitTransition1() {
-            OnTransitionStartEnd(true);
-
-            // Fade out the main dimension
-            yield return StartCoroutine(FadeMainDimension(false));
-
-            // Perform actual splitting
-            world.SplitObjects();
-            world.Dims[Dimension.Color.WHITE].gameObject.SetActive(false);
-
-            DimensionsSetActive(true);
-
-            // Calculate the target position
-            VecDic targetPos = new VecDic();
-            foreach (Dimension.Color bc in Dimension.BaseColor) {
-                Vector3 VecDic = new Vector3(0, 0, -world.Radius);
-                Quaternion rot = Quaternion.AngleAxis(world.Dims[bc].TargetAngle, Vector3.up);
-                targetPos.Add(bc, rot * VecDic);
-                if (Fuzzy.CloseFloat(world.Dims[bc].TargetAngle, 0.0f)) {
-                    activeColor = bc;
-                    MoveCamera();
+                {
+                    newOrder.Add(dimensionOrder[i], (i+1) % dimensionOrder.Count);
                 }
             }
 
-            // Gradully move the dimensions to target position
             float t = 0.0f;
-            while (t < world.TransitionDur) {
+            while (t < transitionDuration)
+            {
                 t += Time.deltaTime;
-                material.SetFloat(dissolveName, (world.TransitionDur - t) / world.TransitionDur);
 
-                float p = t / world.TransitionDur;
-                foreach (Dimension.Color bc in Dimension.BaseColor) {
-                    var dimTran = world.Dims[bc].transform;
-                    dimTran.position = targetPos[bc] * p;
-                    dimTran.rotation = Quaternion.identity;
-                    dimTran.RotateAround(dimTran.position, Vector3.up, p * world.Dims[bc].TargetAngle);
-                }
-                yield return null;
-            }
-            // Set the final pos/rot of dimensions
-            foreach (Dimension.Color bc in Dimension.BaseColor) {
-                var dim = world.Dims[bc];
-                dim.transform.position = targetPos[bc];
-                dim.transform.rotation = Quaternion.identity;
-                dim.transform.RotateAround(dim.transform.position, Vector3.up, dim.TargetAngle);
-            }
-            Physics.SyncTransforms();
-
-            material.SetFloat(dissolveName, 0.0f);
-            OnTransitionStartEnd(false);
-        }
-
-        public IEnumerator MergeTransition() {
-            OnTransitionStartEnd(true);
-
-            // Save the start status of dimension
-            VecDic startPos = new VecDic();
-            QuaDic startRot = new QuaDic();
-            foreach (Dimension.Color bc in Dimension.BaseColor) {
-                startRot.Add(bc, world.Dims[bc].transform.rotation);
-                startPos.Add(bc, world.Dims[bc].transform.position);
-            }
-
-            // Gradully move the dimensions to center
-            float t = 0.0f;
-            while (t < world.TransitionDur) {
-                t += Time.deltaTime;
-                material.SetFloat(dissolveName, t / world.TransitionDur);
-                float p = t / world.TransitionDur;
-                float q = (world.TransitionDur - t) / world.TransitionDur;
-                foreach (Dimension.Color bc in Dimension.BaseColor) {
-                    var dimTran = world.Dims[bc].transform;
-                    dimTran.position = startPos[bc] * q;
-                    dimTran.rotation = startRot[bc];
-                    dimTran.RotateAround(dimTran.position, Vector3.up, -p * world.Dims[bc].TargetAngle);
-                }
-                yield return null;
-            }
-            // Set the final pos/rot of dimensions
-            foreach (Dimension.Color bc in Dimension.BaseColor) {
-                var dim = world.Dims[bc];
-                dim.transform.position = Vector3.zero;
-                dim.transform.rotation = Quaternion.identity;
-            }
-            Physics.SyncTransforms();
-
-            world.Dims[Dimension.Color.WHITE].gameObject.SetActive(true);
-            activeColor = Dimension.Color.WHITE;
-            MoveCamera();
-
-            // Perform actual merge of objects
-            world.MergeObjects();
-
-            DimensionsSetActive(false);
-            yield return StartCoroutine(FadeMainDimension(true));
-            OnTransitionStartEnd(false);
-        }
-
-        // Rotate the splitted dimensions
-        public IEnumerator RotationTransition(int dir) {
-            OnTransitionStartEnd(true);
-
-            // Save the start status of dimension
-            VecDic startPos = new VecDic();
-            QuaDic startRot = new QuaDic();
-            foreach (Dimension.Color bc in Dimension.BaseColor) {
-                world.Dims[bc].TargetAngle = (world.Dims[bc].TargetAngle + dir * 120.0f) % 360.0f;
-                startPos.Add(bc, world.Dims[bc].transform.position);
-                startRot.Add(bc, world.Dims[bc].transform.rotation);
-                if (Fuzzy.CloseFloat(world.Dims[bc].TargetAngle, 0.0f)) {
-                    activeColor = bc;
-                }
-            }
-
-            // Gradully rotate the dimensions
-            float t = 0.0f;
-            while (t < world.TransitionDur) {
-                t += Time.deltaTime;
-                float p = t / world.TransitionDur;
-                foreach (Dimension.Color bc in Dimension.BaseColor) {
-                    var dimTran = world.Dims[bc].transform;
-                    dimTran.position = startPos[bc];
-                    dimTran.rotation = startRot[bc];
-                    dimTran.RotateAround(Vector3.zero, Vector3.up, dir * p * 120.0f);
+                for (int i = 0; i < dimensionOrder.Count; i++)
+                {
+                    Vector3 start = targetPos[i].position;
+                    Vector3 end = targetPos[newOrder[dimensionOrder[i]]].position;
+                    Transform dim = world.GetDimension(dimensionOrder[i]).transform;
+                    dim.position = Vector3.Lerp(start, end, t / transitionDuration);
                 }
                 yield return null;
             }
 
-            // Set the final status of dimensions
-            foreach (Dimension.Color bc in Dimension.BaseColor) {
-                var dimTran = world.Dims[bc].transform;
-                dimTran.position = startPos[bc];
-                dimTran.rotation = startRot[bc];
-                dimTran.RotateAround(Vector3.zero, Vector3.up, dir * 120.0f);
-            }
-            MoveCamera();
-            OnTransitionStartEnd(false);
-        }
-
-        // Gradully fade in/out main dimension
-        IEnumerator FadeMainDimension(bool active) {
-            float t = 0.0f;
-            float p;
-            while (t < world.FadeDur) {
-                t += Time.deltaTime;
-                p = (active) ? (world.FadeDur - t) / world.FadeDur : t / world.FadeDur;
-                material.SetFloat(dissolveName, p);
-                yield return null;
-            }
-            p = (active) ? 0 : 1;
-            material.SetFloat(dissolveName, p);
-        }
-
-        // Set base color dimensions to active
-        void DimensionsSetActive(bool active) {
-            foreach (Dimension.Color bc in Dimension.BaseColor) {
-                world.Dims[bc].gameObject.SetActive(active);
+            foreach (KeyValuePair<Dimension.Color, int> pair in newOrder)
+            {
+                dimensionOrder[pair.Value] = pair.Key;
             }
         }
 
-        void MoveCamera() {
-            Vector3 localPos = cam.transform.localPosition;
-            Quaternion localRot = cam.transform.localRotation;
-            cam.transform.SetParent(world.Dims[activeColor].transform);
-            cam.transform.localPosition = localPos;
-            cam.transform.localRotation = localRot;
-        } */
 
         void ToggleDimensionActivation(bool status)
         {
@@ -274,11 +156,37 @@ namespace Core {
             }
         }
 
-        void OnTransitionStartEnd(bool isStart) {
+        void OnTransitionStartEnd(bool isStart)
+        {
             Physics.gravity = isStart ? Vector3.zero : new Vector3(0f, -9.8f, 0f);
             Physics.autoSimulation = !isStart;
             playerController.paused = isStart;
-            Transitting = isStart;
+            transitting = isStart;
+        }
+
+        IEnumerator Glitch()
+        {
+            float t = 0.0f;
+            glitchSetting.mat.SetFloat("_Transitting", 1.0f);
+            while (t < transitionDuration)
+            {
+                t += Time.deltaTime;
+                float p;
+                if (t < transitionDuration / 2)
+                {
+                    p = t * 2 / transitionDuration;
+                }
+                else
+                {
+                    p = 2 - 2 * t / transitionDuration;
+                }
+                p = glitchSetting.curve.Evaluate(p);
+                glitchSetting.mat.SetFloat("_GlitchAmount", Mathf.Lerp(glitchSetting.amount[0], glitchSetting.amount[1], p));
+                glitchSetting.mat.SetFloat("_GlitchFrequency", Mathf.Lerp(glitchSetting.freq[0], glitchSetting.freq[1], p));
+                glitchSetting.mat.SetFloat("_SplitCnt", Mathf.Lerp(glitchSetting.splitCnt[0], glitchSetting.splitCnt[1], p));
+                yield return null;
+            }
+            glitchSetting.mat.SetFloat("_Transitting", 0.0f);
         }
 
     }

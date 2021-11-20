@@ -12,9 +12,6 @@ public class World : MonoBehaviour
 
     [SerializeField] List<Dimension> dimensions;
     [SerializeField] Transform inactivePoolRoot;
-    [SerializeField] float radius = 30.0f;
-    [SerializeField] float transitionDuration = 1.0f;
-    [SerializeField] float fadeDuration = 0.2f;
     [SerializeField] DimensionTransition dimensionTransition;
 
     Dictionary<Dimension.Color, Dimension> dimensionMap;
@@ -22,15 +19,6 @@ public class World : MonoBehaviour
     Set processedObjects, unprocessedObjects;
     bool splitted;
 
-    public float Radius {
-        get => radius;
-    }
-    public float TransitionDur {
-        get => transitionDuration;
-    }
-    public float FadeDur {
-        get => fadeDuration;
-    }
     public Dictionary<Dimension.Color, Dimension> Dims {
         get => dimensionMap;
     }

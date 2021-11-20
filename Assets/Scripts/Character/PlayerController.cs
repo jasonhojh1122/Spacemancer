@@ -37,13 +37,14 @@ namespace Character {
             if (paused)
             {
                 animator.speed = 0.0f;
-                player.SetDummyAnimatorSpeed(0.0f);
+                player.SetDummyAnimatorSpeed(animator.speed);
                 return;
             }
 
             if (controlEnabled)
             {
                 animator.speed = 1.0f;
+                player.SetDummyAnimatorSpeed(animator.speed);
                 move.x = Input.GetAxis("Horizontal");
                 move.z = Input.GetAxis("Vertical");
                 if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
