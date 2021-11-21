@@ -12,6 +12,10 @@ namespace Core
     {
         Dictionary<string, Set> pool;
 
+        public Dictionary<string, Set> Pool {
+            get => pool;
+        }
+
         public ObjectPool()
         {
             pool = new Dictionary<string, Set>();
@@ -37,12 +41,14 @@ namespace Core
             }
         }
 
-        public SplittableObject GetOneOrInstantiate(string name)
+        public SplittableObject GetOne(string name)
         {
             if (pool.ContainsKey(name))
             {
-                SplittableObject so = null;
-                if (pool[name].Count > 1)
+                return pool[name].FirstOrDefault();
+
+                /* SplittableObject so = null;
+                if (pool[name].Count > 0)
                 {
                     so = pool[name].FirstOrDefault();
                     pool[name].Remove(so);
@@ -50,8 +56,7 @@ namespace Core
                 else if (pool[name].Count == 1)
                 {
                     so = InstantiateDefault(name);
-                }
-                return so;
+                } */
             }
             return null;
         }
@@ -60,12 +65,11 @@ namespace Core
         {
             if (pool.ContainsKey(name))
             {
-                return GameObject.Instantiate<SplittableObject>(pool[name].FirstOrDefault());
+                var so = pool[name].FirstOrDefault();
+                if (so != null)
+                    return GameObject.Instantiate<SplittableObject>(pool[name].FirstOrDefault());
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
     }
@@ -74,6 +78,13 @@ namespace Core
     {
         ObjectPool active;
         ObjectPool inactive;
+
+        public ObjectPool ActiveObjects {
+            get => active;
+        }
+        public ObjectPool InactiveObjects {
+            get => inactive;
+        }
 
         public SplittableObjectPool()
         {
@@ -96,12 +107,15 @@ namespace Core
         }
 
         public SplittableObject Instantiate(string name) {
-            SplittableObject so = inactive.GetOneOrInstantiate(name);
+            SplittableObject so = inactive.GetOne(name);
             if (so == null)
             {
                 so = active.InstantiateDefault(name);
             }
-            SetActive(so);
+            if (so != null)
+            {
+                SetActive(so);
+            }
             return so;
         }
 

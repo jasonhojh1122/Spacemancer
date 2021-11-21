@@ -11,17 +11,24 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (interactable != null)
         {
-            if(Vector3.Angle(interactable.gameObject.transform.position - gameObject.transform.position,gameObject.transform.forward ) < interactAngle)
+            if(Vector3.Angle(interactable.gameObject.transform.position - transform.position, transform.forward ) < interactAngle)
             {
                 interactable.Interact();
             }
-            
+
         }
     }
 
-    public bool IsInteracting() {
+    public bool IsInteracting()
+    {
         if (interactable == null) return false;
         else return interactable.IsInteracting();
+    }
+
+    public void OnDimensionChange()
+    {
+        interactable = null;
+        exit = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -42,7 +49,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (interactable != null  && other.transform.parent.gameObject == interactable.gameObject)
+        var zone = other.GetComponent<Interaction.Zone>();
+        if (interactable != null && zone != null && zone.InteractableObect.gameObject.GetInstanceID() == interactable.gameObject.GetInstanceID())
         {
             if (interactable.IsInteracting())
             {
@@ -52,7 +60,7 @@ public class PlayerInteraction : MonoBehaviour
             {
                 interactable = null;
             }
-            
+
         }
     }
 }

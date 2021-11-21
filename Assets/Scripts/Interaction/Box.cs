@@ -2,33 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Core;
-using Invector.vCharacterController;
+//using Invector.vCharacterController;
 
 namespace Interaction {
     [RequireComponent(typeof(Core.SplittableObject))]
     public class Box : Interactable
     {
-        [SerializeField] Dimension.Color activeColor; // None if no restriction
+        // [SerializeField] Dimension.Color activeColor; // None if no restriction
         [SerializeField] float pickUpOffset = 0.1f;
-        Rigidbody rb;
         public static Box pickUpBox = null;
-        Transform player;
+        static Character.SplittablePlayer player = null;
+        Rigidbody rb;
+        Core.SplittableObject so;
         bool playerInZone;
 
-        void Start()
+        void Awake()
         {
-            player = FindObjectsOfType<Character.PlayerController>()[0].transform;
+            if (player == null)
+                player = FindObjectOfType<Character.SplittablePlayer>();
+            so = GetComponent<Core.SplittableObject>();
             rb = GetComponent<Rigidbody>();
         }
-        /*void Update()
-        {
-            if (Input.GetButtonDown("Interact"))
-            {
-                Interact();
-            }
-        }*/
-
 
         public override void Interact()
         {
@@ -38,21 +32,20 @@ namespace Interaction {
             }
             else
             {
-                if (activeColor != Dimension.Color.NONE && player.transform.parent.transform.parent.gameObject.GetComponent<Dimension>().GetColor() != activeColor)
+                if (!so.IsInCorrectDim())
                     return;
                 if(playerInZone)
-                     PickUp();
+                    PickUp();
             }
         }
 
         void PickUp()
         {
             pickUpBox = this;
-            //rb.isKinematic = true;
             Destroy(rb);
             Vector3 pos = transform.position;
             Quaternion rot = transform.rotation;
-            transform.SetParent(player);
+            transform.SetParent(player.transform);
 
             Vector3 relativeDis = transform.position - player.transform.position;
             transform.position = pos + pickUpOffset * (relativeDis / relativeDis.magnitude);
@@ -64,12 +57,11 @@ namespace Interaction {
         {
             rb = gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
             Debug.Log("Put Down");
-            //rb.isKinematic = false;
             pickUpBox = null;
-            transform.SetParent(player.parent.transform.parent);
+            transform.SetParent(player.transform.parent);
             Vector3 localPos = transform.localPosition;
             transform.localPosition = new Vector3(Mathf.RoundToInt(localPos.x), Mathf.RoundToInt(localPos.y), Mathf.RoundToInt(localPos.z));
-            transform.localRotation = new Quaternion(0, 0, 0, 0);
+            transform.localRotation = Quaternion.identity;
         }
 
         public override void OnZoneEnter(Collider other) {

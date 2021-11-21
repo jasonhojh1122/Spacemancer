@@ -72,12 +72,12 @@ public class KinematicObject : MonoBehaviour
     protected virtual void OnEnable()
     {
         body = GetComponent<Rigidbody>();
-        //body.isKinematic = true;
+        body.isKinematic = true;
     }
 
     protected virtual void OnDisable()
     {
-        //body.isKinematic = false;
+        body.isKinematic = false;
     }
 
     protected virtual void Start()

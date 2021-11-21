@@ -39,10 +39,6 @@ namespace Core {
         private void Awake()
         {
             world = FindObjectOfType<World>();
-        }
-
-        public void Init()
-        {
             dimensionOrder = new List<Dimension.Color>();
             foreach (Dimension.Color color in Dimension.BaseColor)
             {
@@ -54,13 +50,11 @@ namespace Core {
         {
             OnTransitionStartEnd(true);
             StartCoroutine(Glitch());
-
             world.SplitObjects();
             ToggleDimensionActivation(true);
             yield return StartCoroutine(MoveAnimation(false));
-            world.GetDimension(Dimension.Color.WHITE).gameObject.SetActive(false);
+            world.Dims[Dimension.Color.WHITE].gameObject.SetActive(false);
             Physics.SyncTransforms();
-
             OnTransitionStartEnd(false);
         }
 
@@ -70,7 +64,7 @@ namespace Core {
             StartCoroutine(Glitch());
             yield return StartCoroutine(MoveAnimation(true));
             Physics.SyncTransforms();
-            world.GetDimension(Dimension.Color.WHITE).gameObject.SetActive(true);
+            world.Dims[Dimension.Color.WHITE].gameObject.SetActive(true);
             world.MergeObjects();
             ToggleDimensionActivation(false);
             OnTransitionStartEnd(false);
@@ -92,16 +86,16 @@ namespace Core {
                 t += Time.deltaTime;
                 for (int i = 0; i < dimensionOrder.Count; i++)
                 {
-                    Transform dim = world.GetDimension(dimensionOrder[i]).transform;
+                    Transform dim = world.Dims[dimensionOrder[i]].transform;
                     Vector3 start, end;
                     if (ToCenter)
                     {
                         start = targetPos[i].position;
-                        end = world.GetDimension(Dimension.Color.WHITE).transform.position;
+                        end = world.Dims[Dimension.Color.WHITE].transform.position;
                     }
                     else
                     {
-                        start = world.GetDimension(Dimension.Color.WHITE).transform.position;
+                        start = world.Dims[Dimension.Color.WHITE].transform.position;
                         end = targetPos[i].position;
                     }
                     dim.position = Vector3.Lerp(start, end, t / transitionDuration);
@@ -135,7 +129,7 @@ namespace Core {
                 {
                     Vector3 start = targetPos[i].position;
                     Vector3 end = targetPos[newOrder[dimensionOrder[i]]].position;
-                    Transform dim = world.GetDimension(dimensionOrder[i]).transform;
+                    Transform dim = world.Dims[dimensionOrder[i]].transform;
                     dim.position = Vector3.Lerp(start, end, t / transitionDuration);
                 }
                 yield return null;
@@ -152,7 +146,7 @@ namespace Core {
         {
             foreach (Dimension.Color color in Dimension.BaseColor)
             {
-                world.GetDimension(color).gameObject.SetActive(status);
+                world.Dims[color].gameObject.SetActive(status);
             }
         }
 

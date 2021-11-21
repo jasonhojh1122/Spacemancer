@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Character {
 
+    [RequireComponent(typeof(Character.SplittablePlayer))]
     public class PlayerController : KinematicObject
     {
         public float maxSpeed = 5;

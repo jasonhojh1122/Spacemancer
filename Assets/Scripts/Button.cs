@@ -11,51 +11,92 @@ public class Button : MonoBehaviour
 {
 
     [SerializeField] Core.SplittableObject toggleObject;
-    [SerializeField] string desiredObjectTag;
-    [SerializeField] Dimension.Color desiredObjectColor; //set none if no restriction
-    [SerializeField] Dimension.Color activeColor;        //should be same as desired color(?
+    [SerializeField] string targetObjectName;
+    [SerializeField] string desiredObjectName;
     [SerializeField] bool isTriggered = false;
 
+    World world;
     Core.SplittableObject so;
 
-    private void Awake() {
+    private void Awake()
+    {
         so = GetComponent<Core.SplittableObject>();
-        toggleObject.gameObject.SetActive(isTriggered);
+        world = FindObjectOfType<World>();
     }
 
-    private bool match(GameObject obj)
+    private void Start()
     {
-        if (desiredObjectColor != Dimension.Color.NONE)
+        // world.SetObjectActive(toggleObject, isTriggered);
+        // toggleObject.gameObject.SetActive(isTriggered);
+    }
+
+    private bool Match(GameObject obj)
+    {
+        var objSo = obj.GetComponent<Core.SplittableObject>();
+        if (objSo.ObjectColor.Color == Dimension.Color.NONE || objSo.ObjectColor.Color != so.ObjectColor.Color)
         {
-            if (obj.GetComponent<Core.SplittableObject>() == null || obj.GetComponent<Core.SplittableObject>().ObjectColor.Color != desiredObjectColor)
+            return false;
+        }
+        return obj.name == desiredObjectName;
+    }
+
+    private void ToggleOn()
+    {
+        var set = world.ObjectPool.InactiveObjects.Pool[targetObjectName];
+        if (set == null) return;
+        List<SplittableObject> toActivate = new List<SplittableObject>();
+        foreach (SplittableObject obj in set)
+        {
+            if (obj.ObjectColor.Color == so.ObjectColor.Color)
             {
-                return false;
+                toActivate.Add(obj);
             }
         }
-        return obj.tag == desiredObjectTag;
+        foreach (SplittableObject obj in toActivate)
+        {
+            world.ActivateObject(obj, so.ObjectColor.Color);
+        }
+    }
 
+    private void ToggleOff()
+    {
+        var set = world.ObjectPool.ActiveObjects.Pool[targetObjectName];
+        if (set == null) return;
+        List<SplittableObject> toInactivate = new List<SplittableObject>();
+        foreach (SplittableObject obj in set)
+        {
+            if (obj.ObjectColor.Color == so.ObjectColor.Color)
+            {
+                world.DeleteObject(obj);
+                toInactivate.Add(obj);
+            }
+        }
+        foreach (SplittableObject obj in toInactivate)
+        {
+            world.DeleteObject(obj);
+        }
     }
 
     private void OnCollisionEnter(Collision other) {
-        if (activeColor != Dimension.Color.NONE && so.ObjectColor.Color != activeColor)
+        Debug.Log("button Zone enter");
+        if (!so.IsInCorrectDim())
             return;
-
-        if (match(other.gameObject))
+        if (Match(other.gameObject))
         {
-            toggleObject.gameObject.SetActive(!isTriggered);
-            isTriggered = !isTriggered;
+            Debug.Log("matched");
+            ToggleOn();
         }
     }
 
     private void OnCollisionExit(Collision other) {
-        if (activeColor != Dimension.Color.NONE && GetComponent<Core.SplittableObject>().ObjectColor.Color != activeColor)
+        Debug.Log("button Zone Exit");
+        if (!so.IsInCorrectDim())
             return;
 
-        Debug.Log("button Zone Exit");
-        if (match(other.gameObject))
+        if (Match(other.gameObject))
         {
-            toggleObject.gameObject.SetActive(!isTriggered);
-            isTriggered = !isTriggered;
+            Debug.Log("matched");
+            ToggleOff();
         }
     }
 

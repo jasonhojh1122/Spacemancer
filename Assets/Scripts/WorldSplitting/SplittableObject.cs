@@ -11,6 +11,7 @@ namespace Core
     {
 
         [SerializeField] protected bool persistentColor;
+        [SerializeField] protected bool defaultInactive;
 
         protected ObjectColor objectColor;
         protected World world;
@@ -22,6 +23,9 @@ namespace Core
         public bool IsMerged {
             get => _IsMerged;
             set => _IsMerged = value;
+        }
+        public bool DefaultInactive {
+            get => defaultInactive;
         }
         public Dimension Dim {
             get => dimension;
@@ -52,7 +56,12 @@ namespace Core
 
         public virtual void Split()
         {
-            if (persistentColor)
+            if (Dim.GetColor() != Dimension.Color.WHITE)
+            {
+                world.MoveToProcessed(this);
+                return;
+            }
+            else if (persistentColor)
                 SplitPersistent();
             else
                 SplitColor();
@@ -108,7 +117,11 @@ namespace Core
         }
 
         public virtual void Merge(SplittableObject parent) {
-            if (persistentColor) return;
+            if (persistentColor)
+            {
+                world.MoveToProcessed(this);
+                return;
+            }
 
             IsMerged = true;
 
@@ -118,7 +131,7 @@ namespace Core
                 mergedColor = Dimension.Color.BLACK;
 
             List<SplittableObject> curSiblings = new List<SplittableObject>();
-            Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents * 0.8f, transform.rotation);
+            Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents * 0.7f, transform.rotation);
 
             foreach (Collider c in colliders)
             {
@@ -140,7 +153,8 @@ namespace Core
                     so.IsMerged = true;
                     curSiblings.Add(so);
                 }
-                else {
+                else
+                {
                     mergedColor = Dimension.Color.BLACK;
                     so.Merge(this);
                 }
@@ -173,13 +187,31 @@ namespace Core
             curSiblings.Add(this);
 
             var splittedColor = Dimension.SplitColor(mergedColor);
+            var missingColor = Dimension.MissingColor(mergedColor);
 
-            for (int i = 0; i < curSiblings.Count; i++) {
+            for (int i = 0; i < curSiblings.Count; i++)
+            {
                 world.MoveObjectToDimension(curSiblings[i], splittedColor[i]);
                 curSiblings[i].ObjectColor.Color = splittedColor[i];
                 parent.Siblings[splittedColor[i]] = curSiblings[i];
                 world.MoveToProcessed(curSiblings[i]);
             }
+            for (int i = 0; i < missingColor.Count; i++)
+            {
+                parent.Siblings[missingColor[i]] = null;
+            }
+
+            /* if (gameObject.name == "Box")
+            {
+                Debug.Log(gameObject.name + " " + parent.transform.GetInstanceID() + " siblings: ");
+                foreach (Dimension.Color color in Dimension.BaseColor)
+                {
+                    if (parent.Siblings[color] != null)
+                    {
+                        Debug.Log(parent.siblings[color].transform.GetInstanceID());
+                    }
+                }
+            } */
         }
 
         public bool IsInCorrectDim()
