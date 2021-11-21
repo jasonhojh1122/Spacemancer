@@ -7,18 +7,17 @@ namespace Core
     {
 
         [SerializeField] Dimension.Color color;
-
+        [SerializeField] bool usingMaterial = true;
         SplittableObject so;
         Renderer _renderer;
         MaterialPropertyBlock _propBlock;
-        Collider col;
 
         public Dimension.Color Color
         {
             get => color;
             set {
                 color = value;
-
+                if (!usingMaterial) return;
                 if (color == Dimension.Color.NONE)
                 {
                     _propBlock.SetFloat("_Error", 0);
@@ -28,7 +27,7 @@ namespace Core
                 {
                     _propBlock.SetColor("_Color", Dimension.MaterialColor[color]);
                     _propBlock.SetFloat("_Dissolve", 0);
-                    if (color != so.Dim.GetColor())
+                    if (color != so.Dim.color)
                     {
                         _propBlock.SetFloat("_Error", 1);
                     }
@@ -43,16 +42,19 @@ namespace Core
 
         private void Awake()
         {
-            _propBlock = new MaterialPropertyBlock();
             so = GetComponent<SplittableObject>();
-            _renderer = GetComponent<Renderer>();
-            _renderer.GetPropertyBlock(_propBlock);
-            col = GetComponent<Collider>();
+            if (usingMaterial)
+            {
+                _propBlock = new MaterialPropertyBlock();
+                _renderer = GetComponent<Renderer>();
+                _renderer.GetPropertyBlock(_propBlock);
+            }
         }
 
         public void Init()
         {
-            Color = color;
+            if (usingMaterial)
+                Color = color;
         }
     }
 

@@ -16,7 +16,7 @@ namespace Core
         protected ObjectColor objectColor;
         protected World world;
         protected Collider col;
-        protected Dimension dimension;
+        protected ObjectColor dimension;
         protected Dictionary<Dimension.Color, SplittableObject> siblings;
         protected bool _IsMerged;
 
@@ -27,7 +27,7 @@ namespace Core
         public bool DefaultInactive {
             get => defaultInactive;
         }
-        public Dimension Dim {
+        public ObjectColor Dim {
             get => dimension;
             set => dimension = value;
         }
@@ -51,12 +51,12 @@ namespace Core
 
         protected void OnDisable()
         {
-            world.RemoveFromSet(this);
+            // world.RemoveFromSet(this);
         }
 
         public virtual void Split()
         {
-            if (Dim.GetColor() != Dimension.Color.WHITE)
+            if (Dim.Color != Dimension.Color.WHITE)
             {
                 world.MoveToProcessed(this);
                 return;
@@ -216,7 +216,7 @@ namespace Core
 
         public bool IsInCorrectDim()
         {
-            return ObjectColor.Color == Dim.GetColor();
+            return ObjectColor.Color == Dim.Color;
         }
 
     }

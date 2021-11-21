@@ -8,26 +8,28 @@ using Set = System.Collections.Generic.HashSet<Core.SplittableObject>;
 
 namespace Core
 {
+    [RequireComponent(typeof(DimensionTransition))]
     public class World : MonoBehaviour
     {
 
-        [SerializeField] List<Dimension> dimensions;
+        [SerializeField] List<ObjectColor> dimensions;
         [SerializeField] Transform inactivePoolRoot;
-        [SerializeField] DimensionTransition dimensionTransition;
+        [SerializeField] List<Dimension.ColorSetting> colorSettings;
 
+        DimensionTransition dimensionTransition;
         PlayerInteraction playerInteraction;
-        Dictionary<Dimension.Color, Dimension> dimensionMap;
+        Dictionary<Dimension.Color, ObjectColor> dimensionMap;
         SplittableObjectPool objectPool;
         Set processedObjects, unprocessedObjects;
         bool splitted;
 
-        public Dictionary<Dimension.Color, Dimension> Dims {
+        public Dictionary<Dimension.Color, ObjectColor> Dims {
             get => dimensionMap;
         }
         public bool Splitted {
             get => splitted;
         }
-        public Dimension ActiveDimension {
+        public ObjectColor ActiveDimension {
             get {
                 if (splitted) return Dims[dimensionTransition.ActiveDimensionColor];
                 else return Dims[Dimension.Color.WHITE];
@@ -43,9 +45,12 @@ namespace Core
         void Awake()
         {
             playerInteraction = FindObjectOfType<PlayerInteraction>();
-            dimensionMap = new Dictionary<Dimension.Color, Dimension>();
-            foreach (Dimension d in dimensions)
-                dimensionMap.Add(d.GetColor(), d);
+            dimensionTransition = GetComponent<DimensionTransition>();
+            dimensionMap = new Dictionary<Dimension.Color, ObjectColor>();
+            foreach (ObjectColor d in dimensions)
+            {
+                dimensionMap.Add(d.Color, d);
+            }
 
             processedObjects = new Set();
             unprocessedObjects = new Set();
@@ -53,6 +58,11 @@ namespace Core
             objectPool = new SplittableObjectPool();
 
             splitted = false;
+
+            foreach (Dimension.ColorSetting setting in colorSettings)
+            {
+                Dimension.MaterialColor.Add(setting.colorTag, setting.color32);
+            }
             Debug.Log("World Awake");
         }
 
@@ -102,10 +112,8 @@ namespace Core
             unprocessedObjects.Remove(so);
             if (!processedObjects.Add(so))
             {
-                Debug.Log("Existed " + so.gameObject.name + " " + so.Dim.GetColor().ToString());
+                Debug.Log("Existed " + so.gameObject.name + " " + so.Dim.Color.ToString());
             }
-            //if (so.gameObject.name == "Box")
-            //    Debug.Log("Add " + so.gameObject.name + " " + so.ObjectColor.Color + " id " + so.transform.GetInstanceID());
         }
 
         public void RemoveFromSet(SplittableObject so)

@@ -65,10 +65,10 @@ namespace Character
 
         void MoveToActiveDimension(bool enableDummies)
         {
-            world.MoveObjectToDimension(this, world.ActiveDimension.GetColor());
+            world.MoveObjectToDimension(this, world.ActiveDimension.Color);
             foreach (Dimension.Color sc in Dimension.BaseColor)
             {
-                if (world.Splitted && enableDummies && sc != world.ActiveDimension.GetColor())
+                if (world.Splitted && enableDummies && sc != world.ActiveDimension.Color)
                 {
                     dummies[sc].gameObject.SetActive(true);
                 }

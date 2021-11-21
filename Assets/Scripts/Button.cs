@@ -13,7 +13,7 @@ public class Button : MonoBehaviour
     [SerializeField] Core.SplittableObject toggleObject;
     [SerializeField] string targetObjectName;
     [SerializeField] string desiredObjectName;
-    [SerializeField] bool isTriggered = false;
+    // [SerializeField] bool isTriggered = false;
 
     World world;
     Core.SplittableObject so;
