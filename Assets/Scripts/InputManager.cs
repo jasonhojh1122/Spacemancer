@@ -11,7 +11,6 @@ public class InputManager : MonoBehaviour {
 
     [SerializeField] bool locked;
     [SerializeField] PlayerInteraction playerInteraction;
-
     private void Update() {
         if (!playerInteraction.IsInteracting()) {
             if (Input.GetButtonUp("Toggle"))
@@ -27,7 +26,6 @@ public class InputManager : MonoBehaviour {
                 world.RotateDimensions(1);
             }
         }
-
         if (Input.GetButtonDown("Interact"))
         {
             playerInteraction.Interact();
