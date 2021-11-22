@@ -7,18 +7,41 @@ public class SkillController : MonoBehaviour
     [SerializeField] SkillGameUIController skillGameUIController;
     public Dimension.Color skillColor = Dimension.Color.NONE;
     private Collider hitCollider = null;
+    enum SkillMode
+    {
+        WITHDRAW,FILL
+    }
     private void FixedUpdate()
     {
-        if (Input.GetButtonDown("Skill"))
+        if (Input.GetButton("ChooseColor"))
         {
+            Debug.Log("Choosing Color");
             skillGameUIController.gameObject.SetActive(true);
+        }
+        else if (Input.GetButtonDown("ChooseRed"))
+        {
+            Debug.Log("Choose RED");
+            skillGameUIController.gameObject.SetActive(true);
+            skillGameUIController.RedButton.Select();
+        }
+        else if (Input.GetButtonDown("ChooseGreen"))
+        {
+            Debug.Log("Choose GREEN");
+            skillGameUIController.gameObject.SetActive(true);
+            skillGameUIController.GreenButton.Select();
+        }
+        else if (Input.GetButtonDown("ChooseBlue"))
+        {
+            Debug.Log("Choose BLUE");
+            skillGameUIController.gameObject.SetActive(true);
+            skillGameUIController.BlueButton.Select();
         }
         skillGameUIController.gameObject.SetActive(false);
     }
     private void withdraw()
     {
         ObjectColor color = hitCollider.GetComponent<ObjectColor>();
-        if (tryColor(color.Color,skillColor,0))
+        if (tryColor(color.Color,skillColor,SkillMode.WITHDRAW))
         {
 
         }
@@ -26,25 +49,25 @@ public class SkillController : MonoBehaviour
     private void fill()
     {
         ObjectColor color = hitCollider.GetComponent<ObjectColor>();
-        if (tryColor(color.Color, skillColor, 1))
+        if (tryColor(color.Color, skillColor, SkillMode.FILL))
         {
 
         }
     }
-    private bool tryColor(Dimension.Color objectColor,Dimension.Color targetColor,int mode)
+    private bool tryColor(Dimension.Color objectColor,Dimension.Color targetColor,SkillMode mode)
     {
         bool ret = true;
         Dimension.Color tmp;
         switch (mode)
         {
-            case 0:// withdraw mode
+            case SkillMode.WITHDRAW:// withdraw mode
                 tmp = objectColor & targetColor;
                 if(tmp!=targetColor)
                 {
                     ret = false;
                 }
                 break;
-            case 1: // fill mode
+            case SkillMode.FILL: // fill mode
             default:
                 tmp = objectColor | targetColor;
                 if(tmp == objectColor)
