@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Toon
-  m_Shader: {fileID: -6465566751694194690, guid: 114d081fcc37e4d4a86f806eea84a633, type: 3}
+  m_Name: Outline
+  m_Shader: {fileID: -6465566751694194690, guid: 7bc40f65a5a939e42aee771b2009cc1e, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -27,7 +27,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _CameraGBufferTexture2:
+    - _ColorOutline_acf6b5a2c0ff45efad17ad82d6518c61_Texture2Deac3532d0ff54d6fb5fd86c9dfc058b0_2892796952:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -80,58 +80,43 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Boolean_a8039f87826c473a8e4f166364ed742d: 1
-    - Vector1_4977355cc08649db9a96e20045a152d7: 0.96
-    - Vector1_98fd6e0cfb77479f8da61baeaf7e273b: 0.01
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _ColorOutlineWidth: 1.5
+    - _ColorBaseWidth: 1.5
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DepthOutlineWidth: 2
+    - _DepthBasedWidth: 1.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
-    - _Freq: 3
-    - _GlitchAmount: 0.01
-    - _GlitchFrequency: 0.5
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _LineWidth: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _OutlineAlpha: 1
-    - _OutlineWidth: 2
     - _Parallax: 0.005
     - _QueueOffset: 0
-    - _RampCount: 5
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
-    - _ToonOutlineAlpha: 1
-    - _ToonOutlineWidth: 2
-    - _ToopStep: 10
-    - _Transitting: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Color_735f1a219abd44579ec5345627cf12eb: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LineColor: {r: 0, g: 0, b: 0, a: 0}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _ToonOutlineColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &4267727262830610166
+--- !u!114 &2327587376924611714
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

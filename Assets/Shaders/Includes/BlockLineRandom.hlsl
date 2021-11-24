@@ -3,8 +3,9 @@
 #define BLOCK_LINE_RANDOM_INCLUDED
 
 #include "Noise.hlsl"
+#include "Trunc.hlsl"
 
-float Trunc(float x, float levelNum)
+/* float Trunc(float x, float levelNum)
 {
     return floor(x * levelNum) / levelNum;
 }
@@ -12,7 +13,7 @@ float Trunc(float x, float levelNum)
 float2 Trunc2(float2 x, float2 levelNum)
 {
     return floor(x * levelNum) / levelNum;
-}
+} */
 
 void UVOffsetX_float(float glitchFreq, float splitCnt, float time, float2 uv, out float xOffset)
 {

@@ -2,15 +2,15 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-class GlitchRenderPass : ScriptableRenderPass
+class NoiseRenderPass : ScriptableRenderPass
 {
     Material material;
     RenderTargetIdentifier source;
     RenderTargetHandle tmpTexture;
-    public GlitchRenderPass(Material material) : base()
+    public NoiseRenderPass(Material material) : base()
     {
         this.material = material;
-        tmpTexture.Init("_TempGlitchTexture");
+        tmpTexture.Init("_TempNoiseTexture");
     }
 
     public void SetSource(RenderTargetIdentifier source)
@@ -20,7 +20,7 @@ class GlitchRenderPass : ScriptableRenderPass
 
     public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
     {
-        CommandBuffer cmd = CommandBufferPool.Get("GlitchRendererFeature");
+        CommandBuffer cmd = CommandBufferPool.Get("NoiseRendererFeature");
 
         RenderTextureDescriptor cameraTextureDesc = renderingData.cameraData.cameraTargetDescriptor;
         cameraTextureDesc.depthBufferBits = 0;
