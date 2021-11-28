@@ -56,6 +56,10 @@ namespace Interaction {
         public void PutDown()
         {
             rb = gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
+            rb.isKinematic = false;
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
+            rb.freezeRotation = true;
+            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
             Debug.Log("Put Down");
             pickUpBox = null;
             transform.SetParent(player.transform.parent);
