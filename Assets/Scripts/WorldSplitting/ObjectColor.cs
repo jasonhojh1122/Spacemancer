@@ -25,7 +25,7 @@ namespace Core
                 }
                 else
                 {
-                    _propBlock.SetColor("_Color", Dimension.MaterialColor[color]);
+                    _propBlock.SetColor("_MainColor", Dimension.MaterialColor[color]);
                     _propBlock.SetFloat("_Dissolve", 0);
                     if (color != so.Dim.color)
                     {
