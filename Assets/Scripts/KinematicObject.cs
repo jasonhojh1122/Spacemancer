@@ -33,8 +33,8 @@ public class KinematicObject : MonoBehaviour
     protected Vector3 groundNormal;
     protected Rigidbody body;
 
-    protected const float minMoveDistance = 0.01f;
-    protected const float shellRadius = 0.05f;
+    public float minMoveDistance = 0.001f;
+    public float shellRadius = 0.01f;
 
 
 
