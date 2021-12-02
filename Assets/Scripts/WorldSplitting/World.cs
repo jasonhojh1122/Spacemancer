@@ -59,10 +59,14 @@ namespace Core
 
             splitted = false;
 
-            foreach (Dimension.ColorSetting setting in colorSettings)
+            if(Dimension.MaterialColor.Count == 0)
             {
-                Dimension.MaterialColor.Add(setting.colorTag, setting.color32);
+                foreach (Dimension.ColorSetting setting in colorSettings)
+                {
+                    Dimension.MaterialColor.Add(setting.colorTag, setting.color32);
+                }
             }
+           
             Debug.Log("World Awake");
         }
 
@@ -196,6 +200,7 @@ namespace Core
         public void RotateDimensions(int dir)
         {
             if (!Splitted || dimensionTransition.Transitting) return;
+            playerInteraction.OnDimensionChange();
             StartCoroutine(dimensionTransition.RotateTransition(dir));
         }
 

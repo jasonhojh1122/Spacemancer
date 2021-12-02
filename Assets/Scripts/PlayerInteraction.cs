@@ -7,6 +7,28 @@ public class PlayerInteraction : MonoBehaviour
     Interaction.Interactable interactable;
     public float interactAngle = 50f;
     bool exit = false;
+    [SerializeField] GameObject interactHintUI;
+
+    void Update()
+    {
+        if (interactable != null)
+        {
+            var so = interactable.GetComponent<Core.SplittableObject>();
+            if ( (so == null || so.IsInCorrectDim())  && Vector3.Angle(interactable.gameObject.transform.position - transform.position, transform.forward) < interactAngle)
+            {
+                interactHintUI.SetActive(true);
+            }
+            else
+            {
+                interactHintUI.SetActive(false);
+            }
+        }
+        else
+        {
+            interactHintUI.SetActive(false);
+        }
+    }
+
     public void Interact()
     {
         if (interactable != null)
@@ -15,10 +37,10 @@ public class PlayerInteraction : MonoBehaviour
             {
                 interactable.Interact();
             }
-
         }
     }
 
+    
     public bool IsInteracting()
     {
         if (interactable == null) return false;
