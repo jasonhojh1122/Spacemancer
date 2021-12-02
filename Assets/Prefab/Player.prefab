@@ -2195,7 +2195,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 80
   m_CollisionDetection: 3
-
 --- !u!136 &7037722069045786882
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2226,6 +2225,8 @@ MonoBehaviour:
   gravityModifier: 1
   velocity: {x: 0, y: 0, z: 0}
   paused: 0
+  minMoveDistance: 0.001
+  shellRadius: 0.01
   maxSpeed: 2
   jumpTakeOffSpeed: 7
   jumpDeceleration: 0.6
@@ -2249,6 +2250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactAngle: 50
+  interactHintUI: {fileID: 0}
 --- !u!114 &7037722069045786883
 MonoBehaviour:
   m_ObjectHideFlags: 0
