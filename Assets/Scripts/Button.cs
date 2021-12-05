@@ -33,7 +33,7 @@ public class Button : MonoBehaviour
     private bool Match(GameObject obj)
     {
         var objSo = obj.GetComponent<Core.SplittableObject>();
-        if (objSo.ObjectColor.Color == Dimension.Color.NONE || objSo.ObjectColor.Color != so.ObjectColor.Color)
+        if (objSo.Color == Dimension.Color.NONE || objSo.Color != so.Color)
         {
             return false;
         }
@@ -47,14 +47,14 @@ public class Button : MonoBehaviour
         List<SplittableObject> toActivate = new List<SplittableObject>();
         foreach (SplittableObject obj in set)
         {
-            if (obj.ObjectColor.Color == so.ObjectColor.Color)
+            if (obj.Color == so.Color)
             {
                 toActivate.Add(obj);
             }
         }
         foreach (SplittableObject obj in toActivate)
         {
-            world.ActivateObject(obj, so.ObjectColor.Color);
+            world.ActivateObject(obj, so.Color);
         }
     }
 
@@ -65,7 +65,7 @@ public class Button : MonoBehaviour
         List<SplittableObject> toInactivate = new List<SplittableObject>();
         foreach (SplittableObject obj in set)
         {
-            if (obj.ObjectColor.Color == so.ObjectColor.Color)
+            if (obj.Color == so.Color)
             {
                 world.DeleteObject(obj);
                 toInactivate.Add(obj);

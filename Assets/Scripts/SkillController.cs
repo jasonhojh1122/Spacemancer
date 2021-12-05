@@ -2,113 +2,135 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Core;
+
 public class SkillController : MonoBehaviour
 {
-    public Dimension.Color skillColor = Dimension.Color.NONE;
-    private Collider hitCollider = null;
-    public bool alreadyFilled = false;
+    public enum SkillState
+    {
+        OFF, TO_WITHDRAW, TO_FILL
+    }
+    [SerializeField] Laser laser;
+    [SerializeField] SkillControllerUI skillControllerUI;
+    [SerializeField] CanvasGroupFader skillControllerUIFader;
+
+    Dimension.Color selectionColor;
+    Dimension.Color holdColor;
     int colorIdx = 0;
-    float lastPressedLT=0.0f;
+    float lastPressedLT = 0.0f;
     float lastPressedRT = 0.0f;
     float betweenPressed = 0.5f;
-    List<Dimension.Color> colorList =new List<Dimension.Color>{Dimension.Color.RED,Dimension.Color.GREEN,Dimension.Color.BLUE};
-    enum SkillMode
+    SkillState curState;
+    public SkillState CurState
     {
-        WITHDRAW,FILL
+        get => curState;
     }
-    private void Start()
+
+    private void Awake()
     {
-        skillColor = Dimension.Color.RED;
+        curState = SkillState.OFF;
+        selectionColor = Dimension.BaseColor[0];
+        holdColor = Dimension.Color.NONE;
     }
+
     private void Update()
     {
-        hitCollider = GetComponent<Laser>().hitCollider;
-        if (Input.GetButtonDown("NextColor")|| (Input.GetAxis("NextColorJoystick") >=1&& (Time.time-lastPressedRT > betweenPressed))&& !alreadyFilled)
-        {
-            lastPressedRT = Time.time;
-            colorIdx = (colorIdx + 1) % colorList.Count;
-            skillColor = colorList[colorIdx];
-        }
-        else if (Input.GetButtonDown("PreviousColor")||(Input.GetAxis("PreviousColorJoystick")>=1 && (Time.time - lastPressedLT > betweenPressed)) && !alreadyFilled)
-        {
-            lastPressedLT = Time.time;
-            colorIdx = (colorIdx + colorList.Count - 1) % colorList.Count;
-            skillColor = colorList[colorIdx];
-        }
-//
-  //      if (GetComponent<Laser>().laserIsOn)
-    //    {
-      //      float laser_Y = Input.GetAxisRaw("LaserControlV");
-        //    GetComponent<Laser>().forward_Offset.y += laser_Y*0.01f;
-        //}
         if (Input.GetButtonDown("Skill"))
         {
             Debug.Log("Skill Pressed");
             Skill();
         }
+
+        // color can be change before withdrawing
+        if (curState == SkillState.TO_WITHDRAW)
+        {
+            if ( Input.GetButtonDown("NextColor") ||
+                (Input.GetAxis("NextColorJoystick") >= 1 && (Time.time - lastPressedRT > betweenPressed)) )
+            {
+                lastPressedRT = Time.time;
+                colorIdx = (colorIdx + 1) % Dimension.BaseColor.Count;
+                selectionColor = Dimension.BaseColor[colorIdx];
+                laser.Color = selectionColor;
+                skillControllerUI.Select(selectionColor);
+            }
+            else if ( Input.GetButtonDown("PreviousColor") ||
+                     (Input.GetAxis("PreviousColorJoystick") >= 1 && (Time.time - lastPressedLT > betweenPressed)) )
+            {
+                lastPressedLT = Time.time;
+                colorIdx = (colorIdx + Dimension.BaseColor.Count - 1) % Dimension.BaseColor.Count;
+                selectionColor = Dimension.BaseColor[colorIdx];
+                laser.Color = selectionColor;
+                skillControllerUI.Select(selectionColor);
+            }
+        }
     }
+
     private void Skill()
     {
-        GetComponent<Laser>().laserIsOn = true;
-        if (hitCollider == null)
+        switch (curState)
+        {
+            case SkillState.OFF:
+                laser.IsOn = true;
+                skillControllerUIFader.FadeIn();
+                if (holdColor != Dimension.Color.NONE)
+                {
+                    selectionColor = holdColor;
+                    curState = SkillState.TO_FILL;
+                    skillControllerUI.Hold(holdColor);
+                }
+                else
+                {
+                    curState = SkillState.TO_WITHDRAW;
+                    skillControllerUI.Select(selectionColor);
+                }
+                laser.Color = selectionColor;
+                break;
+            case SkillState.TO_WITHDRAW:
+                if (laser.HittedObject != null)
+                {
+                    Withdraw();
+                    skillControllerUI.Hold(holdColor);
+                }
+                else
+                    TurnOffSkill();
+                break;
+            case SkillState.TO_FILL:
+                if (laser.HittedObject != null)
+                    Fill();
+                else
+                    TurnOffSkill();
+                break;
+
+        }
+    }
+
+    private void Withdraw()
+    {
+        if (laser.HittedObject.IsPersistentColor ||
+            ((laser.HittedObject.Color & selectionColor) == Dimension.Color.NONE) )
         {
             return;
         }
-        if (alreadyFilled)
-        {
-            fill();
-        }
-        else
-        {
-            withdraw();
-        }
+        laser.HittedObject.Color = laser.HittedObject.Color ^ selectionColor;
+        holdColor = selectionColor;
+        curState = SkillState.TO_FILL;
     }
-    private void withdraw()
+
+    private void Fill()
     {
-        ObjectColor color = hitCollider.GetComponent<ObjectColor>();
-        if (tryColor(color.Color,skillColor,SkillMode.WITHDRAW))
+        if (laser.HittedObject.IsPersistentColor ||
+            (laser.HittedObject.Color & holdColor) != Dimension.Color.NONE)
         {
-            color.Color = color.Color ^ skillColor;
-            alreadyFilled = true;
-            Debug.Log("Withdrawn");
-            hitCollider = null;
+            return;
         }
+        laser.HittedObject.Color = laser.HittedObject.Color | holdColor;
+        holdColor = Dimension.Color.NONE;
+        TurnOffSkill();
     }
-    private void fill()
+
+    private void TurnOffSkill()
     {
-        ObjectColor color = hitCollider.GetComponent<ObjectColor>();
-        if (tryColor(color.Color, skillColor, SkillMode.FILL))
-        {
-            color.Color = color.Color | skillColor;
-            alreadyFilled = false;
-            GetComponent<Laser>().laserIsOn = false;
-            Debug.Log("Filled");
-            hitCollider = null;
-        }
-    }
-    private bool tryColor(Dimension.Color objectColor,Dimension.Color targetColor,SkillMode mode)
-    {
-        bool ret = true;
-        Dimension.Color tmp;
-        Debug.Log("Trying Color");
-        switch (mode)
-        {
-            case SkillMode.WITHDRAW:// withdraw mode
-                tmp = objectColor & targetColor;
-                if(tmp!=targetColor)
-                {
-                    ret = false;
-                }
-                break;
-            case SkillMode.FILL: // fill mode
-            default:
-                tmp = objectColor | targetColor;
-                if(tmp == objectColor)
-                {
-                    ret = false;
-                }
-                break;
-        }
-        return ret;
+        laser.IsOn = false;
+        skillControllerUIFader.FadeOut();
+        curState = SkillState.OFF;
     }
 }
