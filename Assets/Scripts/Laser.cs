@@ -14,6 +14,7 @@ public class Laser : MonoBehaviour
     SplittableObject hittedObject;
     Dimension.Color _color;
     bool _IsOn = false;
+    Vector3 lastContactPoint;
     public Dimension.Color Color
     {
         get => _color;
@@ -23,6 +24,10 @@ public class Laser : MonoBehaviour
             lr.GetPropertyBlock(_property);
             _property.SetColor("_Color", Dimension.MaterialColor[value]);
             lr.SetPropertyBlock(_property);
+            if (hittedObject != null)
+            {
+                hittedObject.ObjectColor.SelectColor = _color;
+            }
         }
     }
     public bool IsOn
@@ -34,7 +39,11 @@ public class Laser : MonoBehaviour
             if(value == false)
             {
                 lr.enabled = false;
-                hittedObject = null;
+                if (hittedObject != null)
+                {
+                    hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
+                    hittedObject = null;
+                }
             }
             else
             {
@@ -66,15 +75,64 @@ public class Laser : MonoBehaviour
                 hit.collider != null)
             {
                 lr.SetPosition(1, hit.point);
-                hittedObject = hit.collider.gameObject.GetComponent<SplittableObject>();
+                var newHittedObject = hit.collider.gameObject.GetComponent<SplittableObject>();
+                UpdateObjectMaterial(hit.point, newHittedObject);
             }
             else
             {
                 lr.SetPosition(1, transform.forward.normalized * 5000);
+                if (hittedObject != null)
+                {
+                    hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
+                }
                 hittedObject = null;
             }
         }
 
+    }
+
+    void UpdateObjectMaterial(Vector3 contactPoint, SplittableObject newHittedObject)
+    {
+        bool selectNew = false;
+        bool unselectOld = false;
+        if (newHittedObject == null)
+        {
+            if (hittedObject != null)
+            {
+                unselectOld = true;
+            }
+        }
+        else
+        {
+            if (hittedObject == null)
+            {
+                selectNew = true;
+            }
+            else if (hittedObject.gameObject.GetInstanceID() != newHittedObject.gameObject.GetInstanceID())
+            {
+                selectNew = true;
+                unselectOld = true;
+            }
+        }
+
+        if (unselectOld)
+        {
+            hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
+        }
+        hittedObject = newHittedObject;
+        if (selectNew)
+        {
+            if (hittedObject.IsPersistentColor)
+            {
+                hittedObject = null;
+            }
+            else
+            {
+                hittedObject.ObjectColor.SelectColor = _color;
+                hittedObject.ObjectColor.SkillSelect(contactPoint);
+            }
+        }
+        lastContactPoint = contactPoint;
     }
 
 }
