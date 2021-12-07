@@ -80,6 +80,7 @@ public class SkillController : MonoBehaviour
                 else
                 {
                     curState = SkillState.TO_WITHDRAW;
+                    skillControllerUI.UnMaskAll();
                     skillControllerUI.Select(selectionColor);
                 }
                 laser.Color = selectionColor;

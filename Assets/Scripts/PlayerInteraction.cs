@@ -4,43 +4,56 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    [SerializeField] GameObject hintUI;
+    Vector3 hintUIOffset = new Vector3(0.0f, 1.0f, 0.0f);
     Interaction.Interactable interactable;
+    Core.SplittableObject interactableSo;
+    Collider interactableCol;
     public float interactAngle = 50f;
-    bool exit = false;
-    [SerializeField] GameObject interactHintUI;
+    bool canInteract;
+
+    private void Start() {
+        HideHintUI();
+    }
 
     void Update()
     {
         if (interactable != null)
         {
-            var so = interactable.GetComponent<Core.SplittableObject>();
-            if ( (so == null || so.IsInCorrectDim())  && Vector3.Angle(interactable.gameObject.transform.position - transform.position, transform.forward) < interactAngle)
+            if ( (interactableSo == null || interactableSo.IsInCorrectDim()) &&
+                Vector3.Angle(interactable.gameObject.transform.position - transform.position, transform.forward) < interactAngle)
             {
-                interactHintUI.SetActive(true);
+                canInteract = true;
             }
             else
             {
-                interactHintUI.SetActive(false);
+                canInteract = false;
+            }
+            if (canInteract && !interactable.IsInteracting())
+            {
+                ShowHintUI();
+            }
+            else
+            {
+                HideHintUI();
             }
         }
         else
         {
-            interactHintUI.SetActive(false);
+            HideHintUI();
+            canInteract = false;
         }
     }
 
     public void Interact()
     {
-        if (interactable != null)
+        if (interactable != null && canInteract)
         {
-            if(Vector3.Angle(interactable.gameObject.transform.position - transform.position, transform.forward ) < interactAngle)
-            {
-                interactable.Interact();
-            }
+            interactable.Interact();
+            canInteract = false;
         }
     }
 
-    
     public bool IsInteracting()
     {
         if (interactable == null) return false;
@@ -50,10 +63,44 @@ public class PlayerInteraction : MonoBehaviour
     public void OnDimensionChange()
     {
         interactable = null;
-        exit = false;
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void SetInteractable(Interaction.Interactable newInteractable)
+    {
+        if (interactable != null && interactable.IsInteracting())
+            return;
+        interactable = newInteractable;
+        if (interactable != null)
+        {
+            interactableCol = interactable.GetComponent<Collider>();
+            interactableSo = interactable.GetComponent<Core.SplittableObject>();
+        }
+    }
+
+    public void ClearInteractable(Interaction.Interactable oldInteractable)
+    {
+        if (interactable == null)
+            return;
+        else if (interactable.gameObject.GetInstanceID() == oldInteractable.gameObject.GetInstanceID())
+            interactable = null;
+    }
+
+    void ShowHintUI()
+    {
+        hintUI.SetActive(true);
+        Vector3 pos = interactableCol.bounds.center;
+        pos.y += interactableCol.bounds.extents.y;
+        pos += hintUIOffset;
+        hintUI.transform.position = pos;
+    }
+
+    void HideHintUI()
+    {
+        hintUI.SetActive(false);
+    }
+
+
+    /* private void OnTriggerEnter(Collider other)
     {
         if (exit && interactable.IsInteracting())
         {
@@ -84,5 +131,5 @@ public class PlayerInteraction : MonoBehaviour
             }
 
         }
-    }
+    } */
 }
