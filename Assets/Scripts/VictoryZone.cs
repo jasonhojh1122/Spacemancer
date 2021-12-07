@@ -14,7 +14,7 @@ public class VictoryZone : MonoBehaviour
     [SerializeField] Dimension.Color activeColor; // None if no restriction
     [SerializeField] string nextSceneName;
     Core.SplittableObject splittableObject;
-    
+
     private void Awake()
     {
         splittableObject = GetComponent<Core.SplittableObject>();
@@ -22,7 +22,7 @@ public class VictoryZone : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if (activeColor != Dimension.Color.NONE && (splittableObject.ObjectColor.Color != activeColor || !splittableObject.IsInCorrectDim()))
+        if (activeColor != Dimension.Color.NONE && (splittableObject.Color != activeColor || !splittableObject.IsInCorrectDim()))
             return;
 
         var player = col.GetComponent<Character.PlayerController>();

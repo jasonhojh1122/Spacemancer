@@ -66,7 +66,7 @@ namespace Core
                     Dimension.MaterialColor.Add(setting.colorTag, setting.color32);
                 }
             }
-           
+
             Debug.Log("World Awake");
         }
 
@@ -227,13 +227,13 @@ namespace Core
             Debug.Log("-----processed Object-----");
             foreach (SplittableObject so in processedObjects) {
                 if (so.gameObject.name != "Box") continue;
-                Debug.Log(so.gameObject.name + ", " + so.ObjectColor.Color.ToString() + ", ID: " + so.transform.GetInstanceID());
+                Debug.Log(so.gameObject.name + ", " + so.Color.ToString() + ", ID: " + so.transform.GetInstanceID());
             }
             Debug.Log("");
             Debug.Log("-----unprocessedObjects Object-----");
             foreach (SplittableObject so in unprocessedObjects) {
                 if (so.gameObject.name != "Box") continue;
-                Debug.Log(so.gameObject.name + ", " + so.ObjectColor.Color.ToString() + ", ID: " + so.transform.GetInstanceID());
+                Debug.Log(so.gameObject.name + ", " + so.Color.ToString() + ", ID: " + so.transform.GetInstanceID());
             }
         }
 

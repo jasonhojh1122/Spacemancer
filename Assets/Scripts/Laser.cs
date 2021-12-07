@@ -2,25 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Core;
+
+[RequireComponent(typeof(LineRenderer))]
 public class Laser : MonoBehaviour
 {
+    [SerializeField] float width;
+
     LineRenderer lr;
-    public Collider hitCollider;
-    private bool _laserIsOn = false;
-    [SerializeField] List<Material> material;
     Vector3 y_Offset = new Vector3(0, 0.2f, 0);
-    public Vector3 forward_Offset;
-    public bool laserIsOn
+    MaterialPropertyBlock _property;
+    SplittableObject hittedObject;
+    Dimension.Color _color;
+    bool _IsOn = false;
+    public Dimension.Color Color
     {
-        get => _laserIsOn;
+        get => _color;
         set
         {
-            _laserIsOn = value;
+            _color = value;
+            lr.GetPropertyBlock(_property);
+            _property.SetColor("_Color", Dimension.MaterialColor[value]);
+            lr.SetPropertyBlock(_property);
+        }
+    }
+    public bool IsOn
+    {
+        get => _IsOn;
+        set
+        {
+            _IsOn = value;
             if(value == false)
             {
                 lr.enabled = false;
-                hitCollider = null;
-                forward_Offset = new Vector3(0, 0, 0);
+                hittedObject = null;
             }
             else
             {
@@ -28,64 +42,40 @@ public class Laser : MonoBehaviour
             }
         }
     }
-    // Start is called before the first frame update
-    void Start()
+    public SplittableObject HittedObject
+    {
+        get => hittedObject;
+    }
+
+    void Awake()
     {
         lr = GetComponent<LineRenderer>();
-        forward_Offset = new Vector3(0, 0, 0);
+        lr.positionCount = 2;
+        lr.startWidth = width;
+        lr.endWidth = width;
+        _property = new MaterialPropertyBlock();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
-        if (GetComponent<SkillController>().alreadyFilled)
+        if (IsOn)
         {
-            lr.material = material[1];
-        }
-        else
-        {
-            lr.material = material[0];
-        }
-        if (laserIsOn)
-        {
-            Debug.Log("Laser Is On");
-            lr.startColor = dimToColor();
-            lr.endColor = lr.startColor;
-            lr.material.color = lr.startColor;
-            lr.SetPosition(0, transform.position+y_Offset);
+            lr.SetPosition(0, transform.position + y_Offset);
             RaycastHit hit;
-            if (Physics.Raycast(transform.position+y_Offset, (transform.forward+forward_Offset).normalized, out hit))
+            if (Physics.Raycast(transform.position + y_Offset, transform.forward.normalized, out hit) &&
+                hit.collider != null)
             {
-                if (hit.collider)
-                {
-                    lr.SetPosition(1, hit.point);
-                }
-                hitCollider = hit.collider;
+                lr.SetPosition(1, hit.point);
+                hittedObject = hit.collider.gameObject.GetComponent<SplittableObject>();
             }
-            else lr.SetPosition(1, (transform.forward+forward_Offset).normalized * 5000);
-
+            else
+            {
+                lr.SetPosition(1, transform.forward.normalized * 5000);
+                hittedObject = null;
+            }
         }
 
     }
-    Color dimToColor()
-    {
-        Color ret = Color.clear;
-        switch (GetComponent<SkillController>().skillColor)
-        {
-            case Dimension.Color.RED:
-                ret = Color.red;
-                break;
-            case Dimension.Color.BLUE:
-                ret = Color.blue;
-                break;
-            case Dimension.Color.GREEN:
-                ret = Color.green;
-                break;
-            default:
-                ret = Color.clear;
-                break;
-        }
-        return ret;
-    }
+
 }
 

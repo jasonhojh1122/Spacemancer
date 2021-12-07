@@ -10,7 +10,7 @@ namespace Core
     public class SplittableObject : MonoBehaviour
     {
 
-        [SerializeField] protected bool persistentColor;
+        [SerializeField] protected bool isPersistentColor;
         [SerializeField] protected bool defaultInactive;
 
         protected ObjectColor objectColor;
@@ -34,8 +34,22 @@ namespace Core
         public ObjectColor ObjectColor {
             get => objectColor;
         }
+        public Dimension.Color Color {
+            get => objectColor.Color;
+            set {
+                if (isPersistentColor) return;
+                objectColor.Color = value;
+                if (objectColor.Color == Dimension.Color.NONE)
+                {
+                    world.DeleteObject(this);
+                }
+            }
+        }
         public Dictionary<Dimension.Color, SplittableObject> Siblings {
             get => siblings;
+        }
+        public bool IsPersistentColor {
+            get => isPersistentColor;
         }
 
         void Awake()
@@ -61,7 +75,7 @@ namespace Core
                 world.MoveToProcessed(this);
                 return;
             }
-            else if (persistentColor)
+            else if (isPersistentColor)
                 SplitPersistent();
             else
                 SplitColor();
@@ -74,7 +88,7 @@ namespace Core
                 if (Siblings[sc] == null)
                 {
                     var so = world.InstantiateNewObjectToDimension(this, sc);
-                    so.ObjectColor.Color = ObjectColor.Color;
+                    so.Color = this.Color;
                     Siblings[sc] = so;
                     world.RemoveFromSet(so);
                 }
@@ -88,14 +102,14 @@ namespace Core
 
         protected void SplitColor()
         {
-            var splittedColor = Dimension.SplitColor(ObjectColor.Color);
-            var missingColor = Dimension.MissingColor(ObjectColor.Color);
+            var splittedColor = Dimension.SplitColor(Color);
+            var missingColor = Dimension.MissingColor(Color);
             foreach (Dimension.Color sc in splittedColor)
             {
                 if (Siblings[sc] == null)
                 {
                     Siblings[sc] = world.InstantiateNewObjectToDimension(this, sc);
-                    Siblings[sc].ObjectColor.Color = sc;
+                    Siblings[sc].Color = sc;
                 }
                 else
                 {
@@ -117,7 +131,7 @@ namespace Core
         }
 
         public virtual void Merge(SplittableObject parent) {
-            if (persistentColor)
+            if (isPersistentColor)
             {
                 world.MoveToProcessed(this);
                 return;
@@ -125,9 +139,9 @@ namespace Core
 
             IsMerged = true;
 
-            Dimension.Color mergedColor = ObjectColor.Color;
+            Dimension.Color mergedColor = this.Color;
 
-            if (parent != null && parent.ObjectColor.Color == Dimension.Color.BLACK)
+            if (parent != null && parent.Color == Dimension.Color.BLACK)
                 mergedColor = Dimension.Color.BLACK;
 
             List<SplittableObject> curSiblings = new List<SplittableObject>();
@@ -143,13 +157,13 @@ namespace Core
                 {
                     continue;
                 }
-                else if (so.ObjectColor.Color == Dimension.Color.BLACK)
+                else if (so.Color == Dimension.Color.BLACK)
                 {
                     mergedColor = Dimension.Color.BLACK;
                 }
                 else if (c.gameObject.name == gameObject.name && Fuzzy.CloseVector3(c.transform.localPosition, transform.localPosition))
                 {
-                    mergedColor = Dimension.AddColor(mergedColor, so.ObjectColor.Color);
+                    mergedColor = Dimension.AddColor(mergedColor, so.Color);
                     so.IsMerged = true;
                     curSiblings.Add(so);
                 }
@@ -168,8 +182,8 @@ namespace Core
         protected void MergeToBlack(List<SplittableObject> curSiblings)
         {
             world.MoveObjectToDimension(this, Dimension.Color.WHITE);
-            this.ObjectColor.Color = Dimension.Color.BLACK;
-            persistentColor = true;
+            this.Color = Dimension.Color.BLACK;
+            isPersistentColor = true;
             world.MoveToProcessed(this);
 
             for (int i = 0 ; i < curSiblings.Count; i++)
@@ -181,7 +195,7 @@ namespace Core
         protected void MergeToNewParent(Dimension.Color mergedColor, List<SplittableObject> curSiblings)
         {
             var parent = world.InstantiateNewObjectToDimension(this, Dimension.Color.WHITE);
-            parent.ObjectColor.Color = mergedColor;
+            parent.Color = mergedColor;
             world.MoveToProcessed(parent);
 
             curSiblings.Add(this);
@@ -192,7 +206,7 @@ namespace Core
             for (int i = 0; i < curSiblings.Count; i++)
             {
                 world.MoveObjectToDimension(curSiblings[i], splittedColor[i]);
-                curSiblings[i].ObjectColor.Color = splittedColor[i];
+                curSiblings[i].Color = splittedColor[i];
                 parent.Siblings[splittedColor[i]] = curSiblings[i];
                 world.MoveToProcessed(curSiblings[i]);
             }
@@ -216,7 +230,7 @@ namespace Core
 
         public bool IsInCorrectDim()
         {
-            return ObjectColor.Color == Dim.Color;
+            return this.Color == Dim.Color;
         }
 
     }

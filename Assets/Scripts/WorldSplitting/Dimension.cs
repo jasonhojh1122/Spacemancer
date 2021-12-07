@@ -26,9 +26,9 @@ namespace Core {
             public UnityEngine.Color32 color32;
         }
 
-        public static  List<Color> BaseColor = new List<Color> {Color.RED, Color.GREEN, Color.BLUE};
+        public static List<Color> BaseColor = new List<Color> {Color.RED, Color.GREEN, Color.BLUE};
 
-        public static  Dictionary<Dimension.Color, UnityEngine.Color> MaterialColor = new Dictionary<Dimension.Color, UnityEngine.Color> {
+        public static Dictionary<Dimension.Color, UnityEngine.Color> MaterialColor = new Dictionary<Dimension.Color, UnityEngine.Color> {
             //{Color.RED,     new UnityEngine.Color(0.588f, 0.196f, 0.196f, 1.0f)}, // #963232
             //{Color.GREEN,   new UnityEngine.Color(0.196f, 0.588f, 0.196f, 1.0f)}, // #329632
             //{Color.BLUE,    new UnityEngine.Color(0.196f, 0.196f, 0.588f, 1.0f)}, // #323296
