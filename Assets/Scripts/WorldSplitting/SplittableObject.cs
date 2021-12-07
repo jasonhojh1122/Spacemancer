@@ -214,18 +214,6 @@ namespace Core
             {
                 parent.Siblings[missingColor[i]] = null;
             }
-
-            /* if (gameObject.name == "Box")
-            {
-                Debug.Log(gameObject.name + " " + parent.transform.GetInstanceID() + " siblings: ");
-                foreach (Dimension.Color color in Dimension.BaseColor)
-                {
-                    if (parent.Siblings[color] != null)
-                    {
-                        Debug.Log(parent.siblings[color].transform.GetInstanceID());
-                    }
-                }
-            } */
         }
 
         public bool IsInCorrectDim()
