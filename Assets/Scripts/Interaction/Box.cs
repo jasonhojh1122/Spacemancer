@@ -69,7 +69,8 @@ namespace Interaction {
             rb.isKinematic = false;
             rb.interpolation = RigidbodyInterpolation.Interpolate;
             rb.freezeRotation = true;
-            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+  
         }
 
         public override void OnZoneEnter(Collider other) {
