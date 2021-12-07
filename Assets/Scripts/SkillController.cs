@@ -87,10 +87,7 @@ public class SkillController : MonoBehaviour
                 break;
             case SkillState.TO_WITHDRAW:
                 if (laser.HittedObject != null)
-                {
                     Withdraw();
-                    skillControllerUI.Hold(holdColor);
-                }
                 else
                     TurnOffSkill();
                 break;
@@ -100,7 +97,6 @@ public class SkillController : MonoBehaviour
                 else
                     TurnOffSkill();
                 break;
-
         }
     }
 
@@ -114,6 +110,7 @@ public class SkillController : MonoBehaviour
         laser.HittedObject.Color = laser.HittedObject.Color ^ selectionColor;
         holdColor = selectionColor;
         curState = SkillState.TO_FILL;
+        skillControllerUI.Hold(holdColor);
     }
 
     private void Fill()
