@@ -8,7 +8,6 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] Transform endPoint;
     // [SerializeField] Dimension.Color activeColor; // None if no restriction
     [SerializeField] float moveSpeed = 3f;
-
     Vector3 startPos;
     Vector3 endPos;
     Core.SplittableObject so;
@@ -22,7 +21,7 @@ public class MovingPlatform : MonoBehaviour
         endPos = endPoint.localPosition;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (so.IsInCorrectDim())
             Move();
@@ -39,18 +38,5 @@ public class MovingPlatform : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.transform.tag == "Player")
-        {
-            other.attachedRigidbody.velocity = rb.velocity;
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-       if(other.transform.tag == "Player")
-        {
 
-        }
-    }
 }
