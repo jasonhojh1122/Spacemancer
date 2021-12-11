@@ -11,7 +11,10 @@ namespace Core
     [RequireComponent(typeof(DimensionTransition))]
     public class World : MonoBehaviour
     {
-
+        static World _instance;
+        public static World Instance {
+            get => _instance;
+        }
         [SerializeField] List<ObjectColor> dimensions;
         [SerializeField] Transform inactivePoolRoot;
         [SerializeField] List<Dimension.ColorSetting> colorSettings;
@@ -44,6 +47,11 @@ namespace Core
 
         void Awake()
         {
+            if (_instance != null)
+            {
+                Debug.LogError("Multiple instance of World created");
+            }
+            _instance = this;
             playerInteraction = FindObjectOfType<PlayerInteraction>();
             dimensionTransition = GetComponent<DimensionTransition>();
             dimensionMap = new Dictionary<Dimension.Color, ObjectColor>();
@@ -66,8 +74,6 @@ namespace Core
                     Dimension.MaterialColor.Add(setting.colorTag, setting.color32);
                 }
             }
-
-            Debug.Log("World Awake");
         }
 
         private void Start()
@@ -75,7 +81,7 @@ namespace Core
             SplittableObject[] so = FindObjectsOfType<SplittableObject>();
             foreach (SplittableObject s in so)
             {
-                s.Dim = dimensionMap[Dimension.Color.WHITE];
+                s.Dim = Dims[Dimension.Color.WHITE];
                 s.ObjectColor.Init();
                 if (s.DefaultInactive)
                 {
@@ -171,6 +177,8 @@ namespace Core
             Quaternion localRot = so.transform.localRotation;
             MoveTransformToNewParent(so.transform, Dims[dim].transform, localPos, localRot);
             unprocessedObjects.Add(so);
+            so.Dim = ActiveDimension;
+            so.ObjectColor.Init();
         }
 
         void MoveTransformToNewParent(Transform child, Transform parent, Vector3 localPos, Quaternion localRot)

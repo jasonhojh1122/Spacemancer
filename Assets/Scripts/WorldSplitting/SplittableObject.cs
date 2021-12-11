@@ -2,21 +2,17 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-
 namespace Core
 {
-
     [RequireComponent(typeof(ObjectColor))]
     public class SplittableObject : MonoBehaviour
     {
-
         [SerializeField] protected bool isPersistentColor;
         [SerializeField] protected bool defaultInactive;
 
         protected ObjectColor objectColor;
-        protected World world;
-        protected Collider col;
         protected ObjectColor dimension;
+        protected Collider col;
         protected Dictionary<Dimension.Color, SplittableObject> siblings;
         protected bool _IsMerged;
 
@@ -37,11 +33,10 @@ namespace Core
         public Dimension.Color Color {
             get => objectColor.Color;
             set {
-                if (isPersistentColor) return;
                 objectColor.Color = value;
                 if (objectColor.Color == Dimension.Color.NONE)
                 {
-                    world.DeleteObject(this);
+                    World.Instance.DeleteObject(this);
                 }
             }
         }
@@ -56,7 +51,6 @@ namespace Core
         {
             col = GetComponent<Collider>();
             objectColor = GetComponent<ObjectColor>();
-            world = FindObjectOfType<World>();
             siblings = new Dictionary<Dimension.Color, SplittableObject>();
             foreach (Dimension.Color bc in Dimension.BaseColor)
                 Siblings.Add(bc, null);
@@ -65,14 +59,15 @@ namespace Core
 
         protected void OnDisable()
         {
-            // world.RemoveFromSet(this);
+            // World.Instance.RemoveFromSet(this);
         }
 
+        // Split the object into 3 dimension. Called by World.
         public virtual void Split()
         {
             if (Dim.Color != Dimension.Color.WHITE)
             {
-                world.MoveToProcessed(this);
+                World.Instance.MoveToProcessed(this);
                 return;
             }
             else if (isPersistentColor)
@@ -83,21 +78,26 @@ namespace Core
 
         protected void SplitPersistent()
         {
-            foreach (Dimension.Color sc in Dimension.BaseColor)
+            List<Dimension.Color> splittedColor;
+            if (this.Color == Dimension.Color.BLACK)
+                splittedColor = Dimension.BaseColor;
+            else
+                splittedColor = Dimension.SplitColor(this.Color);
+            foreach (Dimension.Color sc in splittedColor)
             {
                 if (Siblings[sc] == null)
                 {
-                    var so = world.InstantiateNewObjectToDimension(this, sc);
+                    var so = World.Instance.InstantiateNewObjectToDimension(this, sc);
                     so.Color = this.Color;
                     Siblings[sc] = so;
-                    world.RemoveFromSet(so);
                 }
                 else
                 {
                     Siblings[sc].transform.localPosition = transform.localPosition;
                 }
+                World.Instance.RemoveFromSet(Siblings[sc]);
             }
-            world.RemoveFromSet(this);
+            World.Instance.RemoveFromSet(this);
         }
 
         protected void SplitColor()
@@ -108,7 +108,7 @@ namespace Core
             {
                 if (Siblings[sc] == null)
                 {
-                    Siblings[sc] = world.InstantiateNewObjectToDimension(this, sc);
+                    Siblings[sc] = World.Instance.InstantiateNewObjectToDimension(this, sc);
                     Siblings[sc].Color = sc;
                 }
                 else
@@ -116,43 +116,48 @@ namespace Core
                     Siblings[sc].transform.localPosition = transform.localPosition;
                     Siblings[sc].IsMerged = false;
                 }
-                world.MoveToProcessed(Siblings[sc]);
+                World.Instance.MoveToProcessed(Siblings[sc]);
             }
 
             foreach (Dimension.Color sc in missingColor)
             {
                 if (Siblings[sc] != null)
                 {
-                    world.DeleteObject(Siblings[sc]);
+                    World.Instance.DeleteObject(Siblings[sc]);
                     Siblings[sc] = null;
                 }
             }
-            world.DeleteObject(this);
+            World.Instance.DeleteObject(this);
         }
 
         public virtual void Merge(SplittableObject parent) {
             if (isPersistentColor)
             {
-                world.MoveToProcessed(this);
+                World.Instance.MoveToProcessed(this);
                 return;
             }
 
             IsMerged = true;
 
             Dimension.Color mergedColor = this.Color;
-
             if (parent != null && parent.Color == Dimension.Color.BLACK)
                 mergedColor = Dimension.Color.BLACK;
-
             List<SplittableObject> curSiblings = new List<SplittableObject>();
-            Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents * 0.7f, transform.rotation);
+            MergeCollidedObjects(ref mergedColor, curSiblings);
 
+            if (mergedColor == Dimension.Color.BLACK)
+                MergeToBlack(curSiblings);
+            else
+                MergeToNewParent(mergedColor, curSiblings);
+        }
+
+        protected void MergeCollidedObjects(ref Dimension.Color mergedColor, List<SplittableObject> curSiblings)
+        {
+            Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents * 0.7f, transform.rotation);
             foreach (Collider c in colliders)
             {
                 if (c == null || c.gameObject.GetInstanceID() == col.gameObject.GetInstanceID()) continue;
-
                 var so = c.gameObject.GetComponent<SplittableObject>();
-
                 if (so == null || so.IsMerged)
                 {
                     continue;
@@ -173,30 +178,25 @@ namespace Core
                     so.Merge(this);
                 }
             }
-            if (mergedColor == Dimension.Color.BLACK)
-                MergeToBlack(curSiblings);
-            else
-                MergeToNewParent(mergedColor, curSiblings);
         }
 
         protected void MergeToBlack(List<SplittableObject> curSiblings)
         {
-            world.MoveObjectToDimension(this, Dimension.Color.WHITE);
+            World.Instance.MoveObjectToDimension(this, Dimension.Color.WHITE);
             this.Color = Dimension.Color.BLACK;
             isPersistentColor = true;
-            world.MoveToProcessed(this);
-
+            World.Instance.MoveToProcessed(this);
             for (int i = 0 ; i < curSiblings.Count; i++)
             {
-                world.DeleteObject(curSiblings[i]);
+                World.Instance.DeleteObject(curSiblings[i]);
             }
         }
 
         protected void MergeToNewParent(Dimension.Color mergedColor, List<SplittableObject> curSiblings)
         {
-            var parent = world.InstantiateNewObjectToDimension(this, Dimension.Color.WHITE);
+            var parent = World.Instance.InstantiateNewObjectToDimension(this, Dimension.Color.WHITE);
             parent.Color = mergedColor;
-            world.MoveToProcessed(parent);
+            World.Instance.MoveToProcessed(parent);
 
             curSiblings.Add(this);
 
@@ -205,10 +205,10 @@ namespace Core
 
             for (int i = 0; i < curSiblings.Count; i++)
             {
-                world.MoveObjectToDimension(curSiblings[i], splittedColor[i]);
+                World.Instance.MoveObjectToDimension(curSiblings[i], splittedColor[i]);
                 curSiblings[i].Color = splittedColor[i];
                 parent.Siblings[splittedColor[i]] = curSiblings[i];
-                world.MoveToProcessed(curSiblings[i]);
+                World.Instance.MoveToProcessed(curSiblings[i]);
             }
             for (int i = 0; i < missingColor.Count; i++)
             {

@@ -19,7 +19,7 @@ namespace Character
             foreach (Dimension.Color bc in Dimension.BaseColor)
             {
                 dummies[bc] = GameObject.Instantiate<PlayerDummy>(dummyPrefab);
-                world.MoveObjectToDimension(dummies[bc].gameObject, bc);
+                World.Instance.MoveObjectToDimension(dummies[bc].gameObject, bc);
                 dummies[bc].gameObject.SetActive(false);
             }
         }
@@ -54,21 +54,21 @@ namespace Character
         public override void Split()
         {
             MoveToActiveDimension(true);
-            world.MoveToProcessed(this);
+            World.Instance.MoveToProcessed(this);
         }
 
         public override void Merge(SplittableObject parent)
         {
             MoveToActiveDimension(false);
-            world.MoveToProcessed(this);
+            World.Instance.MoveToProcessed(this);
         }
 
         void MoveToActiveDimension(bool enableDummies)
         {
-            world.MoveObjectToDimension(this, world.ActiveDimension.Color);
+            World.Instance.MoveObjectToDimension(this, World.Instance.ActiveDimension.Color);
             foreach (Dimension.Color sc in Dimension.BaseColor)
             {
-                if (world.Splitted && enableDummies && sc != world.ActiveDimension.Color)
+                if (World.Instance.Splitted && enableDummies && sc != World.Instance.ActiveDimension.Color)
                 {
                     dummies[sc].gameObject.SetActive(true);
                 }
@@ -81,8 +81,8 @@ namespace Character
 
         private void FixedUpdate()
         {
-            if (world.Transitting) return;
-            MoveToActiveDimension(world.Splitted);
+            if (World.Instance.Transitting) return;
+            MoveToActiveDimension(World.Instance.Splitted);
         }
     }
 
