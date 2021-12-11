@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace Core
 {
+    /// <summary>
+    /// Base class of splittable object.
+    /// </summary>
     [RequireComponent(typeof(ObjectColor))]
     public class SplittableObject : MonoBehaviour
     {
@@ -16,33 +19,60 @@ namespace Core
         protected Dictionary<Dimension.Color, SplittableObject> siblings;
         protected bool _IsMerged;
 
+        /// <summary>
+        /// If the object had merged in the merging process.
+        /// </summary>
         public bool IsMerged {
             get => _IsMerged;
             set => _IsMerged = value;
         }
+
+        /// <summary>
+        /// If the object is default inactive.
+        /// </summary>
         public bool DefaultInactive {
             get => defaultInactive;
         }
+
+        /// <summary>
+        /// The dimension which the object is located in.
+        /// </summary>
         public ObjectColor Dim {
             get => dimension;
             set => dimension = value;
         }
+
+        /// <summary>
+        /// The <c>ObjectColor</c> of the object.
+        /// </summary>
         public ObjectColor ObjectColor {
             get => objectColor;
         }
+
+        /// <summary>
+        /// The color of the object.
+        /// </summary>
         public Dimension.Color Color {
             get => objectColor.Color;
             set {
                 objectColor.Color = value;
                 if (objectColor.Color == Dimension.Color.NONE)
                 {
-                    World.Instance.DeleteObject(this);
+                    World.Instance.DeactivateObject(this);
                 }
             }
         }
+
+        /// <summary>
+        /// A <c>Dictionary</c> mapping of color and the sibling objects in different dimension.
+        /// </summary>
         public Dictionary<Dimension.Color, SplittableObject> Siblings {
             get => siblings;
         }
+
+        /// <summary>
+        /// If the object's color is persistent.
+        /// </summary>
         public bool IsPersistentColor {
             get => isPersistentColor;
         }
@@ -62,7 +92,9 @@ namespace Core
             // World.Instance.RemoveFromSet(this);
         }
 
-        // Split the object into 3 dimension. Called by World.
+        /// <summary>
+        /// Splits the object into 3 dimensions based on the Color.
+        /// </summary>
         public virtual void Split()
         {
             if (Dim.Color != Dimension.Color.WHITE)
@@ -76,6 +108,9 @@ namespace Core
                 SplitColor();
         }
 
+        /// <summary>
+        /// Splits the object with persistent color.
+        /// </summary>
         protected void SplitPersistent()
         {
             List<Dimension.Color> splittedColor;
@@ -100,6 +135,9 @@ namespace Core
             World.Instance.RemoveFromSet(this);
         }
 
+        /// <summary>
+        /// Splits the object with normal color.
+        /// </summary>
         protected void SplitColor()
         {
             var splittedColor = Dimension.SplitColor(Color);
@@ -123,13 +161,17 @@ namespace Core
             {
                 if (Siblings[sc] != null)
                 {
-                    World.Instance.DeleteObject(Siblings[sc]);
+                    World.Instance.DeactivateObject(Siblings[sc]);
                     Siblings[sc] = null;
                 }
             }
-            World.Instance.DeleteObject(this);
+            World.Instance.DeactivateObject(this);
         }
 
+        /// <summary>
+        /// Merges object into white dimension.
+        /// </summary>
+        /// <param name="parent"> The parent object in recursive merging. </param>
         public virtual void Merge(SplittableObject parent) {
             if (isPersistentColor)
             {
@@ -143,7 +185,7 @@ namespace Core
             if (parent != null && parent.Color == Dimension.Color.BLACK)
                 mergedColor = Dimension.Color.BLACK;
             List<SplittableObject> curSiblings = new List<SplittableObject>();
-            MergeCollidedObjects(ref mergedColor, curSiblings);
+            ProcessCollidedObjects(ref mergedColor, curSiblings);
 
             if (mergedColor == Dimension.Color.BLACK)
                 MergeToBlack(curSiblings);
@@ -151,7 +193,12 @@ namespace Core
                 MergeToNewParent(mergedColor, curSiblings);
         }
 
-        protected void MergeCollidedObjects(ref Dimension.Color mergedColor, List<SplittableObject> curSiblings)
+        /// <summary>
+        /// It recursively calculates the merged color and siblings with collided objects.
+        /// </summary>
+        /// <param name="mergedColor"> The final merged color. </param>
+        /// <param name="curSiblings"> A <c>List</c> of collided siblings. </param>
+        protected void ProcessCollidedObjects(ref Dimension.Color mergedColor, List<SplittableObject> curSiblings)
         {
             Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents * 0.7f, transform.rotation);
             foreach (Collider c in colliders)
@@ -180,6 +227,10 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Merges the siblings into a black object in white dimension.
+        /// </summary>
+        /// <param name="curSiblings"> A <c>List</c> of collided siblings. </param>
         protected void MergeToBlack(List<SplittableObject> curSiblings)
         {
             World.Instance.MoveObjectToDimension(this, Dimension.Color.WHITE);
@@ -188,10 +239,15 @@ namespace Core
             World.Instance.MoveToProcessed(this);
             for (int i = 0 ; i < curSiblings.Count; i++)
             {
-                World.Instance.DeleteObject(curSiblings[i]);
+                World.Instance.DeactivateObject(curSiblings[i]);
             }
         }
 
+        /// <summary>
+        /// Merges the siblings into a new object in white dimension.
+        /// </summary>
+        /// <param name="mergedColor"> The color of the new object. </param>
+        /// <param name="curSiblings"> A <c>List</c> of collided siblings. </param>
         protected void MergeToNewParent(Dimension.Color mergedColor, List<SplittableObject> curSiblings)
         {
             var parent = World.Instance.InstantiateNewObjectToDimension(this, Dimension.Color.WHITE);
@@ -216,6 +272,10 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Reports if the object's color is the same as the dimension which it is located.
+        /// </summary>
+        /// <returns> A boolean represent if the object is in the correct dimension. </returns>
         public bool IsInCorrectDim()
         {
             return this.Color == Dim.Color;

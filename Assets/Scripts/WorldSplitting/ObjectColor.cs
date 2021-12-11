@@ -18,6 +18,10 @@ namespace Core
         Dimension.Color selectColor;
         bool selected;
 
+        /// <summary>
+        /// The color of the object.
+        /// Set the color of the object will immediately updates the material.
+        /// </summary>
         public Dimension.Color Color
         {
             get => color;
@@ -75,6 +79,9 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Initializes the material.
+        /// </summary>
         public void Init()
         {
             if (usingMaterial)
