@@ -49,6 +49,9 @@
         },
         {
             "m_Id": "0c210e1439c646848d66d7778c435ec1"
+        },
+        {
+            "m_Id": "3fa96b06802846e69fe56bd21e2a4940"
         }
     ],
     "m_GroupDatas": [],
@@ -173,6 +176,20 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
+                    "m_Id": "3fa96b06802846e69fe56bd21e2a4940"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "26e7282c3d544e6abe0f534b664fdba8"
+                },
+                "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
                     "m_Id": "909c114406754cf283ed756364d4ac53"
                 },
                 "m_SlotId": 1
@@ -250,20 +267,6 @@
             "m_InputSlot": {
                 "m_Node": {
                     "m_Id": "1bd77e5c03cb4f7aae30830845bf202d"
-                },
-                "m_SlotId": 0
-            }
-        },
-        {
-            "m_OutputSlot": {
-                "m_Node": {
-                    "m_Id": "ed1a6abdaacf4f2c822cbb12d61ddebe"
-                },
-                "m_SlotId": 1
-            },
-            "m_InputSlot": {
-                "m_Node": {
-                    "m_Id": "26e7282c3d544e6abe0f534b664fdba8"
                 },
                 "m_SlotId": 0
             }
@@ -495,6 +498,29 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
+    "m_ObjectId": "16dbd60c0d684f37a6710fb504780feb",
+    "m_Id": 0,
+    "m_DisplayName": "ToonColor",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "ToonColor",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "m_Labels": []
 }
 
 {
@@ -794,6 +820,41 @@
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.SubGraphNode",
+    "m_ObjectId": "3fa96b06802846e69fe56bd21e2a4940",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Toon",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": 27.999900817871095,
+            "y": -96.00000762939453,
+            "width": 208.0,
+            "height": 278.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "16dbd60c0d684f37a6710fb504780feb"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_SerializedSubGraph": "{\n    \"subGraph\": {\n        \"fileID\": -5475051401550479605,\n        \"guid\": \"8bc35ebc84a127444b2db25653550146\",\n        \"type\": 3\n    }\n}",
+    "m_PropertyGuids": [],
+    "m_PropertyIds": []
 }
 
 {
