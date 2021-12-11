@@ -8,12 +8,12 @@ namespace Core
 
         public override void Split()
         {
-            world.RemoveFromSet(this);
+            World.Instance.RemoveFromSet(this);
         }
 
         public override void Merge(SplittableObject parent)
         {
-            world.RemoveFromSet(this);
+            World.Instance.RemoveFromSet(this);
         }
 
     }

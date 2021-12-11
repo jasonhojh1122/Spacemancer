@@ -11,7 +11,10 @@ namespace Core
     [RequireComponent(typeof(DimensionTransition))]
     public class World : MonoBehaviour
     {
-
+        static World _instance;
+        public static World Instance {
+            get => _instance;
+        }
         [SerializeField] List<ObjectColor> dimensions;
         [SerializeField] Transform inactivePoolRoot;
         [SerializeField] List<Dimension.ColorSetting> colorSettings;
@@ -23,27 +26,53 @@ namespace Core
         Set processedObjects, unprocessedObjects;
         bool splitted;
 
+        /// <summary>
+        /// A <c>Dictionary</c> mapping of color and dimensions' <c>ObjectColor</c>.
+        /// </summary>
         public Dictionary<Dimension.Color, ObjectColor> Dims {
             get => dimensionMap;
         }
+
+        /// <summary>
+        /// If the world is splitted.
+        /// </summary>
         public bool Splitted {
             get => splitted;
         }
+
+        /// <summary>
+        /// The currently active dimension.
+        /// </summary>
         public ObjectColor ActiveDimension {
             get {
                 if (splitted) return Dims[dimensionTransition.ActiveDimensionColor];
                 else return Dims[Dimension.Color.WHITE];
             }
         }
+
+        /// <summary>
+        /// If the world is splitting, merging or rotating.
+        /// </summary>
+        /// <value></value>
         public bool Transitting {
             get => dimensionTransition.Transitting;
         }
+
+        /// <summary>
+        /// The <c>SplittableObjectPool</c> which stores all the <c>SplittableObject</c> in
+        /// the scene.
+        /// </summary>
         public SplittableObjectPool ObjectPool {
             get => objectPool;
         }
 
         void Awake()
         {
+            if (_instance != null)
+            {
+                Debug.LogError("Multiple instance of World created");
+            }
+            _instance = this;
             playerInteraction = FindObjectOfType<PlayerInteraction>();
             dimensionTransition = GetComponent<DimensionTransition>();
             dimensionMap = new Dictionary<Dimension.Color, ObjectColor>();
@@ -66,8 +95,6 @@ namespace Core
                     Dimension.MaterialColor.Add(setting.colorTag, setting.color32);
                 }
             }
-
-            Debug.Log("World Awake");
         }
 
         private void Start()
@@ -75,11 +102,11 @@ namespace Core
             SplittableObject[] so = FindObjectsOfType<SplittableObject>();
             foreach (SplittableObject s in so)
             {
-                s.Dim = dimensionMap[Dimension.Color.WHITE];
+                s.Dim = Dims[Dimension.Color.WHITE];
                 s.ObjectColor.Init();
                 if (s.DefaultInactive)
                 {
-                    DeleteObject(s);
+                    DeactivateObject(s);
                 }
                 else
                 {
@@ -89,6 +116,9 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Splits the objects into different dimension based on their color.
+        /// </summary>
         public void SplitObjects()
         {
             while (unprocessedObjects.Count > 0)
@@ -100,6 +130,9 @@ namespace Core
             SwapSet();
         }
 
+        /// <summary>
+        /// Merges the objects in different dimension into white dimension.
+        /// </summary>
         public void MergeObjects()
         {
             while (unprocessedObjects.Count > 0)
@@ -111,6 +144,10 @@ namespace Core
             SwapSet();
         }
 
+        /// <summary>
+        /// Moves the given <c>SplittableObject</c> from unprocessed set into processed set.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be moved. </param>
         public void MoveToProcessed(SplittableObject so)
         {
             unprocessedObjects.Remove(so);
@@ -120,17 +157,31 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Removes the given <c>SplittableObject</c> from processed and unprocessed sets.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be removed. </param>
         public void RemoveFromSet(SplittableObject so)
         {
             unprocessedObjects.Remove(so);
             processedObjects.Remove(so);
         }
 
+        /// <summary>
+        /// Adds the given <c>SplittableObject</c> into unprocessed set.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be added. </param>
         public void AddToUnprocessed(SplittableObject so)
         {
             unprocessedObjects.Add(so);
         }
 
+        /// <summary>
+        /// Instantiates a cloned object into a specified dimension.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be cloned. </param>
+        /// <param name="color"> The color of the target dimension to instantiate into. </param>
+        /// <returns> The cloned <c>SplittableObject</c>. </returns>
         public SplittableObject InstantiateNewObjectToDimension(SplittableObject so, Dimension.Color color)
         {
             var newSo = objectPool.Instantiate(so.name);
@@ -140,6 +191,11 @@ namespace Core
             return newSo;
         }
 
+        /// <summary>
+        /// Moves the given <c>SplittableObject</c> to a specified dimension.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be moved. </param>
+        /// <param name="color"> The color of the target dimension to move into. </param>
         public void MoveObjectToDimension(SplittableObject so, Dimension.Color color)
         {
             Vector3 localPos = so.transform.localPosition;
@@ -148,6 +204,11 @@ namespace Core
             MoveTransformToNewParent(so.transform, so.Dim.transform, localPos, localRot);
         }
 
+        /// <summary>
+        /// Moves the given <c>GameObject</c> to a specified dimension.
+        /// </summary>
+        /// <param name="go"> The <c>GameObject</c> to be moved. </param>
+        /// <param name="color"> The color of the target diemension to move into. </param>
         public void MoveObjectToDimension(GameObject go, Dimension.Color color)
         {
             Vector3 localPos = go.transform.localPosition;
@@ -155,7 +216,11 @@ namespace Core
             MoveTransformToNewParent(go.transform, Dims[color].transform, localPos, localRot);
         }
 
-        public void DeleteObject(SplittableObject so)
+        /// <summary>
+        /// Deactivates the given <c>SplittableObject</c> from the scene.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be deactivated. </param>
+        public void DeactivateObject(SplittableObject so)
         {
             RemoveFromSet(so);
             Vector3 localPos = so.transform.localPosition;
@@ -164,15 +229,29 @@ namespace Core
             objectPool.SetInactive(so);
         }
 
-        public void ActivateObject(SplittableObject so, Dimension.Color dim)
+        /// <summary>
+        /// Activates the given <c>SplittableObject</c> into specified dimension.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be activated. </param>
+        /// <param name="color"> The color the target dimension to activate into. </param>
+        public void ActivateObject(SplittableObject so, Dimension.Color color)
         {
             objectPool.SetActive(so);
             Vector3 localPos = so.transform.localPosition;
             Quaternion localRot = so.transform.localRotation;
-            MoveTransformToNewParent(so.transform, Dims[dim].transform, localPos, localRot);
+            MoveTransformToNewParent(so.transform, Dims[color].transform, localPos, localRot);
             unprocessedObjects.Add(so);
+            so.Dim = Dims[color];
+            so.ObjectColor.Init();
         }
 
+        /// <summary>
+        /// Sets the child's parent with specified local position and local rotation.
+        /// </summary>
+        /// <param name="child"> The <c>Transform</c> of the child. </param>
+        /// <param name="parent"> The <c>Transform</c> of the parent</param>
+        /// <param name="localPos"> The local position. </param>
+        /// <param name="localRot"> The local rotation. </param>
         void MoveTransformToNewParent(Transform child, Transform parent, Vector3 localPos, Quaternion localRot)
         {
             child.SetParent(parent);
@@ -180,6 +259,9 @@ namespace Core
             child.localRotation = localRot;
         }
 
+        /// <summary>
+        /// Swaps the unprocessed set and the processed set.
+        /// </summary>
         void SwapSet()
         {
             Set tmp = unprocessedObjects;
@@ -187,16 +269,27 @@ namespace Core
             processedObjects = tmp;
         }
 
+        /// <summary>
+        /// Starts the split process.
+        /// </summary>
         void SplitDimensions()
         {
             StartCoroutine(dimensionTransition.SplitTransition());
         }
 
+        /// <summary>
+        /// Starts the merge process.
+        /// </summary>
         void MergeDimensions()
         {
             StartCoroutine(dimensionTransition.MergeTransition());
         }
 
+        /// <summary>
+        /// Rotates the dimensions if the world is splitted.
+        /// </summary>
+        /// <param name="dir">The direction to rotate. Greater than zero for right rotation.
+        /// Less than zero for left rotation. </param>
         public void RotateDimensions(int dir)
         {
             if (!Splitted || dimensionTransition.Transitting) return;
@@ -204,7 +297,9 @@ namespace Core
             StartCoroutine(dimensionTransition.RotateTransition(dir));
         }
 
-
+        /// <summary>
+        /// Toggles world's splitting and merging.
+        /// </summary>
         public void Toggle()
         {
             if (dimensionTransition.Transitting) return;

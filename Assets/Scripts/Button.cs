@@ -42,7 +42,7 @@ public class Button : MonoBehaviour
 
     private void ToggleOn()
     {
-        var set = world.ObjectPool.InactiveObjects.Pool[targetObjectName];
+        var set = world.ObjectPool.InactiveObjectsPool[targetObjectName];
         if (set == null) return;
         List<SplittableObject> toActivate = new List<SplittableObject>();
         foreach (SplittableObject obj in set)
@@ -60,20 +60,20 @@ public class Button : MonoBehaviour
 
     private void ToggleOff()
     {
-        var set = world.ObjectPool.ActiveObjects.Pool[targetObjectName];
+        var set = world.ObjectPool.ActiveObjectsPool[targetObjectName];
         if (set == null) return;
         List<SplittableObject> toInactivate = new List<SplittableObject>();
         foreach (SplittableObject obj in set)
         {
             if (obj.Color == so.Color)
             {
-                world.DeleteObject(obj);
+                world.DeactivateObject(obj);
                 toInactivate.Add(obj);
             }
         }
         foreach (SplittableObject obj in toInactivate)
         {
-            world.DeleteObject(obj);
+            world.DeactivateObject(obj);
         }
     }
 

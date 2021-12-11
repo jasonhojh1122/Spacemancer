@@ -6,6 +6,9 @@ namespace Core {
 
     public class Dimension {
 
+        /// <summary>
+        /// The bit flag of object's color.
+        /// </summary>
         [Flags] public enum Color
         {
             NONE    = 0,
@@ -26,18 +29,16 @@ namespace Core {
             public UnityEngine.Color32 color32;
         }
 
+        /// <summary>
+        /// The base color of dimensions.
+        /// </summary>
         public static List<Color> BaseColor = new List<Color> {Color.RED, Color.GREEN, Color.BLUE};
 
-        public static Dictionary<Dimension.Color, UnityEngine.Color> MaterialColor = new Dictionary<Dimension.Color, UnityEngine.Color> {
-            //{Color.RED,     new UnityEngine.Color(0.588f, 0.196f, 0.196f, 1.0f)}, // #963232
-            //{Color.GREEN,   new UnityEngine.Color(0.196f, 0.588f, 0.196f, 1.0f)}, // #329632
-            //{Color.BLUE,    new UnityEngine.Color(0.196f, 0.196f, 0.588f, 1.0f)}, // #323296
-            //{Color.CYAN,    new UnityEngine.Color(0.196f, 0.588f, 0.588f, 1.0f)}, // #329696
-            //{Color.MAGENTA, new UnityEngine.Color(0.588f, 0.196f, 0.588f, 1.0f)}, // #963296
-            //{Color.YELLOW,  new UnityEngine.Color(0.588f, 0.588f, 0.196f, 1.0f)}, // #969632
-            //{Color.WHITE,   new UnityEngine.Color(0.882f, 0.882f, 0.882f, 1.0f)}, // #E1E1E1
-            //{Color.BLACK,   new UnityEngine.Color(0.235f, 0.235f, 0.235f, 1.0f)}, // #3C3C3C
-        };
+        /// <summary>
+        /// A <c>Dictionary</c> mapping from <c>Dimension.Color</c> to the <c>UnityEngine.Color</c> used
+        /// in material.
+        /// </summary>
+        public static Dictionary<Dimension.Color, UnityEngine.Color> MaterialColor = new Dictionary<Dimension.Color, UnityEngine.Color> {};
 
         public static Color AddColor(Color col1, Color col2)
         {
@@ -53,6 +54,11 @@ namespace Core {
             return newColor;
         }
 
+        /// <summary>
+        /// Splits the given color into a list of <c>BaseColor</c>.
+        /// </summary>
+        /// <param name="color"> The color to be splitted.</param>
+        /// <returns> A <c>List</c> of color. </returns>
         public static List<Color> SplitColor(Color color)
         {
             var ret = new List<Color>();
@@ -72,6 +78,11 @@ namespace Core {
             return ret;
         }
 
+        /// <summary>
+        /// Splits the given color and return a list of missing color.
+        /// </summary>
+        /// <param name="color"> The color to be checked. </param>
+        /// <returns> A <c>List</c> of missing color. </returns>
         public static List<Color> MissingColor(Color color)
         {
             var ret = new List<Color>();

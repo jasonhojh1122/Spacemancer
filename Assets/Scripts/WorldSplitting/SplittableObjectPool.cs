@@ -7,7 +7,9 @@ using Set = System.Collections.Generic.HashSet<Core.SplittableObject>;
 
 namespace Core
 {
-
+    /// <summary>
+    /// A pool of <c>SplittableObject</c>.
+    /// </summary>
     public class ObjectPool
     {
         Dictionary<string, Set> pool;
@@ -46,17 +48,6 @@ namespace Core
             if (pool.ContainsKey(name))
             {
                 return pool[name].FirstOrDefault();
-
-                /* SplittableObject so = null;
-                if (pool[name].Count > 0)
-                {
-                    so = pool[name].FirstOrDefault();
-                    pool[name].Remove(so);
-                }
-                else if (pool[name].Count == 1)
-                {
-                    so = InstantiateDefault(name);
-                } */
             }
             return null;
         }
@@ -74,16 +65,28 @@ namespace Core
 
     }
 
+    /// <summary>
+    /// A pool of active and inactive <c>SplittableObject</c>
+    /// </summary>
     public class SplittableObjectPool
     {
         ObjectPool active;
         ObjectPool inactive;
 
-        public ObjectPool ActiveObjects {
-            get => active;
+        /// <summary>
+        /// A <c>Dictionary</c> mapping from a string to a set of
+        /// active <c>SplittableObject</c> with a same name as the key.
+        /// </summary>
+        public Dictionary<string, Set> ActiveObjectsPool {
+            get => active.Pool;
         }
-        public ObjectPool InactiveObjects {
-            get => inactive;
+
+        /// <summary>
+        /// A <c>Dictionary</c> mapping from a string to a set of
+        /// inactive <c>SplittableObject</c> with a same name as the key.
+        /// </summary>
+        public Dictionary<string, Set> InactiveObjectsPool {
+            get => inactive.Pool;
         }
 
         public SplittableObjectPool()
@@ -92,6 +95,11 @@ namespace Core
             inactive = new ObjectPool();
         }
 
+        /// <summary>
+        /// Adds the given <c>SplittableObject</c> into <c>ActiveObjectsPool</c>,
+        /// removes it from <c>InactiveObjectsPool</c> and set it's <c>GameObject</c> to active.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be set. </param>
         public void SetActive(SplittableObject so)
         {
             inactive.Remove(so);
@@ -99,6 +107,11 @@ namespace Core
             so.gameObject.SetActive(true);
         }
 
+        /// <summary>
+        /// Adds the given <c>SplittableObject</c> into <c>InactiveObjectsPool</c>,
+        /// removes it from <c>ActiveObjectsPool</c> and set it's <c>GameObject</c> to inactive.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be set. </param>
         public void SetInactive(SplittableObject so)
         {
             active.Remove(so);
@@ -106,6 +119,12 @@ namespace Core
             so.gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Gets a <c>SplittableObject</c> from the <c>InactiveObjectsPool</c> if any presents, or
+        /// instantiates one from <c>ActiveObjectsPool</c> by the given name.
+        /// </summary>
+        /// <param name="name"> The name of the <c>SplittableObject</c> to be instantiated. </param>
+        /// <returns> The instantiated <c>SplittableObject</c>. </returns>
         public SplittableObject Instantiate(string name) {
             SplittableObject so = inactive.GetOne(name);
             if (so == null)
