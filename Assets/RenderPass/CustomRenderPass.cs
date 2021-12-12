@@ -29,41 +29,15 @@ class CustomRenderPass : ScriptableRenderPass
 
         RenderTextureDescriptor cameraTextureDesc = renderingData.cameraData.cameraTargetDescriptor;
         cameraTextureDesc.depthBufferBits = 0;
-        cmd.GetTemporaryRT(tmpTexture1.id, cameraTextureDesc, FilterMode.Bilinear);
-        cmd.GetTemporaryRT(tmpTexture2.id, cameraTextureDesc, FilterMode.Bilinear);
+        cmd.GetTemporaryRT(tmpTexture1.id, cameraTextureDesc, FilterMode.Point);
+        cmd.GetTemporaryRT(tmpTexture2.id, cameraTextureDesc, FilterMode.Point);
 
         Blit(cmd, source, tmpTexture1.Identifier(), toonMat, 0);
         Blit(cmd, tmpTexture1.Identifier(), tmpTexture2.Identifier(), outlineMat, 0);
-        Blit(cmd, tmpTexture2.Identifier(), tmpTexture1.Identifier(), glitchMat, 0);
-        Blit(cmd, tmpTexture1.Identifier(), source);
+        Blit(cmd, tmpTexture2.Identifier(), source, glitchMat, 0);
 
-        // var camera = renderingData.cameraData.camera;
-        // cmd.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
-        // ApplyMat(cmd, source, toonTexture, cameraTextureDesc, toonMat);
-        // ApplyMat(cmd, toonTexture.Identifier(), outlineTexture, cameraTextureDesc, outlineMat);
-        // ApplyMat(cmd, outlineTexture.Identifier(), glitchTexture, cameraTextureDesc, glitchMat);
-        // Blit(cmd, glitchTexture.Identifier(), source);
-        // cmd.SetViewProjectionMatrices(camera.worldToCameraMatrix, camera.projectionMatrix);
         context.ExecuteCommandBuffer(cmd);
         CommandBufferPool.Release(cmd);
-    }
-
-    void ApplyMat(CommandBuffer cmd, RenderTargetIdentifier src, RenderTargetHandle tmpTexture,
-        RenderTextureDescriptor cameraTextureDesc, Material mat)
-    {
-        cmd.GetTemporaryRT(tmpTexture.id, cameraTextureDesc, FilterMode.Bilinear);
-        cmd.SetRenderTarget(tmpTexture.Identifier());
-        cmd.SetGlobalTexture("_MainTex", src);
-        cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, mat);
-        // Blit(cmd, src, tmpTexture.Identifier(), mat, 0);
-    }
-
-    void ApplyMat(CommandBuffer cmd, RenderTargetIdentifier src, RenderTargetIdentifier dst, Material mat)
-    {
-        cmd.SetRenderTarget(dst);
-        cmd.SetGlobalTexture("_MainTex", src);
-        cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, mat);
-        // Blit(cmd, src, tmpTexture.Identifier(), mat, 0);
     }
 
     public override void FrameCleanup(CommandBuffer cmd)
