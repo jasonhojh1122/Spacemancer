@@ -81,7 +81,7 @@ public class Laser : MonoBehaviour
             else
             {
                 lr.SetPosition(1, transform.forward.normalized * 5000);
-                if (hittedObject != null)
+                if (hittedObject != null && hittedObject.gameObject.activeSelf)
                 {
                     hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
                 }
