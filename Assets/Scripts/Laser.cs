@@ -41,7 +41,7 @@ public class Laser : MonoBehaviour
                 lr.enabled = false;
                 if (hittedObject != null)
                 {
-                    hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
+                    hittedObject.ObjectColor.Unselect(lastContactPoint);
                     hittedObject = null;
                 }
             }
@@ -54,6 +54,9 @@ public class Laser : MonoBehaviour
     public SplittableObject HittedObject
     {
         get => hittedObject;
+    }
+    public Vector3 ContactPoint {
+        get => lastContactPoint;
     }
 
     void Awake()
@@ -83,7 +86,7 @@ public class Laser : MonoBehaviour
                 lr.SetPosition(1, transform.forward.normalized * 5000);
                 if (hittedObject != null && hittedObject.gameObject.activeSelf)
                 {
-                    hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
+                    hittedObject.ObjectColor.Unselect(lastContactPoint);
                 }
                 hittedObject = null;
             }
@@ -117,7 +120,7 @@ public class Laser : MonoBehaviour
 
         if (unselectOld)
         {
-            hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
+            hittedObject.ObjectColor.Unselect(lastContactPoint);
         }
         hittedObject = newHittedObject;
         if (selectNew)
@@ -129,7 +132,7 @@ public class Laser : MonoBehaviour
             else
             {
                 hittedObject.ObjectColor.SelectColor = _color;
-                hittedObject.ObjectColor.SkillSelect(contactPoint);
+                hittedObject.ObjectColor.Select(contactPoint);
             }
         }
         lastContactPoint = contactPoint;
