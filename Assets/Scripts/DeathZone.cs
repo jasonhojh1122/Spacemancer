@@ -11,7 +11,7 @@ public class DeathZone : MonoBehaviour
     [SerializeField] Dimension.Color activeColor; // None if no restriction
     void OnTriggerEnter(Collider col)
     {
-        if (activeColor != Dimension.Color.NONE && GetComponent<Core.SplittableObject>().ObjectColor.Color != activeColor)
+        if (activeColor != Dimension.Color.NONE && GetComponent<Core.SplittableObject>().Color != activeColor)
             return;
 
         var player = col.GetComponent<Character.PlayerController>();

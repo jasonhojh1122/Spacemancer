@@ -1,22 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6832119896222837806
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65cc1804712d72640a3acc5a442b65fc, type: 3}
-  m_Name: NoiseRendererFeature
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  settings:
-    IsEnabled: 0
-    insertOn: 450
-    material: {fileID: 2100000, guid: 48d7959c03fdd4141a6863d63d87e9b1, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30,11 +13,11 @@ MonoBehaviour:
   m_Name: ForwardRenderer
   m_EditorClassIdentifier: 
   m_RendererFeatures:
+  - {fileID: 2239971310601473798}
   - {fileID: 6377280723752707515}
-  - {fileID: -6832119896222837806}
   - {fileID: 5779651976236431401}
   - {fileID: 8554515385839642287}
-  m_RendererFeatureMap: bbe539ac07a78058d253c20a276f2fa129f8f4b8d9723550afe6956e6bbeb776
+  m_RendererFeatureMap: 068f77030afa151fbbe539ac07a7805829f8f4b8d9723550afe6956e6bbeb776
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   shaders:
@@ -63,6 +46,25 @@ MonoBehaviour:
   m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
   m_AccurateGbufferNormals: 0
+--- !u!114 &2239971310601473798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac0e1e82c3bc8354c8e0187614cb18a2, type: 3}
+  m_Name: CustomRendererFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    IsEnabled: 1
+    insertOn: 500
+    toonMaterial: {fileID: 2100000, guid: 3c2519a65b881ed42ac599d93b6da4ae, type: 2}
+    outlineMaterial: {fileID: 2100000, guid: 3281ccaf64ae07648bd193fd963834c4, type: 2}
+    glitchMaterial: {fileID: 2100000, guid: 279c768cb41eb6e4e99bed427b8e79a0, type: 2}
 --- !u!114 &5779651976236431401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,10 +77,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f782659131735774a8b9d2408ea9d4b8, type: 3}
   m_Name: OutlineRendererFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     IsEnabled: 1
-    insertOn: 500
+    insertOn: 450
     material: {fileID: 2100000, guid: 3281ccaf64ae07648bd193fd963834c4, type: 2}
 --- !u!114 &6377280723752707515
 MonoBehaviour:
@@ -92,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 290e7cea53e661b439629775c172275a, type: 3}
   m_Name: ToonRendererFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     IsEnabled: 1
     insertOn: 450
@@ -109,8 +111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a4198dfa5ec7014abea1529da4e8d6f, type: 3}
   m_Name: GlitchRendererFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     IsEnabled: 1
-    insertOn: 1000
+    insertOn: 550
     material: {fileID: 2100000, guid: 279c768cb41eb6e4e99bed427b8e79a0, type: 2}

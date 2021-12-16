@@ -33,7 +33,7 @@ public class Button : MonoBehaviour
     private bool Match(GameObject obj)
     {
         var objSo = obj.GetComponent<Core.SplittableObject>();
-        if (objSo.ObjectColor.Color == Dimension.Color.NONE || objSo.ObjectColor.Color != so.ObjectColor.Color)
+        if (objSo.Color == Dimension.Color.NONE || objSo.Color != so.Color)
         {
             return false;
         }
@@ -42,38 +42,38 @@ public class Button : MonoBehaviour
 
     private void ToggleOn()
     {
-        var set = world.ObjectPool.InactiveObjects.Pool[targetObjectName];
+        var set = world.ObjectPool.InactiveObjectsPool[targetObjectName];
         if (set == null) return;
         List<SplittableObject> toActivate = new List<SplittableObject>();
         foreach (SplittableObject obj in set)
         {
-            if (obj.ObjectColor.Color == so.ObjectColor.Color)
+            if (obj.Color == so.Color)
             {
                 toActivate.Add(obj);
             }
         }
         foreach (SplittableObject obj in toActivate)
         {
-            world.ActivateObject(obj, so.ObjectColor.Color);
+            world.ActivateObject(obj, so.Color);
         }
     }
 
     private void ToggleOff()
     {
-        var set = world.ObjectPool.ActiveObjects.Pool[targetObjectName];
+        var set = world.ObjectPool.ActiveObjectsPool[targetObjectName];
         if (set == null) return;
         List<SplittableObject> toInactivate = new List<SplittableObject>();
         foreach (SplittableObject obj in set)
         {
-            if (obj.ObjectColor.Color == so.ObjectColor.Color)
+            if (obj.Color == so.Color)
             {
-                world.DeleteObject(obj);
+                world.DeactivateObject(obj);
                 toInactivate.Add(obj);
             }
         }
         foreach (SplittableObject obj in toInactivate)
         {
-            world.DeleteObject(obj);
+            world.DeactivateObject(obj);
         }
     }
 

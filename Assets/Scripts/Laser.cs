@@ -2,25 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Core;
+
+[RequireComponent(typeof(LineRenderer))]
 public class Laser : MonoBehaviour
 {
+    [SerializeField] float width;
+
     LineRenderer lr;
-    public Collider hitCollider;
-    private bool _laserIsOn = false;
-    [SerializeField] List<Material> material;
     Vector3 y_Offset = new Vector3(0, 0.2f, 0);
-    public Vector3 forward_Offset;
-    public bool laserIsOn
+    MaterialPropertyBlock _property;
+    SplittableObject hittedObject;
+    Dimension.Color _color;
+    bool _IsOn = false;
+    Vector3 lastContactPoint;
+    public Dimension.Color Color
     {
-        get => _laserIsOn;
+        get => _color;
         set
         {
-            _laserIsOn = value;
+            _color = value;
+            lr.GetPropertyBlock(_property);
+            _property.SetColor("_Color", Dimension.MaterialColor[value]);
+            lr.SetPropertyBlock(_property);
+            if (hittedObject != null)
+            {
+                hittedObject.ObjectColor.SelectColor = _color;
+            }
+        }
+    }
+    public bool IsOn
+    {
+        get => _IsOn;
+        set
+        {
+            _IsOn = value;
             if(value == false)
             {
                 lr.enabled = false;
-                hitCollider = null;
-                forward_Offset = new Vector3(0, 0, 0);
+                if (hittedObject != null)
+                {
+                    hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
+                    hittedObject = null;
+                }
             }
             else
             {
@@ -28,64 +51,89 @@ public class Laser : MonoBehaviour
             }
         }
     }
-    // Start is called before the first frame update
-    void Start()
+    public SplittableObject HittedObject
     {
-        lr = GetComponent<LineRenderer>();
-        forward_Offset = new Vector3(0, 0, 0);
+        get => hittedObject;
     }
 
-    // Update is called once per frame
+    void Awake()
+    {
+        lr = GetComponent<LineRenderer>();
+        lr.positionCount = 2;
+        lr.startWidth = width;
+        lr.endWidth = width;
+        _property = new MaterialPropertyBlock();
+    }
+
     void FixedUpdate()
     {
-        if (GetComponent<SkillController>().alreadyFilled)
+        if (IsOn)
         {
-            lr.material = material[1];
+            lr.SetPosition(0, transform.position + y_Offset);
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position + y_Offset, transform.forward.normalized, out hit) &&
+                hit.collider != null)
+            {
+                lr.SetPosition(1, hit.point);
+                var newHittedObject = hit.collider.gameObject.GetComponent<SplittableObject>();
+                UpdateObjectMaterial(hit.point, newHittedObject);
+            }
+            else
+            {
+                lr.SetPosition(1, transform.forward.normalized * 5000);
+                if (hittedObject != null && hittedObject.gameObject.activeSelf)
+                {
+                    hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
+                }
+                hittedObject = null;
+            }
+        }
+
+    }
+
+    void UpdateObjectMaterial(Vector3 contactPoint, SplittableObject newHittedObject)
+    {
+        bool selectNew = false;
+        bool unselectOld = false;
+        if (newHittedObject == null)
+        {
+            if (hittedObject != null)
+            {
+                unselectOld = true;
+            }
         }
         else
         {
-            lr.material = material[0];
-        }
-        if (laserIsOn)
-        {
-            Debug.Log("Laser Is On");
-            lr.startColor = dimToColor();
-            lr.endColor = lr.startColor;
-            lr.material.color = lr.startColor;
-            lr.SetPosition(0, transform.position+y_Offset);
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position+y_Offset, (transform.forward+forward_Offset).normalized, out hit))
+            if (hittedObject == null)
             {
-                if (hit.collider)
-                {
-                    lr.SetPosition(1, hit.point);
-                }
-                hitCollider = hit.collider;
+                selectNew = true;
             }
-            else lr.SetPosition(1, (transform.forward+forward_Offset).normalized * 5000);
-
+            else if (hittedObject.gameObject.GetInstanceID() != newHittedObject.gameObject.GetInstanceID())
+            {
+                selectNew = true;
+                unselectOld = true;
+            }
         }
 
-    }
-    Color dimToColor()
-    {
-        Color ret = Color.clear;
-        switch (GetComponent<SkillController>().skillColor)
+        if (unselectOld)
         {
-            case Dimension.Color.RED:
-                ret = Color.red;
-                break;
-            case Dimension.Color.BLUE:
-                ret = Color.blue;
-                break;
-            case Dimension.Color.GREEN:
-                ret = Color.green;
-                break;
-            default:
-                ret = Color.clear;
-                break;
+            hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
         }
-        return ret;
+        hittedObject = newHittedObject;
+        if (selectNew)
+        {
+            if (hittedObject.IsPersistentColor)
+            {
+                hittedObject = null;
+            }
+            else
+            {
+                hittedObject.ObjectColor.SelectColor = _color;
+                hittedObject.ObjectColor.SkillSelect(contactPoint);
+            }
+        }
+        lastContactPoint = contactPoint;
     }
+
 }
 

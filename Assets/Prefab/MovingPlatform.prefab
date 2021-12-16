@@ -105,8 +105,9 @@ GameObject:
   - component: {fileID: 9163584895863233407}
   - component: {fileID: 9163584895863233402}
   - component: {fileID: 9163584895863233406}
-  - component: {fileID: 9163584895863233405}
   - component: {fileID: 9163584895863233394}
+  - component: {fileID: 8714260488240705977}
+  - component: {fileID: 8123984407789790869}
   m_Layer: 0
   m_Name: MovingPlatform
   m_TagString: Untagged
@@ -207,20 +208,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &9163584895863233405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9163584895863233395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e466774c787a5045b13c3e25ab572d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  color: 1
-  world: {fileID: 0}
 --- !u!114 &9163584895863233394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,5 +222,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPoint: {fileID: 6576145964423544317}
   endPoint: {fileID: 6576145965469547921}
-  activeColor: 1
   moveSpeed: 1
+--- !u!114 &8714260488240705977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9163584895863233395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c2a62da7b4ad0c41ba5c6c17f6c1e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 0
+  usingMaterial: 1
+--- !u!114 &8123984407789790869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9163584895863233395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 327a39762b97de54b9d04d49eb9d4b0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPersistentColor: 0
+  defaultInactive: 0
