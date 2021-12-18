@@ -12,6 +12,7 @@ public class SkillController : MonoBehaviour
     [SerializeField] Laser laser;
     [SerializeField] SkillControllerUI skillControllerUI;
     [SerializeField] CanvasGroupFader skillControllerUIFader;
+    [SerializeField] int laserLimit;
 
     Dimension.Color selectionColor;
     Dimension.Color holdColor;
@@ -19,12 +20,12 @@ public class SkillController : MonoBehaviour
     float lastPressedLT = 0.0f;
     float lastPressedRT = 0.0f;
     float betweenPressed = 0.5f;
+    int laserCount = 0;
     SkillState curState;
     public SkillState CurState
     {
         get => curState;
     }
-
     private void Awake()
     {
         curState = SkillState.OFF;
@@ -37,7 +38,8 @@ public class SkillController : MonoBehaviour
         if (Input.GetButtonDown("Skill"))
         {
             Debug.Log("Skill Pressed");
-            Skill();
+            if(laserCount < laserLimit)
+                Skill();
         }
 
         // color can be change before withdrawing
@@ -86,7 +88,7 @@ public class SkillController : MonoBehaviour
                 laser.Color = selectionColor;
                 break;
             case SkillState.TO_WITHDRAW:
-                if (laser.HittedObject != null)
+                if (laser.HittedObject != null && laserCount < laserLimit)
                     Withdraw();
                 else
                     TurnOffSkill();
@@ -122,6 +124,7 @@ public class SkillController : MonoBehaviour
         }
         laser.HittedObject.Color = laser.HittedObject.Color | holdColor;
         holdColor = Dimension.Color.NONE;
+        laserCount++;
         TurnOffSkill();
     }
 
