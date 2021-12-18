@@ -201,6 +201,9 @@ namespace Core
         protected void ProcessCollidedObjects(ref Dimension.Color mergedColor, List<SplittableObject> curSiblings)
         {
             Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents * 0.7f, transform.rotation);
+            Debug.DrawLine(col.bounds.center + col.bounds.extents * 0.7f, col.bounds.center - col.bounds.extents * 0.7f, UnityEngine.Color.red, 100.0f);
+            // TODO: Physics.ComputePenetration
+
             foreach (Collider c in colliders)
             {
                 if (c == null || c.gameObject.GetInstanceID() == col.gameObject.GetInstanceID()) continue;

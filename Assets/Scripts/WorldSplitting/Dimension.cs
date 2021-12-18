@@ -54,6 +54,11 @@ namespace Core {
             return newColor;
         }
 
+        public static Color SubColor(Color col1, Color col2)
+        {
+            return col1 & (~col2);
+        }
+
         /// <summary>
         /// Splits the given color into a list of <c>BaseColor</c>.
         /// </summary>
