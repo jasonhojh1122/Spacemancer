@@ -62,8 +62,8 @@ namespace Core {
             StartCoroutine(Glitch());
             yield return StartCoroutine(MoveAnimation(true));
             Physics.SyncTransforms();
-            World.Instance.Dims[Dimension.Color.WHITE].gameObject.SetActive(true);
             World.Instance.MergeObjects();
+            World.Instance.Dims[Dimension.Color.WHITE].gameObject.SetActive(true);
             ToggleDimensionActivation(false);
             OnTransitionStartEnd(false);
         }
