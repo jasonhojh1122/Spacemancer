@@ -12,7 +12,7 @@ public class SkillController : MonoBehaviour
     [SerializeField] Laser laser;
     [SerializeField] SkillControllerUI skillControllerUI;
     [SerializeField] CanvasGroupFader skillControllerUIFader;
-    [SerializeField] int laserLimit;
+    [SerializeField] int laserLimit; //no limit = -1
 
     Dimension.Color selectionColor;
     Dimension.Color holdColor;
@@ -38,7 +38,7 @@ public class SkillController : MonoBehaviour
         if (Input.GetButtonDown("Skill"))
         {
             Debug.Log("Skill Pressed");
-            if(laserCount < laserLimit)
+            if(laserCount < laserLimit || laserLimit == -1)
                 Skill();
         }
 
@@ -88,7 +88,7 @@ public class SkillController : MonoBehaviour
                 laser.Color = selectionColor;
                 break;
             case SkillState.TO_WITHDRAW:
-                if (laser.HittedObject != null && laserCount < laserLimit)
+                if (laser.HittedObject != null && (laserCount < laserLimit || laserLimit == -1))
                     Withdraw();
                 else
                     TurnOffSkill();
