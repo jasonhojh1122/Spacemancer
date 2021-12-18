@@ -15,7 +15,7 @@ namespace Interaction {
         Rigidbody rb;
         Core.SplittableObject so;
         bool playerInZone;
-        bool picked;
+        public bool picked;
 
         void Awake()
         {
@@ -47,7 +47,7 @@ namespace Interaction {
             transform.SetParent(player.transform);
 
             Vector3 relativeDis = transform.position - player.transform.position;
-            transform.position = pos + pickUpOffset * (relativeDis / relativeDis.magnitude);
+            transform.position = pos + pickUpOffset * (relativeDis / relativeDis.magnitude) + new Vector3(0,0.5f,0);
             transform.rotation = rot;
             picked = true;
         }

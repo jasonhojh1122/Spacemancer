@@ -6,7 +6,7 @@ public class PlayerInteraction : MonoBehaviour
 {
     [SerializeField] GameObject hintUI;
     Vector3 hintUIOffset = new Vector3(0.0f, 1.0f, 0.0f);
-    Interaction.Interactable interactable;
+    public Interaction.Interactable interactable;
     Core.SplittableObject interactableSo;
     Collider interactableCol;
     public float interactAngle = 50f;
@@ -47,7 +47,7 @@ public class PlayerInteraction : MonoBehaviour
 
     public void Interact()
     {
-        if (interactable != null && canInteract)
+        if (IsInteracting() || (interactable != null && canInteract))
         {
             interactable.Interact();
             canInteract = false;
