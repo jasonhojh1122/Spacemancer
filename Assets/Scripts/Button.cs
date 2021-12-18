@@ -6,6 +6,10 @@ using Interaction;
 
 using Core;
 
+
+// detect trigger collider
+// trigger collider placed at child of object 
+
 [RequireComponent(typeof(Core.SplittableObject))]
 public class Button : MonoBehaviour
 {
@@ -30,9 +34,12 @@ public class Button : MonoBehaviour
         // toggleObject.gameObject.SetActive(isTriggered);
     }
 
+
     private bool Match(GameObject obj)
     {
         var objSo = obj.GetComponent<Core.SplittableObject>();
+        if (objSo == null)
+            return false;
         if (objSo.Color == Dimension.Color.NONE || objSo.Color != so.Color)
         {
             return false;
@@ -67,7 +74,6 @@ public class Button : MonoBehaviour
         {
             if (obj.Color == so.Color)
             {
-                world.DeactivateObject(obj);
                 toInactivate.Add(obj);
             }
         }
@@ -77,10 +83,11 @@ public class Button : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision other) {
+    /*private void OnCollisionEnter(Collision other) {
         Debug.Log("button Zone enter");
         if (!so.IsInCorrectDim())
             return;
+
         if (Match(other.gameObject))
         {
             Debug.Log("matched");
@@ -98,31 +105,33 @@ public class Button : MonoBehaviour
             Debug.Log("matched");
             ToggleOff();
         }
-    }
+    }*/
 
-    /* void OnTriggerEnter(Collider other)
+
+    void OnTriggerEnter(Collider other)
     {
-        if (activeColor != Dimension.Color.NONE && GetComponent<SplittableObject>().ObjectColor != activeColor)
+        Debug.Log("button Zone enter");
+        if (!so.IsInCorrectDim())
             return;
 
-        if (match(other.gameObject))
+        Debug.Log(other.gameObject.name);
+        if (Match(other.transform.parent.gameObject))
         {
-            toggleObject.SetActive(!isTriggered);
-            isTriggered = !isTriggered;
+            Debug.Log("matched");
+            ToggleOn();
         }
     }
-
     void OnTriggerExit(Collider other)
     {
-        if (activeColor != Dimension.Color.NONE && GetComponent<SplittableObject>().ObjectColor != activeColor)
+        Debug.Log("button Zone Exit");
+        if (!so.IsInCorrectDim())
             return;
 
-        Debug.Log("button Zone Exit");
-        if (match(other.gameObject))
+        if (Match(other.transform.parent.gameObject))
         {
-            toggleObject.SetActive(!isTriggered);
-            isTriggered = !isTriggered;
+            Debug.Log("matched");
+            ToggleOff();
         }
-    } */
+    } 
 
 }
