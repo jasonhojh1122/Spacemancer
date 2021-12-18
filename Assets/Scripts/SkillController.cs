@@ -123,6 +123,10 @@ public class SkillController : MonoBehaviour
         curState = SkillState.TO_Insert;
         skillControllerUI.Hold(holdColor);
         laser.Color = holdColor;
+        if (laser.HittedObject.Color == Dimension.Color.NONE)
+        {
+            World.Instance.DeactivateObject(laser.HittedObject);
+        }
         TurnOffSkill();
     }
 

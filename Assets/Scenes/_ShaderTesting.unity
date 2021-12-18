@@ -293,6 +293,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 0
   usingMaterial: 0
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &275783405
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,6 +362,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 7
   usingMaterial: 1
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &275783409
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -463,6 +475,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 1
   usingMaterial: 0
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &456152145
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -580,6 +598,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 4
   usingMaterial: 0
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &497596807
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1165,6 +1189,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 7
   usingMaterial: 1
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &904902630
 GameObject:
   m_ObjectHideFlags: 0
@@ -1290,6 +1320,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 7
   usingMaterial: 1
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &961833130
 GameObject:
   m_ObjectHideFlags: 0
@@ -1401,6 +1437,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 7
   usingMaterial: 1
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &961833136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1571,6 +1613,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 7
   usingMaterial: 1
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!54 &1032806816
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2192,6 +2240,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 7
   usingMaterial: 1
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1304811463
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2361,6 +2415,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 2
   usingMaterial: 0
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1663976605
 GameObject:
   m_ObjectHideFlags: 0
@@ -2419,6 +2479,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 7
   usingMaterial: 0
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1705362293
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2850,6 +2916,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 5
   usingMaterial: 1
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &4408529144010256620 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7037722069045423871, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
@@ -2941,6 +3013,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1663976606}
     m_Modifications:
+    - target: {fileID: 373741178613777597, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
+      propertyPath: speed
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 373741178613777597, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
+      propertyPath: offset.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1197161590579748972, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
       propertyPath: skillControllerUI
       value: 
@@ -2949,6 +3029,18 @@ PrefabInstance:
       propertyPath: skillControllerUIFader
       value: 
       objectReference: {fileID: 1050053677}
+    - target: {fileID: 1466315698685385390, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1466315698685385390, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 1466315698685385390, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7037722069045423871, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -3016,6 +3108,10 @@ PrefabInstance:
     - target: {fileID: 9059618939735072301, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9059618939735072301, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 0.06666756
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
