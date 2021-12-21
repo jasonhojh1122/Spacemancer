@@ -25,6 +25,8 @@ public class MovingPlatform : MonoBehaviour
         so = GetComponent<Core.SplittableObject>();
         startPos = startPoint.localPosition;
         endPos = endPoint.localPosition;
+        if(!isInit)
+            FindObjectOfType<MovingPlatformManager>().Register(this,ID);
     }
     private void OnEnable(){
         if(isInit)

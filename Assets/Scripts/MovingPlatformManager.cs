@@ -12,15 +12,6 @@ public class MovingPlatformManager : MonoBehaviour
     ///</summary>
     [SerializeField] List<MovingPlatform> movingPlatforms;//Keep track of list of platforms
 
-    void Update(){
-        var i = 0;
-        foreach(MovingPlatform m in movingPlatforms){
-            direction.Add(m.moveToEnd);
-            m.ID = i;
-            m.isInit = true;
-            i++;
-        }
-    }
     ///<summary>
     /// Set MovingPlatform Direction of Specific ID
     ///</summary>
@@ -36,6 +27,17 @@ public class MovingPlatformManager : MonoBehaviour
     ///<returns> Direction Value</returns>
     public bool getDirection(int id){
         return direction[id];
+    }
+    ///<summary>
+    /// Register MovingPlatform to MovingPlatform Manager
+    ///</summary>
+    /// <param name="m"> MovingPlatform to track </param>
+    /// <param name="id"> The MovingPlatform ID </param>
+    public void Register(MovingPlatform m,int ID){
+        movingPlatforms.Add(m);
+        m.ID = movingPlatforms.Count - 1;
+        direction.Add(m.moveToEnd);
+        m.isInit = true;
     }
     
 }
