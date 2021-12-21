@@ -7,14 +7,16 @@ using Core;
 public class Laser : MonoBehaviour
 {
     [SerializeField] float width;
-
+    [SerializeField] float speed;
+    [SerializeField] Transform player;
     LineRenderer lr;
-    Vector3 y_Offset = new Vector3(0, 0.2f, 0);
     MaterialPropertyBlock _property;
     SplittableObject hittedObject;
     Dimension.Color _color;
     bool _IsOn = false;
     Vector3 lastContactPoint;
+    float maxDistance = 150.0f;
+    float curDistance;
     public Dimension.Color Color
     {
         get => _color;
@@ -38,22 +40,27 @@ public class Laser : MonoBehaviour
             _IsOn = value;
             if(value == false)
             {
-                lr.enabled = false;
-                if (hittedObject != null)
+                // lr.enabled = false;
+                if (hittedObject != null && hittedObject.gameObject.activeSelf)
                 {
-                    hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
-                    hittedObject = null;
+                    hittedObject.ObjectColor.Unselect(lastContactPoint);
                 }
+                hittedObject = null;
+                TurnOff();
             }
             else
             {
-                lr.enabled = true;
+                // lr.enabled = true;
+                TurnOn();
             }
         }
     }
     public SplittableObject HittedObject
     {
         get => hittedObject;
+    }
+    public Vector3 ContactPoint {
+        get => lastContactPoint;
     }
 
     void Awake()
@@ -62,39 +69,15 @@ public class Laser : MonoBehaviour
         lr.positionCount = 2;
         lr.startWidth = width;
         lr.endWidth = width;
+        lr.SetPosition(0, Vector3.zero);
+        lr.SetPosition(1, Vector3.zero);
+        curDistance = 0.0f;
         _property = new MaterialPropertyBlock();
-    }
-
-    void FixedUpdate()
-    {
-        if (IsOn)
-        {
-            lr.SetPosition(0, transform.position + y_Offset);
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position + y_Offset, transform.forward.normalized, out hit) &&
-                hit.collider != null)
-            {
-                lr.SetPosition(1, hit.point);
-                var newHittedObject = hit.collider.gameObject.GetComponent<SplittableObject>();
-                UpdateObjectMaterial(hit.point, newHittedObject);
-            }
-            else
-            {
-                lr.SetPosition(1, transform.forward.normalized * 5000);
-                if (hittedObject != null && hittedObject.gameObject.activeSelf)
-                {
-                    hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
-                }
-                hittedObject = null;
-            }
-        }
-
     }
 
     void UpdateObjectMaterial(Vector3 contactPoint, SplittableObject newHittedObject)
     {
-        bool selectNew = false;
-        bool unselectOld = false;
+        bool selectNew = false, unselectOld = false;
         if (newHittedObject == null)
         {
             if (hittedObject != null)
@@ -117,7 +100,7 @@ public class Laser : MonoBehaviour
 
         if (unselectOld)
         {
-            hittedObject.ObjectColor.SkillUnselect(lastContactPoint);
+            hittedObject.ObjectColor.Unselect(lastContactPoint);
         }
         hittedObject = newHittedObject;
         if (selectNew)
@@ -129,10 +112,74 @@ public class Laser : MonoBehaviour
             else
             {
                 hittedObject.ObjectColor.SelectColor = _color;
-                hittedObject.ObjectColor.SkillSelect(contactPoint);
+                hittedObject.ObjectColor.Select(contactPoint);
             }
         }
         lastContactPoint = contactPoint;
+    }
+
+    public void TurnOn()
+    {
+        StopAllCoroutines();
+        StartCoroutine(TurnOnAnim());
+    }
+
+    public void TurnOff()
+    {
+        StopAllCoroutines();
+        StartCoroutine(TurnOffAnim());
+    }
+
+    System.Collections.IEnumerator TurnOnAnim()
+    {
+        lastContactPoint = Vector3.zero;
+        curDistance = 0.0f;
+        while (true)
+        {
+            curDistance += Time.deltaTime * speed;
+            curDistance = Mathf.Min(curDistance, maxDistance);
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, player.forward, out hit, curDistance) &&
+                hit.collider != null)
+            {
+                var hitPosLocal = transform.InverseTransformPoint(hit.point);
+                lr.SetPosition(1, hitPosLocal);
+                curDistance = hitPosLocal.magnitude;
+                var newHittedObject = hit.collider.gameObject.GetComponent<SplittableObject>();
+                UpdateObjectMaterial(hit.point, newHittedObject);
+                lastContactPoint = hit.point;
+            }
+            else
+            {
+                var endPos = transform.position + player.forward * curDistance;
+                var endPosLocal = transform.InverseTransformPoint(endPos);
+                lr.SetPosition(1, endPosLocal);
+                if (hittedObject != null && hittedObject.gameObject.activeSelf)
+                {
+                    hittedObject.ObjectColor.Unselect(endPos);
+                }
+                hittedObject = null;
+                lastContactPoint = endPos;
+            }
+            yield return null;
+        }
+    }
+
+    System.Collections.IEnumerator TurnOffAnim()
+    {
+        while (curDistance > 0.1f)
+        {
+            curDistance -= speed * Time.deltaTime;
+            lastContactPoint = transform.position + player.forward * curDistance;
+            var endPosLocal = transform.InverseTransformPoint(lastContactPoint);
+            lr.SetPosition(1, endPosLocal);
+            yield return null;
+        }
+    }
+
+    System.Collections.IEnumerator InsertAnim()
+    {
+        yield return null;
     }
 
 }

@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3632554559317400970}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7037722069045423871}
@@ -128,7 +128,7 @@ LineRenderer:
     textureMode: 0
     shadowBias: 0.5
     generateLightingData: 0
-  m_UseWorldSpace: 1
+  m_UseWorldSpace: 0
   m_Loop: 0
 --- !u!114 &373741178613777597
 MonoBehaviour:
@@ -142,10 +142,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac35f43d54966e944a1d30eaf74c94f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillController: {fileID: 1197161590579748972}
   width: 0.1
-  hitCollider: {fileID: 0}
-  forward_Offset: {x: 0, y: 0, z: 0}
+  speed: 45
+  player: {fileID: 7037722069045423871}
 --- !u!1 &6665352977908080910
 GameObject:
   m_ObjectHideFlags: 0
@@ -2191,7 +2190,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7037722069045786911}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.071, y: 3.6249971, z: -4.565872}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7037722069045423869}
@@ -2394,8 +2393,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb401e2dfcf7ef24aa9ce665459cce86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hintUI: {fileID: 0}
   interactAngle: 50
-  interactHintUI: {fileID: 0}
 --- !u!114 &7037722069045786883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2408,7 +2407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48f700f2bde58c44a82f0cd680eb404c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  persistentColor: 1
+  isPersistentColor: 0
   defaultInactive: 0
   dummyPrefab: {fileID: 4303256666234169816, guid: 2c01e3f73296e1047af5ac0de376a975, type: 3}
 --- !u!114 &7037722069045786908
@@ -2425,6 +2424,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 7
   usingMaterial: 1
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1197161590579748972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2438,8 +2443,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   laser: {fileID: 373741178613777597}
-  skillColor: 0
-  alreadyFilled: 0
+  skillControllerUI: {fileID: 0}
+  skillControllerUIFader: {fileID: 0}
 --- !u!1 &7037722069045786915
 GameObject:
   m_ObjectHideFlags: 0

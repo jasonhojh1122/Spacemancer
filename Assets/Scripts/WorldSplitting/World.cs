@@ -242,7 +242,7 @@ namespace Core
             MoveTransformToNewParent(so.transform, Dims[color].transform, localPos, localRot);
             unprocessedObjects.Add(so);
             so.Dim = Dims[color];
-            so.ObjectColor.Init();
+            so.Color = so.Color;
         }
 
         /// <summary>
