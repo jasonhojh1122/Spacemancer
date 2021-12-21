@@ -7,7 +7,7 @@ public class SkillController : MonoBehaviour
 {
     public enum SkillState
     {
-        OFF, TO_WITHDRAW, TO_FILL
+        OFF, TO_WITHDRAW, TO_Insert, WAIT
     }
     [SerializeField] Laser laser;
     [SerializeField] SkillControllerUI skillControllerUI;
@@ -35,9 +35,10 @@ public class SkillController : MonoBehaviour
 
     private void Update()
     {
+        if (curState == SkillState.WAIT) return;
+
         if (Input.GetButtonDown("Skill"))
         {
-            Debug.Log("Skill Pressed");
             if(laserCount < laserLimit || laserLimit == -1)
                 Skill();
         }
@@ -76,7 +77,7 @@ public class SkillController : MonoBehaviour
                 if (holdColor != Dimension.Color.NONE)
                 {
                     selectionColor = holdColor;
-                    curState = SkillState.TO_FILL;
+                    curState = SkillState.TO_Insert;
                     skillControllerUI.Hold(holdColor);
                 }
                 else
@@ -93,9 +94,9 @@ public class SkillController : MonoBehaviour
                 else
                     TurnOffSkill();
                 break;
-            case SkillState.TO_FILL:
+            case SkillState.TO_Insert:
                 if (laser.HittedObject != null)
-                    Fill();
+                    Insert();
                 else
                     TurnOffSkill();
                 break;
@@ -109,20 +110,46 @@ public class SkillController : MonoBehaviour
         {
             return;
         }
-        laser.HittedObject.Color = laser.HittedObject.Color ^ selectionColor;
-        holdColor = selectionColor;
-        curState = SkillState.TO_FILL;
-        skillControllerUI.Hold(holdColor);
+        var oc = laser.HittedObject.ObjectColor;
+        oc.SecondColor = oc.Color;
+        oc.Color = Dimension.SubColor(oc.Color, selectionColor);
+        oc.OnWithdrew.RemoveAllListeners();
+        oc.OnWithdrew.AddListener(OnWithdrew);
+        oc.Withdraw(laser.ContactPoint);
+        curState = SkillState.WAIT;
     }
 
-    private void Fill()
+    public void OnWithdrew()
+    {
+        holdColor = selectionColor;
+        curState = SkillState.TO_Insert;
+        skillControllerUI.Hold(holdColor);
+        laser.Color = holdColor;
+        if (laser.HittedObject.Color == Dimension.Color.NONE)
+        {
+            World.Instance.DeactivateObject(laser.HittedObject);
+        }
+        TurnOffSkill();
+    }
+
+    private void Insert()
     {
         if (laser.HittedObject.IsPersistentColor ||
             (laser.HittedObject.Color & holdColor) != Dimension.Color.NONE)
         {
             return;
         }
-        laser.HittedObject.Color = laser.HittedObject.Color | holdColor;
+        var oc = laser.HittedObject.ObjectColor;
+        oc.SecondColor = Dimension.AddColor(holdColor, oc.Color);
+        oc.OnInserted.RemoveAllListeners();
+        oc.OnInserted.AddListener(OnInsert);
+        oc.Insert(laser.ContactPoint);
+        curState = SkillState.WAIT;
+    }
+
+    public void OnInsert()
+    {
+        laser.HittedObject.ObjectColor.Color = laser.HittedObject.ObjectColor.SecondColor;
         holdColor = Dimension.Color.NONE;
         laserCount++;
         TurnOffSkill();
@@ -130,6 +157,10 @@ public class SkillController : MonoBehaviour
 
     private void TurnOffSkill()
     {
+        if (laser.HittedObject != null)
+        {
+            laser.HittedObject.ObjectColor.Reset();
+        }
         laser.IsOn = false;
         skillControllerUIFader.FadeOut();
         curState = SkillState.OFF;
