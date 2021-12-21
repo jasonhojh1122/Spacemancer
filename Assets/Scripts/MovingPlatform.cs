@@ -30,7 +30,7 @@ public class MovingPlatform : MonoBehaviour
     }
     private void OnEnable(){
         if(isInit)
-            moveToEnd = FindObjectOfType<MovingPlatformManager>().getDirection(ID);
+            moveToEnd = FindObjectOfType<MovingPlatformManager>().GetDirection(ID);
     }
 
     private void FixedUpdate()

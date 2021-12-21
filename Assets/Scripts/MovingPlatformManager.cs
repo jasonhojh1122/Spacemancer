@@ -25,7 +25,7 @@ public class MovingPlatformManager : MonoBehaviour
     ///</summary>
     /// <param name="id"> The MovingPlatform ID </param>
     ///<returns> Direction Value</returns>
-    public bool getDirection(int id){
+    public bool GetDirection(int id){
         return direction[id];
     }
     ///<summary>
