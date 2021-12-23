@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3632554559317400970}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalPosition: {x: 0.333, y: 0.685, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7037722069045423871}
@@ -83,7 +83,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
+        value: 0.10144997
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   width: 0.1
-  speed: 45
+  speed: 60
   player: {fileID: 7037722069045423871}
 --- !u!1 &6665352977908080910
 GameObject:
@@ -2365,7 +2365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ad9b07a7b44a1c43b443dd1a456159f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minGroundNormalY: 0.65
+  minGroundNormalY: 0.2
   gravityModifier: 1
   velocity: {x: 0, y: 0, z: 0}
   paused: 0
@@ -2394,6 +2394,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hintUI: {fileID: 0}
+  interactable: {fileID: 0}
   interactAngle: 50
 --- !u!114 &7037722069045786883
 MonoBehaviour:
@@ -2409,6 +2410,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPersistentColor: 0
   defaultInactive: 0
+  isConvex: 1
   dummyPrefab: {fileID: 4303256666234169816, guid: 2c01e3f73296e1047af5ac0de376a975, type: 3}
 --- !u!114 &7037722069045786908
 MonoBehaviour:
@@ -2445,6 +2447,7 @@ MonoBehaviour:
   laser: {fileID: 373741178613777597}
   skillControllerUI: {fileID: 0}
   skillControllerUIFader: {fileID: 0}
+  laserLimit: 0
 --- !u!1 &7037722069045786915
 GameObject:
   m_ObjectHideFlags: 0

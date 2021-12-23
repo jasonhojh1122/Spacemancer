@@ -4,23 +4,20 @@ using UnityEngine;
 
 //using Invector.vCharacterController;
 
-namespace Interaction {
+namespace Interaction
+{
     [RequireComponent(typeof(Core.SplittableObject))]
     public class Box : Interactable
     {
-        // [SerializeField] Dimension.Color activeColor; // None if no restriction
         [SerializeField] float pickUpOffset = 0.05f;
-        // public static Box pickUpBox = null;
-        static PlayerInteraction player = null;
         Rigidbody rb;
         Core.SplittableObject so;
         bool playerInZone;
         public bool picked;
 
-        void Awake()
+        protected new void Awake()
         {
-            if (player == null)
-                player = FindObjectOfType<PlayerInteraction>();
+            base.Awake();
             so = GetComponent<Core.SplittableObject>();
             rb = GetComponent<Rigidbody>();
             picked = false;
@@ -40,7 +37,6 @@ namespace Interaction {
 
         void PickUp()
         {
-            // pickUpBox = this;
             Destroy(rb);
             Vector3 pos = transform.position;
             Quaternion rot = transform.rotation;
@@ -70,18 +66,7 @@ namespace Interaction {
             rb.interpolation = RigidbodyInterpolation.Interpolate;
             rb.freezeRotation = true;
             rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
-  
-        }
 
-        public override void OnZoneEnter(Collider other) {
-            if(other.gameObject.tag == "Player")
-            {
-                player.SetInteractable(this);
-            }
-        }
-
-        public override void OnZoneStay(Collider other) {
-            return;
         }
 
         public override void OnZoneExit(Collider other) {

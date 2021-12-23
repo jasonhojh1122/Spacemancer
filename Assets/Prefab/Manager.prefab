@@ -119,11 +119,12 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   transitionDuration: 0.8
+  endPause: 0.2
   glitchSetting:
     mat: {fileID: 2100000, guid: 279c768cb41eb6e4e99bed427b8e79a0, type: 2}
-    amount: {x: 0.01, y: 0.05}
-    freq: {x: 0.5, y: 2}
-    splitCnt: {x: 4, y: 80}
+    amount: {x: 0.01, y: 0.1}
+    freq: {x: 0.5, y: 1.5}
+    splitCnt: {x: 10, y: 50}
     curve:
       serializedVersion: 2
       m_Curve:
