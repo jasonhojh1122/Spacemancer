@@ -8,7 +8,8 @@ namespace Interaction
 
         public override void Interact()
         {
-
+            if (!string.IsNullOrEmpty(sceneName))
+            UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
         }
 
         public override bool IsInteracting()
