@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class MovingPlatformManager : MonoBehaviour
+public class MovingPlatformManager_Old : MonoBehaviour
 {
     ///<summary>
     /// <c>List</c> of <c>MovingPlatforms' direction(MoveToEnd or not)</c>
@@ -35,9 +35,7 @@ public class MovingPlatformManager : MonoBehaviour
     /// <param name="id"> The MovingPlatform ID </param>
     public void Register(MovingPlatform m,int ID){
         movingPlatforms.Add(m);
-        m.ID = movingPlatforms.Count - 1;
-        direction.Add(m.moveToEnd);
-        m.isInit = true;
+
     }
-    
+
 }

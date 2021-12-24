@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1410285199226400353}
   - component: {fileID: 1410285199226400359}
   - component: {fileID: 1410285199226400352}
-  - component: {fileID: 7869661627744529277}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -68,7 +67,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  inactivePoolRoot: {fileID: 0}
   colorSettings:
   - colorTag: 4
     color32:
@@ -159,16 +157,3 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
---- !u!114 &7869661627744529277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 595989568119878449}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 316129e94f1ceaf6bb966329c65fcb71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movingPlatforms: []
