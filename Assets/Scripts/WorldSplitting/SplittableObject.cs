@@ -12,6 +12,7 @@ namespace Core
     {
         [SerializeField] protected bool isPersistentColor;
         [SerializeField] protected bool defaultInactive;
+        [SerializeField] protected bool isConvex = true;
 
         protected ObjectColor objectColor;
         protected ObjectColor dimension;
@@ -114,7 +115,7 @@ namespace Core
         protected void SplitPersistent()
         {
             List<Dimension.Color> splittedColor;
-            if (this.Color == Dimension.Color.BLACK)
+            if (this.Color == Dimension.Color.BLACK || this.Color == Dimension.Color.NONE)
                 splittedColor = Dimension.BaseColor;
             else
                 splittedColor = Dimension.SplitColor(this.Color);
@@ -200,13 +201,11 @@ namespace Core
         /// <param name="curSiblings"> A <c>List</c> of collided siblings. </param>
         protected void ProcessCollidedObjects(ref Dimension.Color mergedColor, List<SplittableObject> curSiblings)
         {
-            Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents * 0.7f, transform.rotation);
-            Debug.DrawLine(col.bounds.center + col.bounds.extents * 0.7f, col.bounds.center - col.bounds.extents * 0.7f, UnityEngine.Color.red, 100.0f);
-            // TODO: Physics.ComputePenetration
-
+            Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents - Util.Fuzzy.amountVec3, transform.rotation);
+            // Debug.DrawLine(col.bounds.center+col.bounds.extents, col.bounds.center-col.bounds.extents, UnityEngine.Color.red, 1000.0f);
             foreach (Collider c in colliders)
             {
-                if (c == null || c.gameObject.GetInstanceID() == col.gameObject.GetInstanceID()) continue;
+                if (c == null || !c.gameObject.activeSelf || c.gameObject.GetInstanceID() == col.gameObject.GetInstanceID()) continue;
                 var so = c.gameObject.GetComponent<SplittableObject>();
                 if (so == null || so.IsMerged)
                 {
@@ -216,18 +215,42 @@ namespace Core
                 {
                     mergedColor = Dimension.Color.BLACK;
                 }
-                else if (c.gameObject.name == gameObject.name && Fuzzy.CloseVector3(c.transform.localPosition, transform.localPosition))
+                else if (c.gameObject.name == gameObject.name && Util.Fuzzy.CloseVector3(c.transform.localPosition, transform.localPosition))
                 {
                     mergedColor = Dimension.AddColor(mergedColor, so.Color);
                     so.IsMerged = true;
                     curSiblings.Add(so);
                 }
-                else
+                else if (IsPenetrated(so))
                 {
                     mergedColor = Dimension.Color.BLACK;
+                    Color = Dimension.Color.BLACK;
                     so.Merge(this);
                 }
             }
+        }
+
+        /// <summary>
+        /// Checks if the given splittableObject is overlapped with current one.
+        /// </summary>
+        /// <param name="s">The splittableObject to be checked with.</param>
+        /// <returns>True if they are overlapped.</returns>
+        protected bool IsPenetrated(SplittableObject s)
+        {
+            if (!this.isConvex && !s.isConvex)
+                return false;
+            float dist;
+            Vector3 dir;
+            if (Physics.ComputePenetration(s.col, s.transform.position, s.transform.rotation,
+                    col, transform.position, transform.rotation, out dir, out dist))
+            {
+                // Debug.Log(gameObject.name + " penetrated with " + s.gameObject.name + " dir " + dir + " dist " + dist);
+                if (dist <= Util.Fuzzy.amount)
+                    return false;
+                else
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>

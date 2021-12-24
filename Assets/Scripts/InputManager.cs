@@ -27,11 +27,11 @@ public class InputManager : MonoBehaviour {
             }
             else if (Input.GetButtonUp("WorldShiftLeft"))
             {
-                world.RotateDimensions(1);
+                world.RotateDimensions(-1);
             }
             else if (Input.GetButtonUp("WorldShiftRight"))
             {
-                world.RotateDimensions(-1);
+                world.RotateDimensions(1);
             }
         }
         if (Input.GetButtonDown("Interact"))

@@ -4,17 +4,13 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    [SerializeField] GameObject hintUI;
+    [SerializeField] UI.CanvasGroupFader hintUI;
     Vector3 hintUIOffset = new Vector3(0.0f, 1.0f, 0.0f);
     public Interaction.Interactable interactable;
     Core.SplittableObject interactableSo;
     Collider interactableCol;
     public float interactAngle = 50f;
     bool canInteract;
-
-    private void Start() {
-        HideHintUI();
-    }
 
     void Update()
     {
@@ -31,16 +27,16 @@ public class PlayerInteraction : MonoBehaviour
             }
             if (canInteract && !interactable.IsInteracting())
             {
-                ShowHintUI();
+                hintUI.FadeIn();
             }
             else
             {
-                HideHintUI();
+                hintUI.FadeOut();
             }
         }
         else
         {
-            HideHintUI();
+            hintUI.FadeOut();
             canInteract = false;
         }
     }
@@ -84,52 +80,4 @@ public class PlayerInteraction : MonoBehaviour
         else if (interactable.gameObject.GetInstanceID() == oldInteractable.gameObject.GetInstanceID())
             interactable = null;
     }
-
-    void ShowHintUI()
-    {
-        hintUI.SetActive(true);
-        Vector3 pos = interactableCol.bounds.center;
-        pos.y += interactableCol.bounds.extents.y;
-        pos += hintUIOffset;
-        hintUI.transform.position = pos;
-    }
-
-    void HideHintUI()
-    {
-        hintUI.SetActive(false);
-    }
-
-
-    /* private void OnTriggerEnter(Collider other)
-    {
-        if (exit && interactable.IsInteracting())
-        {
-            interactable = null;
-            exit = false;
-        }
-        if (interactable != null)
-            return;
-        Interaction.Zone zone = other.GetComponent<Interaction.Zone>();
-        if(zone != null)
-        {
-            interactable = zone.InteractableObect;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        var zone = other.GetComponent<Interaction.Zone>();
-        if (interactable != null && zone != null && zone.InteractableObect.gameObject.GetInstanceID() == interactable.gameObject.GetInstanceID())
-        {
-            if (interactable.IsInteracting())
-            {
-                exit = true;
-            }
-            else
-            {
-                interactable = null;
-            }
-
-        }
-    } */
 }
