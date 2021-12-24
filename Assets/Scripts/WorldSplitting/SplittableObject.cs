@@ -201,8 +201,8 @@ namespace Core
         /// <param name="curSiblings"> A <c>List</c> of collided siblings. </param>
         protected void ProcessCollidedObjects(ref Dimension.Color mergedColor, List<SplittableObject> curSiblings)
         {
-            Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents - Fuzzy.amountVec3, transform.rotation);
-
+            Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents - Util.Fuzzy.amountVec3, transform.rotation);
+            Debug.DrawLine(col.bounds.center+col.bounds.extents, col.bounds.center-col.bounds.extents, UnityEngine.Color.red, 1000.0f);
             foreach (Collider c in colliders)
             {
                 if (c == null || !c.gameObject.activeSelf || c.gameObject.GetInstanceID() == col.gameObject.GetInstanceID()) continue;
@@ -215,7 +215,7 @@ namespace Core
                 {
                     mergedColor = Dimension.Color.BLACK;
                 }
-                else if (c.gameObject.name == gameObject.name && Fuzzy.CloseVector3(c.transform.localPosition, transform.localPosition))
+                else if (c.gameObject.name == gameObject.name && Util.Fuzzy.CloseVector3(c.transform.localPosition, transform.localPosition))
                 {
                     mergedColor = Dimension.AddColor(mergedColor, so.Color);
                     so.IsMerged = true;
@@ -224,6 +224,7 @@ namespace Core
                 else if (IsPenetrated(so))
                 {
                     mergedColor = Dimension.Color.BLACK;
+                    Color = Dimension.Color.BLACK;
                     so.Merge(this);
                 }
             }
@@ -243,8 +244,11 @@ namespace Core
             if (Physics.ComputePenetration(s.col, s.transform.position, s.transform.rotation,
                     col, transform.position, transform.rotation, out dir, out dist))
             {
-                if (dist > Fuzzy.amount)
+                Debug.Log(gameObject.name + " penetrated with " + s.gameObject.name + " dir " + dir + " dist " + dist);
+                if (dist <= Util.Fuzzy.amount)
                     return false;
+                else
+                    return true;
             }
             return false;
         }

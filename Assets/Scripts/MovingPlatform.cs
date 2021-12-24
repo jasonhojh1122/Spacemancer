@@ -13,11 +13,11 @@ public class MovingPlatform : MonoBehaviour
     Vector3 endPos;
     Core.SplittableObject so;
     Rigidbody rb;
-    /// <summary> Moving Direction </summary>    
+    /// <summary> Moving Direction </summary>
     [SerializeField] public bool moveToEnd = true;
 
     /// <summary>Initialized by manager or not </summary>
-    public bool isInit; 
+    public bool isInit;
     public int ID;
     private void Awake()
     {
@@ -45,12 +45,12 @@ public class MovingPlatform : MonoBehaviour
     void Move() {
         Vector3 target = (moveToEnd) ? endPos : startPos;
         transform.localPosition = Vector3.MoveTowards(transform.localPosition, target, moveSpeed*Time.deltaTime);
-        if (moveToEnd && Fuzzy.CloseVector3(transform.localPosition, endPos)) {
+        if (moveToEnd && Util.Fuzzy.CloseVector3(transform.localPosition, endPos)) {
             moveToEnd = false;
             FindObjectOfType<MovingPlatformManager>().SetDirection(ID,moveToEnd);
-            
+
         }
-        else if (!moveToEnd && Fuzzy.CloseVector3(transform.localPosition, startPos)) {
+        else if (!moveToEnd && Util.Fuzzy.CloseVector3(transform.localPosition, startPos)) {
             moveToEnd = true;
             FindObjectOfType<MovingPlatformManager>().SetDirection(ID,moveToEnd);
         }
