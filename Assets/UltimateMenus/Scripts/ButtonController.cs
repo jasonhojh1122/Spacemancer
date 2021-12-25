@@ -3,8 +3,9 @@ using UnityEngine.UI; // We need to edit text components
 using UnityEngine.EventSystems; // And determine if our mouse is hovering
 using UnityEngine.SceneManagement; // And have access to switching scenes.
 using System.Collections;
+using System.Collections.Generic;
 
-public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler 
+public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
 	/// <summary>
 	/// To contact me for any reason, please email me at jadewirestudios@gmail.com. 
@@ -28,10 +29,24 @@ public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
 	Text textForButton; // This is the variable that holds the component for the text that we want to modify
 
-
-
+	List<Vector2> ScreenTypes = new List<Vector2> { new Vector2(640, 480), new Vector2(1280, 720), new Vector2(1920, 1080) };
+	static int ScreenTypeIndex;
+	static bool FullScreen;
+	static bool soundOn;
+	public bool isSoundButton = false;
+	public bool isResButton = false;
+	public bool isFullscreenButton = false;
+	private static bool firstLoadGame = true;
 	void Start() // Called once, on the first frame after the game starts playing
 	{
+		if (firstLoadGame)
+        {
+			FullScreen = true;
+			soundOn = true;
+			ScreenTypeIndex = 0;
+			firstLoadGame = false;
+        }
+			
 		textForButton = gameObject.GetComponentInChildren<Text> (); // Set our variable equal to a text component which is set as a child of our button
 
 		if (modifyFontSize) { // If we are modifying our font size, we want to...
@@ -43,6 +58,22 @@ public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 		}
 
 		menuControl = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<MenuController> (); // We set our reference equal to a GameObject who has a tag of "GAmeManager", with a component of MenuController, our script.
+		if (isResButton)
+		{
+			Screen.SetResolution((int)ScreenTypes[ScreenTypeIndex].x, (int)ScreenTypes[ScreenTypeIndex].y, FullScreen);
+			textForButton.text = "Resolution:" + ((int)ScreenTypes[ScreenTypeIndex].x).ToString() + "x" + ((int)ScreenTypes[ScreenTypeIndex].y).ToString();
+		}
+
+		if (isFullscreenButton)
+		{
+			Screen.SetResolution((int)ScreenTypes[ScreenTypeIndex].x, (int)ScreenTypes[ScreenTypeIndex].y, FullScreen);
+			textForButton.text = FullScreen ? "FullScreen:On" : "FullScreen:Off";
+		}
+		if (isSoundButton)
+		{
+			AudioListener.volume = soundOn ? 1.0f : 0f;
+			textForButton.text = soundOn ? "Sound:On" : "Sound:Off";
+		}
 	}
 
 	public void OnPointerEnter(PointerEventData eventdata) // Whenever we mouse over the button:
@@ -91,6 +122,26 @@ public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 	public void Quit()
 	{
 		Application.Quit (); // This line quits the application.
+	}
+
+	public void ChangeResolution()
+    {
+		ScreenTypeIndex = (ScreenTypeIndex + 1) % ScreenTypes.Count;
+		Screen.SetResolution((int)ScreenTypes[ScreenTypeIndex].x, (int)ScreenTypes[ScreenTypeIndex].y, FullScreen);
+		textForButton.text = "Resolution:" + ((int)ScreenTypes[ScreenTypeIndex].x).ToString() + "x" +((int)ScreenTypes[ScreenTypeIndex].y).ToString();
+	}
+
+	public void ChangeSound()
+	{
+		soundOn = !soundOn;
+		AudioListener.volume = soundOn? 1.0f:0f;
+		textForButton.text = soundOn ? "Sound:On" : "Sound:Off";
+	}
+	public void ChangeFullScreen()
+	{
+		FullScreen = !FullScreen;
+		Screen.SetResolution((int)ScreenTypes[ScreenTypeIndex].x, (int)ScreenTypes[ScreenTypeIndex].y, FullScreen);
+		textForButton.text =  FullScreen? "FullScreen:On":"FullScreen:Off";
 	}
 
 	public void LoadWebsite(string URLToOpen) // Maybe you want your users to be able to contact you?
