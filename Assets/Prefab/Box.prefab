@@ -249,6 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickUpOffset: 0.2
+  picked: 0
 --- !u!114 &1816845289621786178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,6 +264,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 7
   usingMaterial: 1
+  OnWithdrew:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &8109250064003014276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,3 +284,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPersistentColor: 0
   defaultInactive: 0
+  isConvex: 1

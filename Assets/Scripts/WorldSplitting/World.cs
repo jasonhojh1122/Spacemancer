@@ -16,7 +16,6 @@ namespace Core
             get => _instance;
         }
         [SerializeField] List<ObjectColor> dimensions;
-        [SerializeField] Transform inactivePoolRoot;
         [SerializeField] List<Dimension.ColorSetting> colorSettings;
 
         DimensionTransition dimensionTransition;
@@ -104,6 +103,9 @@ namespace Core
             {
                 s.Dim = Dims[Dimension.Color.WHITE];
                 s.ObjectColor.Init();
+                var localPos = Dims[Dimension.Color.WHITE].transform.InverseTransformPoint(s.transform.position);
+                var localRot = Quaternion.Inverse(Dims[Dimension.Color.WHITE].transform.rotation) * s.transform.rotation;
+                MoveTransformToNewParent(s.transform, Dims[Dimension.Color.WHITE].transform, localPos, localRot);
                 if (s.DefaultInactive)
                 {
                     DeactivateObject(s);
@@ -225,7 +227,7 @@ namespace Core
             RemoveFromSet(so);
             Vector3 localPos = so.transform.localPosition;
             Quaternion localRot = so.transform.localRotation;
-            MoveTransformToNewParent(so.transform, inactivePoolRoot, localPos, localRot);
+            MoveTransformToNewParent(so.transform, Dims[Dimension.Color.NONE].transform, localPos, localRot);
             objectPool.SetInactive(so);
         }
 

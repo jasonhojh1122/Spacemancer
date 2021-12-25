@@ -6,22 +6,25 @@ using System.Collections.Generic;
 using VecDic = System.Collections.Generic.Dictionary<Core.Dimension.Color, UnityEngine.Vector3>;
 using QuaDic = System.Collections.Generic.Dictionary<Core.Dimension.Color, UnityEngine.Quaternion>;
 
-namespace Core {
-    public class DimensionTransition : MonoBehaviour{
+namespace Core
+{
+    public class DimensionTransition : MonoBehaviour
+    {
 
         [System.Serializable]
         class GlitchSetting
         {
             public Material mat;
-            public Vector2 amount = new Vector2(0.01f, 0.05f);
+            public Vector2 amount = new Vector2(0.01f, 0.1f);
             public Vector2 freq = new Vector2(0.5f, 1.5f);
-            public Vector2 splitCnt = new Vector2(10f, 80f);
+            public Vector2 splitCnt = new Vector2(10f, 50f);
             public AnimationCurve curve;
         }
 
         [SerializeField] Character.PlayerController playerController;
         [SerializeField] List<Transform> targetPos;
         [SerializeField] float transitionDuration = 1.0f;
+        [SerializeField] float endPause = 0.2f;
         [SerializeField] GlitchSetting glitchSetting;
 
         List<Dimension.Color> dimensionOrder;
@@ -54,6 +57,7 @@ namespace Core {
             World.Instance.Dims[Dimension.Color.WHITE].gameObject.SetActive(false);
             Physics.SyncTransforms();
             OnTransitionStartEnd(false);
+            yield return new WaitForSeconds(endPause);
         }
 
         public IEnumerator MergeTransition()
@@ -66,6 +70,7 @@ namespace Core {
             World.Instance.Dims[Dimension.Color.WHITE].gameObject.SetActive(true);
             ToggleDimensionActivation(false);
             OnTransitionStartEnd(false);
+            yield return new WaitForSeconds(endPause);
         }
 
         public IEnumerator RotateTransition(int direction)
@@ -74,6 +79,7 @@ namespace Core {
             StartCoroutine(Glitch());
             yield return StartCoroutine(RotateAnimation(direction));
             OnTransitionStartEnd(false);
+            yield return new WaitForSeconds(endPause);
         }
 
         IEnumerator MoveAnimation(bool ToCenter)

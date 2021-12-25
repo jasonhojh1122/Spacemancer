@@ -58,7 +58,7 @@ namespace Core
             {
                 var so = pool[name].FirstOrDefault();
                 if (so != null)
-                    return GameObject.Instantiate<SplittableObject>(pool[name].FirstOrDefault());
+                    return Object.Instantiate<SplittableObject>(pool[name].FirstOrDefault());
             }
             return null;
         }

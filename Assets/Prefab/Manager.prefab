@@ -48,6 +48,7 @@ MonoBehaviour:
   world: {fileID: 1410285199226400359}
   locked: 0
   playerInteraction: {fileID: 0}
+  pause: 0
 --- !u!114 &1410285199226400359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +66,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  inactivePoolRoot: {fileID: 0}
+  - {fileID: 0}
   colorSettings:
   - colorTag: 4
     color32:
@@ -111,18 +112,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa5a86391d1b245488ffa615d5143c02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  world: {fileID: 1410285199226400359}
   playerController: {fileID: 0}
   targetPos:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  transitionDuration: 0.8
+  transitionDuration: 0.4
+  endPause: 0.4
   glitchSetting:
     mat: {fileID: 2100000, guid: 279c768cb41eb6e4e99bed427b8e79a0, type: 2}
-    amount: {x: 0.01, y: 0.05}
-    freq: {x: 0.5, y: 2}
-    splitCnt: {x: 4, y: 80}
+    amount: {x: 0.01, y: 0.1}
+    freq: {x: 0.5, y: 1.5}
+    splitCnt: {x: 10, y: 50}
     curve:
       serializedVersion: 2
       m_Curve:
