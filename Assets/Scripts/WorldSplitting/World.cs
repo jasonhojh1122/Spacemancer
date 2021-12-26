@@ -17,7 +17,7 @@ namespace Core
         }
         [SerializeField] List<ObjectColor> dimensions;
         [SerializeField] List<Dimension.ColorSetting> colorSettings;
-
+        [SerializeField] AudioSource splitMergeAudio, rotateAudio;
         DimensionTransition dimensionTransition;
         PlayerInteraction playerInteraction;
         Dictionary<Dimension.Color, ObjectColor> dimensionMap;
@@ -276,6 +276,7 @@ namespace Core
         /// </summary>
         void SplitDimensions()
         {
+            splitMergeAudio.Play();
             StartCoroutine(dimensionTransition.SplitTransition());
         }
 
@@ -284,6 +285,7 @@ namespace Core
         /// </summary>
         void MergeDimensions()
         {
+            splitMergeAudio.Play();
             StartCoroutine(dimensionTransition.MergeTransition());
         }
 
@@ -294,6 +296,7 @@ namespace Core
         /// Less than zero for left rotation. </param>
         public void RotateDimensions(int dir)
         {
+            rotateAudio.Play();
             if (!Splitted || dimensionTransition.Transitting) return;
             playerInteraction.OnDimensionChange();
             StartCoroutine(dimensionTransition.RotateTransition(dir));

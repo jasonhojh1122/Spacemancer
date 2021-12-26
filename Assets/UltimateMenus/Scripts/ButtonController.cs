@@ -33,6 +33,7 @@ public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 	static int ScreenTypeIndex;
 	static bool FullScreen;
 	static bool soundOn;
+	public bool isMusicButton = false;
 	public bool isSoundButton = false;
 	public bool isResButton = false;
 	public bool isFullscreenButton = false;
@@ -73,6 +74,12 @@ public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 		{
 			AudioListener.volume = soundOn ? 1.0f : 0f;
 			textForButton.text = soundOn ? "Sound:On" : "Sound:Off";
+		}
+		if (isMusicButton)
+		{
+			var bgm = FindObjectsOfType<BGM>();
+			if (bgm.Length != 0)
+				textForButton.text = BGM.bgmOn ? "Music:On" : "Music:Off";
 		}
 	}
 
@@ -137,6 +144,13 @@ public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 		AudioListener.volume = soundOn? 1.0f:0f;
 		textForButton.text = soundOn ? "Sound:On" : "Sound:Off";
 	}
+	public void ChangeMusic()
+	{
+		var bgm = FindObjectsOfType<BGM>();
+		if (bgm.Length != 0)
+			textForButton.text = bgm[0].toggleBGM() ? "Music:On" : "Music:Off";
+	}
+
 	public void ChangeFullScreen()
 	{
 		FullScreen = !FullScreen;
