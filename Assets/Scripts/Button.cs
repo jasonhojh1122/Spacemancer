@@ -17,6 +17,7 @@ public class Button : MonoBehaviour
     [SerializeField] Core.SplittableObject toggleObject;
     [SerializeField] string targetObjectName;
     [SerializeField] string desiredObjectName;
+    [SerializeField] AudioSource audio;
     // [SerializeField] bool isTriggered = false;
 
     World world;
@@ -49,6 +50,7 @@ public class Button : MonoBehaviour
 
     private void ToggleOn()
     {
+        audio.Play();
         var set = world.ObjectPool.InactiveObjectsPool[targetObjectName];
         if (set == null) return;
         List<SplittableObject> toActivate = new List<SplittableObject>();
