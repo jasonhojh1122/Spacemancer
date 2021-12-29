@@ -11,6 +11,7 @@ public class Button : MonoBehaviour
 
     [SerializeField] SplittableObject generatedObjectRef;
     [SerializeField] string keyObjectName;
+    [SerializeField] AudioSource audio;
 
     Core.SplittableObject so;
     Core.SplittableObject keyObject;
@@ -41,6 +42,7 @@ public class Button : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+        audio.Play();
         if (!so.IsInCorrectDim())
             return;
         if (keyObject != null && other.transform.parent.gameObject.GetInstanceID() == keyObject.gameObject.GetInstanceID())
