@@ -15,15 +15,6 @@ public class DeathZone : MonoBehaviour
             ReloadLevel();
             return;
         }
-        var so = col.GetComponent<SplittableObject>();
-        if (so != null)
-        {
-            World.Instance.DeactivateObject(so);
-        }
-        else
-        {
-            GameObject.Destroy(col.gameObject);
-        }
     }
     protected void ReloadLevel()
     {
