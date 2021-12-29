@@ -12,6 +12,7 @@ namespace Core
 
         [HideInInspector] public UnityEvent OnWithdrew;
         [HideInInspector] public UnityEvent OnInserted;
+        [HideInInspector] public UnityEvent OnColorChanged;
 
         SplittableObject so;
         Renderer _renderer;
@@ -38,6 +39,7 @@ namespace Core
             get => color;
             set {
                 color = value;
+                OnColorChanged.Invoke();
                 if (!usingMaterial) return;
                 if (color != Dimension.Color.NONE)
                 {
