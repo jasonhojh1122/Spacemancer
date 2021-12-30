@@ -33,6 +33,7 @@ namespace Core
         /// </summary>
         public bool DefaultInactive {
             get => defaultInactive;
+            set => defaultInactive = value;
         }
 
         /// <summary>
@@ -147,10 +148,6 @@ namespace Core
             {
                 if (Siblings[sc] == null)
                 {
-                    if (gameObject.name == "Stair")
-                    {
-                        Debug.Log("ABC");
-                    }
                     Siblings[sc] = World.Instance.InstantiateNewObjectToDimension(this, sc);
                     Siblings[sc].Color = sc;
                 }
@@ -206,22 +203,16 @@ namespace Core
         protected void ProcessCollidedObjects(ref Dimension.Color mergedColor, List<SplittableObject> curSiblings)
         {
             Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents - Util.Fuzzy.amountVec3, transform.rotation);
-            Debug.DrawLine(col.bounds.center+col.bounds.extents, col.bounds.center-col.bounds.extents, UnityEngine.Color.red, 1000.0f);
             foreach (Collider c in colliders)
             {
                 if (c == null || !c.gameObject.activeSelf || c.gameObject.GetInstanceID() == col.gameObject.GetInstanceID()) continue;
                 var so = c.gameObject.GetComponent<SplittableObject>();
-                if (gameObject.name == "Stair")
-                {
-                    Debug.Log(Color.ToString() + " Stair collided with " + so.Color.ToString() + " " + c.gameObject.name);
-                }
                 if (so == null || so.IsMerged)
                 {
                     continue;
                 }
                 else if (so.Color == Dimension.Color.BLACK)
                 {
-                    Debug.Log(so.gameObject.name + " is black.");
                     mergedColor = Dimension.Color.BLACK;
                 }
                 else if (c.gameObject.name == gameObject.name && Util.Fuzzy.CloseVector3(c.transform.localPosition, transform.localPosition))
@@ -253,7 +244,7 @@ namespace Core
             if (Physics.ComputePenetration(s.col, s.transform.position, s.transform.rotation,
                     col, transform.position, transform.rotation, out dir, out dist))
             {
-                Debug.Log(gameObject.name + " penetrated with " + s.gameObject.name + " dir " + dir + " dist " + dist);
+                Util.Debug.Log(gameObject, " penetrated with " + s.gameObject.name + " dir " + dir + " dist " + dist);
                 if (dist <= Util.Fuzzy.amount)
                     return false;
                 else

@@ -238,6 +238,9 @@ MonoBehaviour:
   OnInserted:
     m_PersistentCalls:
       m_Calls: []
+  OnColorChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &33594385 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f9dc66ef5ce3ed6449de03a97d22c9ab, type: 3}
@@ -363,6 +366,9 @@ MonoBehaviour:
   OnInserted:
     m_PersistentCalls:
       m_Calls: []
+  OnColorChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!20 &76638143 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 6514957757949037826, guid: 0b900e9f6495f6c44ba27ef4a30189ce, type: 3}
@@ -481,6 +487,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnColorChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!4 &87355919 stripped
@@ -733,6 +742,9 @@ MonoBehaviour:
   OnInserted:
     m_PersistentCalls:
       m_Calls: []
+  OnColorChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &493824982
 GameObject:
   m_ObjectHideFlags: 0
@@ -782,6 +794,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnColorChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &502320827 stripped
@@ -1062,6 +1077,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnColorChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!64 &642923223
@@ -1791,6 +1809,9 @@ MonoBehaviour:
   OnInserted:
     m_PersistentCalls:
       m_Calls: []
+  OnColorChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1100191664
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1993,6 +2014,9 @@ MonoBehaviour:
   OnInserted:
     m_PersistentCalls:
       m_Calls: []
+  OnColorChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!64 &1118330324
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2189,6 +2213,9 @@ MonoBehaviour:
   OnInserted:
     m_PersistentCalls:
       m_Calls: []
+  OnColorChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1191760828 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5957d5674d187f7499b78709f2965fec, type: 3}
@@ -2373,6 +2400,9 @@ MonoBehaviour:
   OnInserted:
     m_PersistentCalls:
       m_Calls: []
+  OnColorChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1377418263
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2488,6 +2518,9 @@ MonoBehaviour:
   OnInserted:
     m_PersistentCalls:
       m_Calls: []
+  OnColorChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1377418270 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d2ea32ea1f70f6a488dbd7f26cb228d1, type: 3}
@@ -2555,6 +2588,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3153932650988170440, guid: a51544ff3ffa4214b8e68e231b2fc18c, type: 3}
   m_PrefabInstance: {fileID: 1420861157}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1476821817
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_RootOrder
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -16.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.70710677
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756250368707381347, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
+      propertyPath: m_Name
+      value: CliffParticle
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
 --- !u!1 &1519670632
 GameObject:
   m_ObjectHideFlags: 0
@@ -2604,6 +2694,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnColorChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1001 &1607291177
@@ -2716,6 +2809,9 @@ MonoBehaviour:
   OnInserted:
     m_PersistentCalls:
       m_Calls: []
+  OnColorChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!64 &1607291182
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2793,6 +2889,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnColorChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1001 &1701775180
@@ -2908,6 +3007,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnColorChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!4 &1701775185 stripped
@@ -3272,6 +3374,9 @@ MonoBehaviour:
   OnInserted:
     m_PersistentCalls:
       m_Calls: []
+  OnColorChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!64 &1902606777
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3394,6 +3499,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnInserted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnColorChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!64 &1936850753
@@ -3530,6 +3638,9 @@ MonoBehaviour:
   OnInserted:
     m_PersistentCalls:
       m_Calls: []
+  OnColorChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2043754534 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6502646558245808860, guid: 7b9250e527075e44b8423fd8f9542b1f, type: 3}
@@ -3645,17 +3756,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1410285199226400352, guid: 3ba01b7e66c0c13459f888eef1456f92, type: 3}
-      propertyPath: endPause
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1410285199226400352, guid: 3ba01b7e66c0c13459f888eef1456f92, type: 3}
       propertyPath: playerController
       value: 
       objectReference: {fileID: 4408529144010745613}
-    - target: {fileID: 1410285199226400352, guid: 3ba01b7e66c0c13459f888eef1456f92, type: 3}
-      propertyPath: transitionDuration
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 1410285199226400352, guid: 3ba01b7e66c0c13459f888eef1456f92, type: 3}
       propertyPath: targetPos.Array.data[0]
       value: 

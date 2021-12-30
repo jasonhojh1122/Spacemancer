@@ -160,7 +160,7 @@ namespace Core
             unprocessedObjects.Remove(so);
             if (!processedObjects.Add(so))
             {
-                Debug.Log("Existed " + so.gameObject.name + " " + so.Dim.Color.ToString());
+                Util.Debug.Log(gameObject, so.gameObject.name + " " + so.Dim.Color.ToString() + " existed in processed objects");
             }
         }
 
