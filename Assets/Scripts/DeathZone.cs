@@ -9,7 +9,7 @@ public class DeathZone : MonoBehaviour
 {
     void OnTriggerEnter(Collider col)
     {
-        Debug.Log("Death Zone" + col.gameObject.name);
+        Util.Debug.Log(gameObject, col.gameObject.name + " enter death zone.");
         if (col.gameObject.tag == "Player")
         {
             ReloadLevel();

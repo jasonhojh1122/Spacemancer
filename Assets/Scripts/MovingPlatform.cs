@@ -112,7 +112,6 @@ public class MovingPlatform : MonoBehaviour
 
     void Register()
     {
-        Debug.Log(transform.GetInstanceID() + " Registering.");
         var startPos = Core.World.Instance.Dims[Core.Dimension.Color.WHITE].
                         transform.InverseTransformPoint(startPoint.position);
         var endPos = Core.World.Instance.Dims[Core.Dimension.Color.WHITE].
@@ -143,7 +142,6 @@ public class MovingPlatform : MonoBehaviour
         {
             transform.localPosition = manager.GetNewPosition(ID, Time.frameCount, moveSpeed);
         }
-        Debug.Log(so.Color.ToString() + " " + manager.GetStartPos(ID) + " " + manager.GetEndPos(ID));
     }
 
 

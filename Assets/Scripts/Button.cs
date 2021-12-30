@@ -11,7 +11,7 @@ public class Button : MonoBehaviour
 
     [SerializeField] SplittableObject generatedObjectRef;
     [SerializeField] string keyObjectName;
-    [SerializeField] AudioSource audio;
+    [SerializeField] AudioSource audioSource;
 
     Core.SplittableObject so;
     Core.SplittableObject keyObject;
@@ -32,17 +32,31 @@ public class Button : MonoBehaviour
     {
         if (!so.IsInCorrectDim())
             return;
-        if (generatedObject == null && Match(other.transform.parent.gameObject))
+        if (generatedObject == null)
         {
-            ToggleOn();
-            keyObject.ObjectColor.OnColorChanged.AddListener(OnkeyObjectColorChanged);
+            keyObject = other.transform.parent.gameObject.GetComponent<Core.SplittableObject>();
+            if (keyObject == null)
+            {
+                return;
+            }
+            else if (other.transform.parent.gameObject.name != keyObjectName)
+            {
+                keyObject = null;
+                return;
+            }
+            else
+            {
+                audioSource.Play();
+                OnkeyObjectColorChanged();
+                keyObject.ObjectColor.OnColorChanged.AddListener(OnkeyObjectColorChanged);
+            }
         }
 
     }
 
     void OnTriggerExit(Collider other)
     {
-        audio.Play();
+        audioSource.Play();
         if (!so.IsInCorrectDim())
             return;
         if (keyObject != null && other.transform.parent.gameObject.GetInstanceID() == keyObject.gameObject.GetInstanceID())
@@ -60,14 +74,14 @@ public class Button : MonoBehaviour
         {
             return false;
         }
-        else if (keyObject.Color != so.Color || obj.name != keyObjectName)
+        else if (obj.name != keyObjectName)
         {
             keyObject = null;
             return false;
         }
         else
         {
-            return true;
+            return keyObject.Color != so.Color;
         }
 
     }
@@ -81,13 +95,18 @@ public class Button : MonoBehaviour
     private void ToggleOff()
     {
         World.Instance.DeactivateObject(generatedObject);
+        generatedObject = null;
     }
 
     public void OnkeyObjectColorChanged()
     {
-        if (generatedObject == null && keyObject.Color != so.Color)
+        if (generatedObject == null && keyObject.Color == so.Color)
         {
             ToggleOn();
+        }
+        else if (generatedObject != null && keyObject.Color != so.Color)
+        {
+            ToggleOff();
         }
     }
 
