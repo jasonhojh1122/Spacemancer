@@ -12,14 +12,20 @@ public class Button : MonoBehaviour
     [SerializeField] SplittableObject generatedObjectRef;
     [SerializeField] string keyObjectName;
     [SerializeField] AudioSource audioSource;
+    [SerializeField] Core.SplittableObject keyObject;
 
     Core.SplittableObject so;
-    Core.SplittableObject keyObject;
     Core.SplittableObject generatedObject;
 
     private void Awake()
     {
         so = GetComponent<Core.SplittableObject>();
+        if (keyObject != null && so.IsInCorrectDim() && so.Color == generatedObjectRef.Color)
+        {
+            generatedObjectRef.DefaultInactive = false;
+            OnkeyObjectColorChanged();
+            keyObject.ObjectColor.OnColorChanged.AddListener(OnkeyObjectColorChanged);
+        }
     }
 
     private void Start()

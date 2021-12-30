@@ -33,6 +33,7 @@ namespace Core
         /// </summary>
         public bool DefaultInactive {
             get => defaultInactive;
+            set => defaultInactive = value;
         }
 
         /// <summary>
