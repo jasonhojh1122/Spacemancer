@@ -93,6 +93,7 @@ namespace Skill
 
         System.Collections.IEnumerator TurnOnAnim()
         {
+            lr.enabled = true;
             lastContactPoint = Vector3.zero;
             curDistance = 0.0f;
             RaycastHit [] hits;
@@ -178,6 +179,7 @@ namespace Skill
                 lr.SetPosition(1, endPosLocal);
                 yield return null;
             }
+            lr.enabled = false;
         }
 
         System.Collections.IEnumerator InsertAnim()
