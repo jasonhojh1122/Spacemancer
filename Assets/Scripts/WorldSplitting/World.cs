@@ -18,6 +18,8 @@ namespace Core
         [SerializeField] List<ObjectColor> dimensions;
         [SerializeField] List<Dimension.ColorSetting> colorSettings;
         [SerializeField] AudioSource splitMergeAudio, rotateAudio;
+        [HideInInspector] public UnityEvent BeforeMerge;
+        [HideInInspector] public UnityEvent BeforeSplit;
         DimensionTransition dimensionTransition;
         PlayerInteraction playerInteraction;
         Dictionary<Dimension.Color, ObjectColor> dimensionMap;
@@ -94,6 +96,9 @@ namespace Core
                     Dimension.MaterialColor.Add(setting.colorTag, setting.color32);
                 }
             }
+
+            BeforeMerge = new UnityEvent();
+            BeforeSplit = new UnityEvent();
         }
 
         private void Start()
@@ -155,7 +160,7 @@ namespace Core
             unprocessedObjects.Remove(so);
             if (!processedObjects.Add(so))
             {
-                Debug.Log("Existed " + so.gameObject.name + " " + so.Dim.Color.ToString());
+                Util.Debug.Log(gameObject, so.gameObject.name + " " + so.Dim.Color.ToString() + " existed in processed objects");
             }
         }
 
@@ -179,17 +184,38 @@ namespace Core
         }
 
         /// <summary>
-        /// Instantiates a cloned object into a specified dimension.
+        /// Instantiates a <c>SplittableObject</c> into a specified dimension.
         /// </summary>
-        /// <param name="so"> The <c>SplittableObject</c> to be cloned. </param>
+        /// <param name="so"> The <c>SplittableObject</c> to be instantiated. </param>
         /// <param name="color"> The color of the target dimension to instantiate into. </param>
-        /// <returns> The cloned <c>SplittableObject</c>. </returns>
+        /// <returns> The instantiated <c>SplittableObject</c>. </returns>
         public SplittableObject InstantiateNewObjectToDimension(SplittableObject so, Dimension.Color color)
         {
             var newSo = objectPool.Instantiate(so.name);
+            if (newSo == null)
+            {
+                newSo = GameObject.Instantiate<SplittableObject>(so);
+                MoveToProcessed(newSo);
+                objectPool.SetActive(newSo);
+            }
             newSo.gameObject.name = so.name;
             newSo.Dim = Dims[color];
             MoveTransformToNewParent(newSo.transform, newSo.Dim.transform, so.transform.localPosition, so.transform.localRotation);
+            return newSo;
+        }
+
+        /// <summary>
+        /// Instantiates a <c>SplittableObject</c> object into a specified dimension.
+        /// </summary>
+        /// <param name="soName"> The name of the <c>SplittableObject</c> to be instantiated. </param>
+        /// <param name="color"> The color of the target dimension to instantiate into. </param>
+        /// <returns> The instantiated <c>SplittableObject</c>. </returns>
+        public SplittableObject InstantiateNewObjectToDimension(string soName, Dimension.Color color)
+        {
+            var newSo = objectPool.Instantiate(soName);
+            newSo.gameObject.name = soName;
+            newSo.Dim = Dims[color];
+            MoveTransformToNewParent(newSo.transform, newSo.Dim.transform, newSo.transform.localPosition, newSo.transform.localRotation);
             return newSo;
         }
 
@@ -312,11 +338,13 @@ namespace Core
             if (splitted)
             {
                 splitted = false;
+                BeforeMerge.Invoke();
                 MergeDimensions();
             }
             else
             {
                 splitted = true;
+                BeforeSplit.Invoke();
                 SplitDimensions();
             }
         }

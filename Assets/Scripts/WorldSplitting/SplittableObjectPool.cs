@@ -130,10 +130,10 @@ namespace Core
             if (so == null)
             {
                 so = active.InstantiateDefault(name);
-                so.gameObject.name = name;
             }
             if (so != null)
             {
+                so.gameObject.name = name;
                 SetActive(so);
             }
             return so;

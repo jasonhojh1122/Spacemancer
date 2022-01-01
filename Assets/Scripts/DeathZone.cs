@@ -9,20 +9,11 @@ public class DeathZone : MonoBehaviour
 {
     void OnTriggerEnter(Collider col)
     {
-        Debug.Log("Death Zone" + col.gameObject.name);
+        Util.Debug.Log(gameObject, col.gameObject.name + " enter death zone.");
         if (col.gameObject.tag == "Player")
         {
             ReloadLevel();
             return;
-        }
-        var so = col.GetComponent<SplittableObject>();
-        if (so != null)
-        {
-            World.Instance.DeactivateObject(so);
-        }
-        else
-        {
-            GameObject.Destroy(col.gameObject);
         }
     }
     protected void ReloadLevel()
