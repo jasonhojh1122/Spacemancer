@@ -20,12 +20,6 @@ public class Button : MonoBehaviour
     private void Awake()
     {
         so = GetComponent<Core.SplittableObject>();
-        if (keyObject != null && so.IsInCorrectDim() && so.Color == generatedObjectRef.Color)
-        {
-            generatedObjectRef.DefaultInactive = false;
-            OnkeyObjectColorChanged();
-            keyObject.ObjectColor.OnColorChanged.AddListener(OnkeyObjectColorChanged);
-        }
     }
 
     private void Start()

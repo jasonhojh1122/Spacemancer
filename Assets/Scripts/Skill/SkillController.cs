@@ -132,6 +132,7 @@ namespace Skill
             if (laser.HittedObject.Color == Dimension.Color.NONE)
             {
                 World.Instance.DeactivateObject(laser.HittedObject);
+                laser.HittedObject = null;
             }
             TurnOffSkill();
         }
