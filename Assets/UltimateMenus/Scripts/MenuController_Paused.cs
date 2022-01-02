@@ -58,7 +58,7 @@ public class MenuController_Paused : MonoBehaviour
 	public void CheckPause()
 	{
 		if (isPaused) {
-			FindObjectOfType<InputManager>().pause = true;
+			InputManager.Instance.pause = true;
 			Time.timeScale = 0.0001f;
 			if (menuType == MenuTypes.unity3D) {
 				playerFor3D.SetActive (false);
@@ -72,7 +72,7 @@ public class MenuController_Paused : MonoBehaviour
 		}
 
 		if (!isPaused) {
-			FindObjectOfType<InputManager>().pause = false;
+			InputManager.Instance.pause = false;
 			Time.timeScale = 1;
 			canvasIndex = startingIndex;
 			if (menuType == MenuTypes.unity3D) {

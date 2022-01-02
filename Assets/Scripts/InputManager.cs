@@ -16,6 +16,7 @@ public class InputManager : MonoBehaviour {
 
     private void Awake() {
         pause = false;
+        _instance = this;
     }
 
     private void Update() {
