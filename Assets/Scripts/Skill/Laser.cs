@@ -62,6 +62,7 @@ namespace Skill
         public SplittableObject HittedObject
         {
             get => hittedObject;
+            set => hittedObject = value;
         }
         public Vector3 ContactPoint {
             get => lastContactPoint;
