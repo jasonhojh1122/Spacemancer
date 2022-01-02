@@ -10,15 +10,21 @@ public class InputManager : MonoBehaviour {
 
     [SerializeField] Core.World world;
     [SerializeField] bool locked;
+    [SerializeField] Skill.SkillController skillController;
+    [SerializeField] Character.PlayerController playerController;
     [SerializeField] PlayerInteraction playerInteraction;
 
     public bool pause;
 
     private void Awake() {
         pause = false;
+        skillController = FindObjectOfType<Skill.SkillController>();
+        playerController = FindObjectOfType<Character.PlayerController>();
     }
 
     private void Update() {
+        skillController.pause = pause;
+        playerController.controlEnabled = !pause;
         if (pause) return;
         if (!playerInteraction.IsInteracting()) {
             if (Input.GetButtonUp("WorldToggle"))

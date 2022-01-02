@@ -24,6 +24,7 @@ namespace Skill
         float lastPressedRT = 0.0f;
         float betweenPressed = 0.5f;
         int laserCount = 0;
+        public bool pause;
         SkillState curState;
         public SkillState CurState
         {
@@ -31,6 +32,7 @@ namespace Skill
         }
         private void Awake()
         {
+            pause = false;
             curState = SkillState.OFF;
             selectionColor = Dimension.BaseColor[0];
             holdColor = Dimension.Color.NONE;
@@ -40,8 +42,8 @@ namespace Skill
         private void Update()
         {
             if (curState == SkillState.WAIT) return;
-
-            if (Input.GetButtonDown("Skill"))
+            if(pause)  return;
+            if (Input.GetButtonDown("Skill") )
             {
                 if(laserCount < laserLimit || laserLimit == -1)
                     Skill();
