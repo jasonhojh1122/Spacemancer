@@ -16,7 +16,6 @@ namespace Skill
         [SerializeField] UI.SkillControllerUI skillControllerUI;
         [SerializeField] CanvasGroupFader skillControllerUIFader;
         [SerializeField] int laserLimit; //no limit = -1
-
         Dimension.Color selectionColor;
         Dimension.Color holdColor;
         int colorIdx = 0;
@@ -40,8 +39,8 @@ namespace Skill
         private void Update()
         {
             if (curState == SkillState.WAIT) return;
-
-            if (Input.GetButtonDown("Skill"))
+            if(InputManager.Instance.pause)  return;
+            if (Input.GetButtonDown("Skill") )
             {
                 if(laserCount < laserLimit || laserLimit == -1)
                     Skill();
