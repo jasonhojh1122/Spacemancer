@@ -42,7 +42,7 @@ namespace Character {
                 return;
             }
 
-            if (controlEnabled)
+            if (controlEnabled&&!InputManager.Instance.pause)
             {
                 animator.speed = 1.0f;
                 player.SetDummyAnimatorSpeed(animator.speed);
