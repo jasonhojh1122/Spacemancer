@@ -19,7 +19,7 @@ namespace Gameplay
 
         private void Awake()
         {
-            explosionLength = Mathf.Min(audioSource.clip.length, ps.main.duration);
+            explosionLength = Mathf.Max(audioSource.clip.length, ps.main.duration) - 0.3f;
             curOn = true;
             InitLineRenderer();
             Core.World.Instance.BeforeSplit.AddListener(CheckFences);
