@@ -20,6 +20,10 @@ namespace Skill
         Vector3 lastContactPoint;
         float maxDistance = 150.0f;
         float curDistance;
+
+        /// <summary>
+        /// Sets or gets the color of the laser.
+        /// </summary>
         public Dimension.Color Color
         {
             get => _color;
@@ -27,7 +31,7 @@ namespace Skill
             {
                 _color = value;
                 lr.GetPropertyBlock(_property);
-                _property.SetColor("_Color", Dimension.MaterialColor[value]);
+                _property.SetColor("_LaserColor", Dimension.MaterialColor[value]);
                 lr.SetPropertyBlock(_property);
                 if (hittedObject != null)
                 {
@@ -36,6 +40,9 @@ namespace Skill
             }
         }
 
+        /// <summary>
+        /// Turns on or off the laser.
+        /// </summary>
         public bool IsOn
         {
             get => _IsOn;
@@ -44,7 +51,6 @@ namespace Skill
                 _IsOn = value;
                 if(value == false)
                 {
-                    // lr.enabled = false;
                     if (hittedObject != null && hittedObject.gameObject.activeSelf)
                     {
                         hittedObject.ObjectColor.Unselect(lastContactPoint);
@@ -54,16 +60,24 @@ namespace Skill
                 }
                 else
                 {
-                    // lr.enabled = true;
                     TurnOn();
                 }
             }
         }
+
+        /// <summary>
+        /// The <c>SplittableObject</c> hitted by laser.
+        /// </summary>
+        /// <value></value>
         public SplittableObject HittedObject
         {
             get => hittedObject;
             set => hittedObject = value;
         }
+
+        /// <summary>
+        /// The contact point between the laser and the hitted object.
+        /// </summary>
         public Vector3 ContactPoint {
             get => lastContactPoint;
         }
@@ -80,48 +94,39 @@ namespace Skill
             _property = new MaterialPropertyBlock();
         }
 
-        public void TurnOn()
+        /// <summary>
+        /// Turns on the laser.
+        /// </summary>
+        void TurnOn()
         {
             StopAllCoroutines();
-            StartCoroutine(TurnOnAnim());
+            StartCoroutine(ActiveAnim());
         }
 
-        public void TurnOff()
+        /// <summary>
+        /// Turns off the laser.
+        /// </summary>
+        void TurnOff()
         {
             StopAllCoroutines();
             StartCoroutine(TurnOffAnim());
         }
 
-        System.Collections.IEnumerator TurnOnAnim()
+        /// <summary>
+        /// Continuously updates the laser end points and checks for
+        /// new hitted objects.
+        /// </summary>
+        System.Collections.IEnumerator ActiveAnim()
         {
             lr.enabled = true;
             lastContactPoint = Vector3.zero;
             curDistance = 0.0f;
-            RaycastHit [] hits;
             while (true)
             {
                 curDistance += Time.deltaTime * speed;
                 curDistance = Mathf.Min(curDistance, maxDistance);
-                hits = Physics.RaycastAll(transform.position, player.forward);
 
-                SplittableObject newHittedObject;
-                bool hitted = false;;
-                IEnumerable<RaycastHit> orderedHits = hits.OrderBy(hit => hit.distance);
-                foreach (RaycastHit hit in orderedHits)
-                {
-                    if (hit.collider != null && !hit.collider.isTrigger &&
-                        (newHittedObject = hit.collider.gameObject.GetComponent<SplittableObject>()) != null)
-                    {
-                        var hitPosLocal = transform.InverseTransformPoint(hit.point);
-                        lr.SetPosition(1, hitPosLocal);
-                        curDistance = hitPosLocal.magnitude;
-                        UpdateObjectMaterial(hit.point, newHittedObject);
-                        lastContactPoint = hit.point;
-                        hitted = true;
-                        break;
-                    }
-                }
-
+                bool hitted = CheckHit();
                 if (!hitted)
                 {
                     var endPos = transform.position + player.forward * curDistance;
@@ -138,7 +143,41 @@ namespace Skill
             }
         }
 
-        void UpdateObjectMaterial(Vector3 contactPoint, SplittableObject newHittedObject)
+        /// <summary>
+        /// Checks if the laser hitted any <c>SplittableObject</c>. If hits then
+        /// updates the <c>HittedObject</c> and its materials.
+        /// </summary>
+        /// <returns> True if hits <c>SplittableObject</c> </returns>
+        bool CheckHit()
+        {
+            RaycastHit[] hits = Physics.RaycastAll(transform.position, player.forward);
+            SplittableObject newHittedObject;
+            bool hitted = false;;
+            IEnumerable<RaycastHit> orderedHits = hits.OrderBy(hit => hit.distance);
+            foreach (RaycastHit hit in orderedHits)
+            {
+                if (hit.collider != null && !hit.collider.isTrigger &&
+                    (newHittedObject = hit.collider.gameObject.GetComponent<SplittableObject>()) != null)
+                {
+                    var hitPosLocal = transform.InverseTransformPoint(hit.point);
+                    lr.SetPosition(1, hitPosLocal);
+                    curDistance = hitPosLocal.magnitude;
+                    UpdateObjectAndMaterial(hit.point, newHittedObject);
+                    lastContactPoint = hit.point;
+                    hitted = true;
+                    break;
+                }
+            }
+            return hitted;
+        }
+
+        /// <summary>
+        /// Updates the <c>HittedObject</c> by checking new hitted object and the
+        /// contact point.
+        /// </summary>
+        /// <param name="contactPoint"> The contact position hitted on the object. </param>
+        /// <param name="newHittedObject"> The new hitted object. </param>
+        void UpdateObjectAndMaterial(Vector3 contactPoint, SplittableObject newHittedObject)
         {
             bool selectNew = false, unselectOld = false;
             if (hittedObject == null)
@@ -170,6 +209,10 @@ namespace Skill
             }
         }
 
+        /// <summary>
+        /// Gradually turns off the laser.
+        /// </summary>
+        /// <returns></returns>
         System.Collections.IEnumerator TurnOffAnim()
         {
             while (curDistance > 0.1f)
@@ -181,11 +224,6 @@ namespace Skill
                 yield return null;
             }
             lr.enabled = false;
-        }
-
-        System.Collections.IEnumerator InsertAnim()
-        {
-            yield return null;
         }
 
     }

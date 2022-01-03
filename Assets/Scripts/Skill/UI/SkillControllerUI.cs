@@ -25,6 +25,10 @@ namespace Skill.UI
             }
         }
 
+        /// <summary>
+        /// Highlights the given color.
+        /// </summary>
+        /// <param name="color"> The color to be highlighted. </param>
         public void Select(Dimension.Color color)
         {
             foreach (SkillSelectionIndicator indicator in selectionIndicators)
@@ -40,6 +44,10 @@ namespace Skill.UI
             }
         }
 
+        /// <summary>
+        /// Highlights the given color and masks out all the others.
+        /// </summary>
+        /// <param name="color"> The color to be masked. </param>
         public void Hold(Dimension.Color color)
         {
             foreach (SkillSelectionIndicator indicator in selectionIndicators)
@@ -57,6 +65,10 @@ namespace Skill.UI
             }
         }
 
+        /// <summary>
+        /// Masks all other color except for the given color.
+        /// </summary>
+        /// <param name="color"> The color to skip. </param>
         public void MaskExceptFor(Dimension.Color color)
         {
             foreach (SkillSelectionIndicator indicator in selectionIndicators)
@@ -72,6 +84,9 @@ namespace Skill.UI
             }
         }
 
+        /// <summary>
+        /// Unmasks all colors.
+        /// </summary>
         public void UnMaskAll()
         {
             foreach (SkillSelectionIndicator indicator in selectionIndicators)
@@ -80,6 +95,9 @@ namespace Skill.UI
             }
         }
 
+        /// <summary>
+        /// Un-highlights all the colors.
+        /// </summary>
         public void UnSelectAll()
         {
             foreach (SkillSelectionIndicator indicator in selectionIndicators)
@@ -88,7 +106,10 @@ namespace Skill.UI
             }
         }
 
-
+        /// <summary>
+        /// Initializes the indicator of skill usage count.
+        /// </summary>
+        /// <param name="count"> The starting skill usage count limits. </param>
         public void Init(int count)
         {
             remainIndicators = new List<UnityEngine.UI.Image>();
@@ -105,12 +126,18 @@ namespace Skill.UI
             }
         }
 
+        /// <summary>
+        /// Increases skill remaining count by one.
+        /// </summary>
         public void Add()
         {
             remainIndicators[curRemain].color = Color.white;
             curRemain += 1;
         }
 
+        /// <summary>
+        /// Decreases skill remaining count by one.
+        /// </summary>
         public void Sub()
         {
             remainIndicators[curRemain-1].color = remainTint;

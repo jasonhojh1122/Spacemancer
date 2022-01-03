@@ -18,8 +18,9 @@ namespace Core
         [SerializeField] List<ObjectColor> dimensions;
         [SerializeField] List<Dimension.ColorSetting> colorSettings;
         [SerializeField] AudioSource splitMergeAudio, rotateAudio;
-        [HideInInspector] public UnityEvent BeforeMerge;
-        [HideInInspector] public UnityEvent BeforeSplit;
+        [SerializeField] Dimension.Color startDimensionColor = Dimension.Color.WHITE;
+        [HideInInspector] public UnityEvent BeforeMerge = new UnityEvent();
+        [HideInInspector] public UnityEvent BeforeSplit = new UnityEvent();
         DimensionTransition dimensionTransition;
         PlayerInteraction playerInteraction;
         Dictionary<Dimension.Color, ObjectColor> dimensionMap;
@@ -67,6 +68,14 @@ namespace Core
             get => objectPool;
         }
 
+        /// <summary>
+        /// The dimension color at start time.
+        /// </summary>
+        /// <value></value>
+        public Dimension.Color StartDimensionColor {
+            get => startDimensionColor;
+        }
+
         void Awake()
         {
             if (_instance != null)
@@ -96,9 +105,6 @@ namespace Core
                     Dimension.MaterialColor.Add(setting.colorTag, setting.color32);
                 }
             }
-
-            BeforeMerge = new UnityEvent();
-            BeforeSplit = new UnityEvent();
         }
 
         private void Start()
@@ -106,8 +112,7 @@ namespace Core
             SplittableObject[] so = FindObjectsOfType<SplittableObject>();
             foreach (SplittableObject s in so)
             {
-                s.Dim = Dims[Dimension.Color.WHITE];
-                s.ObjectColor.Init();
+                s.OnInitialized.Invoke();
                 var localPos = Dims[Dimension.Color.WHITE].transform.InverseTransformPoint(s.transform.position);
                 var localRot = Quaternion.Inverse(Dims[Dimension.Color.WHITE].transform.rotation) * s.transform.rotation;
                 MoveTransformToNewParent(s.transform, Dims[Dimension.Color.WHITE].transform, localPos, localRot);
