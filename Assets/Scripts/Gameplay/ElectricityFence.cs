@@ -86,6 +86,7 @@ namespace Gameplay
         {
             ps.Play();
             audioSource.Play();
+            InputManager.Instance.pause = true;
             yield return new WaitForSeconds(explosionLength);
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }

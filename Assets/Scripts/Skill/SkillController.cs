@@ -15,71 +15,100 @@ namespace Skill
         [SerializeField] Laser laser;
         [SerializeField] UI.SkillControllerUI skillControllerUI;
         [SerializeField] CanvasGroupFader skillControllerUIFader;
-        [SerializeField] int laserLimit; //no limit = -1
-        Dimension.Color selectionColor;
+        [SerializeField, Range(0, 20)] int usedLimit;
+
+        /// <summary>
+        /// Current color for withdrawing.
+        /// </summary>
+        Dimension.Color withdrawColor;
+
+        /// <summary>
+        /// Withdrew color held by the skill.
+        /// </summary>
         Dimension.Color holdColor;
         int colorIdx = 0;
         float lastPressedLT = 0.0f;
         float lastPressedRT = 0.0f;
         float betweenPressed = 0.5f;
-        int laserCount = 0;
+        int usedCount = 0;
         SkillState curState;
+
+        /// <summary>
+        /// Current state of skill.
+        /// </summary>
         public SkillState CurState
         {
             get => curState;
         }
+
         private void Awake()
         {
             curState = SkillState.OFF;
-            selectionColor = Dimension.BaseColor[0];
+            withdrawColor = Dimension.BaseColor[0];
             holdColor = Dimension.Color.NONE;
-            skillControllerUI.Init(laserLimit);
+            skillControllerUI.Init(usedLimit);
         }
 
         private void Update()
         {
-            if (curState == SkillState.WAIT) return;
-            if(InputManager.Instance.pause)  return;
-            if (Input.GetButtonDown("Skill") )
+            if (InputManager.Instance.pause || curState == SkillState.WAIT)
             {
-                if(laserCount < laserLimit || laserLimit == -1)
-                    Skill();
+                return;
             }
 
-            // color can be change before withdrawing
+            if (Input.GetButtonDown("Skill") && (usedCount < usedLimit))
+            {
+                UpdateSkillState();
+            }
+
             if (curState == SkillState.TO_WITHDRAW)
             {
-                if ( Input.GetButtonDown("NextColor") ||
-                    (Input.GetAxis("NextColorJoystick") >= 1 && (Time.time - lastPressedRT > betweenPressed)) )
-                {
-                    lastPressedRT = Time.time;
-                    colorIdx = (colorIdx + 1) % Dimension.BaseColor.Count;
-                    selectionColor = Dimension.BaseColor[colorIdx];
-                    laser.Color = selectionColor;
-                    skillControllerUI.Select(selectionColor);
-                }
-                else if ( Input.GetButtonDown("PreviousColor") ||
-                        (Input.GetAxis("PreviousColorJoystick") >= 1 && (Time.time - lastPressedLT > betweenPressed)) )
-                {
-                    lastPressedLT = Time.time;
-                    colorIdx = (colorIdx + Dimension.BaseColor.Count - 1) % Dimension.BaseColor.Count;
-                    selectionColor = Dimension.BaseColor[colorIdx];
-                    laser.Color = selectionColor;
-                    skillControllerUI.Select(selectionColor);
-                }
+                CheckSkillColorChange();
             }
         }
 
-        private void Skill()
+        /// <summary>
+        /// Checks and updates if the user changes the skill color.
+        /// </summary>
+        private void CheckSkillColorChange()
+        {
+            bool changed = false;
+            if ( Input.GetButtonDown("NextColor") ||
+                (Input.GetAxis("NextColorJoystick") >= 1 && (Time.time - lastPressedRT > betweenPressed)) )
+            {
+                lastPressedRT = Time.time;
+                colorIdx = (colorIdx + 1) % Dimension.BaseColor.Count;
+                changed = true;
+            }
+            else if ( Input.GetButtonDown("PreviousColor") ||
+                    (Input.GetAxis("PreviousColorJoystick") >= 1 && (Time.time - lastPressedLT > betweenPressed)) )
+            {
+                lastPressedLT = Time.time;
+                colorIdx = (colorIdx + Dimension.BaseColor.Count - 1) % Dimension.BaseColor.Count;
+                changed = true;
+            }
+
+            if (changed)
+            {
+                withdrawColor = Dimension.BaseColor[colorIdx];
+                laser.Color = withdrawColor;
+                skillControllerUI.Select(withdrawColor);
+            }
+        }
+
+        /// <summary>
+        /// Updates the skill state.
+        /// </summary>
+        private void UpdateSkillState()
         {
             switch (curState)
             {
-                case SkillState.OFF:
+                case SkillState.OFF: // Turns on the skill and fade in the UI.
                     laser.IsOn = true;
                     skillControllerUIFader.FadeIn();
                     if (holdColor != Dimension.Color.NONE)
                     {
-                        selectionColor = holdColor;
+                        withdrawColor = holdColor;
                         curState = SkillState.TO_Insert;
                         skillControllerUI.Hold(holdColor);
                     }
@@ -87,18 +116,20 @@ namespace Skill
                     {
                         curState = SkillState.TO_WITHDRAW;
                         skillControllerUI.UnMaskAll();
-                        skillControllerUI.Select(selectionColor);
+                        skillControllerUI.Select(withdrawColor);
                     }
-                    laser.Color = selectionColor;
+                    laser.Color = withdrawColor;
                     break;
-                case SkillState.TO_WITHDRAW:
-                    if (laser.HittedObject != null && (laserCount < laserLimit || laserLimit == -1))
+                case SkillState.TO_WITHDRAW: // Try to withdraw the color.
+                    if (laser.HittedObject != null && !laser.HittedObject.IsPersistentColor &&
+                        ((laser.HittedObject.Color & withdrawColor) != Dimension.Color.NONE) )
                         Withdraw();
                     else
                         TurnOffSkill();
                     break;
-                case SkillState.TO_Insert:
-                    if (laser.HittedObject != null)
+                case SkillState.TO_Insert: // Try to insert the held color.
+                    if (laser.HittedObject != null && !laser.HittedObject.IsPersistentColor &&
+                        ((laser.HittedObject.Color & holdColor) == Dimension.Color.NONE) )
                         Insert();
                     else
                         TurnOffSkill();
@@ -106,25 +137,25 @@ namespace Skill
             }
         }
 
+        /// <summary>
+        /// Withdraws the <c>withdrawColor</c> from the <c>SplittableObject</c>
+        /// hitted by the laser.
+        /// </summary>
         private void Withdraw()
         {
-            if (laser.HittedObject.IsPersistentColor ||
-                ((laser.HittedObject.Color & selectionColor) == Dimension.Color.NONE) )
-            {
-                return;
-            }
             var oc = laser.HittedObject.ObjectColor;
             oc.SecondColor = oc.Color;
-            oc.Color = Dimension.SubColor(oc.Color, selectionColor);
+            oc.Color = Dimension.SubColor(oc.Color, withdrawColor);
             oc.OnWithdrew.RemoveAllListeners();
-            oc.OnWithdrew.AddListener(OnWithdrew);
+            oc.OnWithdrew.AddListener(OnWithdrewCallback);
             oc.Withdraw(laser.ContactPoint);
             curState = SkillState.WAIT;
+            InputManager.Instance.pause = true;
         }
 
-        public void OnWithdrew()
+        public void OnWithdrewCallback()
         {
-            holdColor = selectionColor;
+            holdColor = withdrawColor;
             curState = SkillState.TO_Insert;
             skillControllerUI.Hold(holdColor);
             laser.Color = holdColor;
@@ -134,32 +165,37 @@ namespace Skill
                 laser.HittedObject = null;
             }
             TurnOffSkill();
+            InputManager.Instance.pause = false;
         }
 
+        /// <summary>
+        /// Inserts the <c>holdColor</c> to the <c>SplittableObject</c>
+        /// hitted by the laser.
+        /// </summary>
         private void Insert()
         {
-            if (laser.HittedObject.IsPersistentColor ||
-                (laser.HittedObject.Color & holdColor) != Dimension.Color.NONE)
-            {
-                return;
-            }
             var oc = laser.HittedObject.ObjectColor;
             oc.SecondColor = Dimension.AddColor(holdColor, oc.Color);
             oc.OnInserted.RemoveAllListeners();
-            oc.OnInserted.AddListener(OnInsert);
+            oc.OnInserted.AddListener(OnInsertCallback);
             oc.Insert(laser.ContactPoint);
             curState = SkillState.WAIT;
+            InputManager.Instance.pause = true;
         }
 
-        public void OnInsert()
+        public void OnInsertCallback()
         {
             laser.HittedObject.ObjectColor.Color = laser.HittedObject.ObjectColor.SecondColor;
             holdColor = Dimension.Color.NONE;
-            laserCount++;
+            usedCount++;
             skillControllerUI.Sub();
             TurnOffSkill();
+            InputManager.Instance.pause = false;
         }
 
+        /// <summary>
+        /// Turns off the skill.
+        /// </summary>
         private void TurnOffSkill()
         {
             if (laser.HittedObject != null)

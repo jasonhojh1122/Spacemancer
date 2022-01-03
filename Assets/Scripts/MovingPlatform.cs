@@ -124,7 +124,7 @@ public class MovingPlatform : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (so.IsInCorrectDim())
+        if (so.IsInCorrectDim() && !InputManager.Instance.pause)
             Move();
     }
 
