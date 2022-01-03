@@ -27,7 +27,7 @@ namespace Skill
             {
                 _color = value;
                 lr.GetPropertyBlock(_property);
-                _property.SetColor("_Color", Dimension.MaterialColor[value]);
+                _property.SetColor("_LaserColor", Dimension.MaterialColor[value]);
                 lr.SetPropertyBlock(_property);
                 if (hittedObject != null)
                 {
@@ -44,7 +44,6 @@ namespace Skill
                 _IsOn = value;
                 if(value == false)
                 {
-                    // lr.enabled = false;
                     if (hittedObject != null && hittedObject.gameObject.activeSelf)
                     {
                         hittedObject.ObjectColor.Unselect(lastContactPoint);
@@ -54,7 +53,6 @@ namespace Skill
                 }
                 else
                 {
-                    // lr.enabled = true;
                     TurnOn();
                 }
             }
