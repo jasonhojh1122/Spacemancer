@@ -100,9 +100,11 @@ namespace Core
                 _renderer = GetComponent<Renderer>();
                 Reset();
             }
+            OnColorChanged = new UnityEvent();
         }
 
-        private void OnEnable() {
+        private void OnEnable()
+        {
             if (usingMaterial)
                 Reset();
         }
