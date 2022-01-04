@@ -10,7 +10,6 @@ public class MenuController_Paused : MonoBehaviour
 	public string startingIndex; // The string that states which canvas will be rendered first when our game is paused.
 	public bool useCursorLock;
 
-
 	public enum MenuTypes
 	{
 		unity3D, unity2D
@@ -20,6 +19,7 @@ public class MenuController_Paused : MonoBehaviour
 	public Camera pauseCamFor3D;
 
 	public MenuTypes menuType;
+	[SerializeField] UnityEngine.UI.Button PauseButton;
 
 	void Start() 
 	{
@@ -38,8 +38,8 @@ public class MenuController_Paused : MonoBehaviour
 
 	void Update()
 	{
-		if (Input.GetButtonDown (buttonToTogglePause) && isPaused == false) {
-			Pause();
+		if (Input.GetButtonDown (buttonToTogglePause)) {
+			PauseButton.onClick.Invoke();
 		}
 
 		///
@@ -51,7 +51,7 @@ public class MenuController_Paused : MonoBehaviour
 
 	public void Pause()
     {
-		isPaused = true;
+		isPaused = !isPaused;
 		CheckPause();
 	}
 
