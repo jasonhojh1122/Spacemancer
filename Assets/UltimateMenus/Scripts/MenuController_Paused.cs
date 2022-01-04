@@ -40,7 +40,7 @@ public class MenuController_Paused : MonoBehaviour
 
 	void Update()
 	{
-		eventSystem = GetComponentInChildren<EventSystem>();
+		eventSystem =FindObjectOfType<EventSystem>();
 		if (Input.GetButtonDown (buttonToTogglePause)) {
 			eventSystem.enabled = true;
 			PauseButton.onClick.Invoke();
