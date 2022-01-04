@@ -1,8 +1,7 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Interaction;
-//activate obj when desired object enter zone
 
 using Core;
 
@@ -10,119 +9,114 @@ using Core;
 public class Button : MonoBehaviour
 {
 
-    [SerializeField] Core.SplittableObject toggleObject;
-    [SerializeField] string targetObjectName;
-    [SerializeField] string desiredObjectName;
-    // [SerializeField] bool isTriggered = false;
+    [SerializeField] SplittableObject generatedObjectRef;
+    [SerializeField] string keyObjectName;
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] Core.SplittableObject keyObject;
 
-    World world;
     Core.SplittableObject so;
+    Core.SplittableObject generatedObject;
 
     private void Awake()
     {
         so = GetComponent<Core.SplittableObject>();
-        world = FindObjectOfType<World>();
     }
 
     private void Start()
     {
-        // world.SetObjectActive(toggleObject, isTriggered);
-        // toggleObject.gameObject.SetActive(isTriggered);
+        World.Instance.BeforeSplit.AddListener(BeforeSplitAndMerge);
+        World.Instance.BeforeMerge.AddListener(BeforeSplitAndMerge);
     }
 
-    private bool Match(GameObject obj)
+    void OnTriggerEnter(Collider other)
     {
-        var objSo = obj.GetComponent<Core.SplittableObject>();
-        if (objSo.Color == Dimension.Color.NONE || objSo.Color != so.Color)
-        {
-            return false;
-        }
-        return obj.name == desiredObjectName;
-    }
-
-    private void ToggleOn()
-    {
-        var set = world.ObjectPool.InactiveObjects.Pool[targetObjectName];
-        if (set == null) return;
-        List<SplittableObject> toActivate = new List<SplittableObject>();
-        foreach (SplittableObject obj in set)
-        {
-            if (obj.Color == so.Color)
-            {
-                toActivate.Add(obj);
-            }
-        }
-        foreach (SplittableObject obj in toActivate)
-        {
-            world.ActivateObject(obj, so.Color);
-        }
-    }
-
-    private void ToggleOff()
-    {
-        var set = world.ObjectPool.ActiveObjects.Pool[targetObjectName];
-        if (set == null) return;
-        List<SplittableObject> toInactivate = new List<SplittableObject>();
-        foreach (SplittableObject obj in set)
-        {
-            if (obj.Color == so.Color)
-            {
-                world.DeleteObject(obj);
-                toInactivate.Add(obj);
-            }
-        }
-        foreach (SplittableObject obj in toInactivate)
-        {
-            world.DeleteObject(obj);
-        }
-    }
-
-    private void OnCollisionEnter(Collision other) {
-        Debug.Log("button Zone enter");
         if (!so.IsInCorrectDim())
             return;
-        if (Match(other.gameObject))
+        if (generatedObject == null)
         {
-            Debug.Log("matched");
-            ToggleOn();
+            keyObject = other.transform.parent.gameObject.GetComponent<Core.SplittableObject>();
+            if (keyObject == null)
+            {
+                return;
+            }
+            else if (other.transform.parent.gameObject.name != keyObjectName)
+            {
+                keyObject = null;
+                return;
+            }
+            else
+            {
+                audioSource.Play();
+                OnkeyObjectColorChanged();
+                keyObject.ObjectColor.OnColorChanged.AddListener(OnkeyObjectColorChanged);
+            }
         }
-    }
 
-    private void OnCollisionExit(Collision other) {
-        Debug.Log("button Zone Exit");
-        if (!so.IsInCorrectDim())
-            return;
-
-        if (Match(other.gameObject))
-        {
-            Debug.Log("matched");
-            ToggleOff();
-        }
-    }
-
-    /* void OnTriggerEnter(Collider other)
-    {
-        if (activeColor != Dimension.Color.NONE && GetComponent<SplittableObject>().ObjectColor != activeColor)
-            return;
-
-        if (match(other.gameObject))
-        {
-            toggleObject.SetActive(!isTriggered);
-            isTriggered = !isTriggered;
-        }
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (activeColor != Dimension.Color.NONE && GetComponent<SplittableObject>().ObjectColor != activeColor)
+        audioSource.Play();
+        if (!so.IsInCorrectDim())
             return;
-
-        Debug.Log("button Zone Exit");
-        if (match(other.gameObject))
+        if (keyObject != null && other.transform.parent.gameObject.GetInstanceID() == keyObject.gameObject.GetInstanceID())
         {
-            toggleObject.SetActive(!isTriggered);
-            isTriggered = !isTriggered;
+            ToggleOff();
+            keyObject.ObjectColor.OnColorChanged.RemoveListener(OnkeyObjectColorChanged);
         }
-    } */
 
+    }
+
+    private bool Match(GameObject obj)
+    {
+        keyObject = obj.GetComponent<Core.SplittableObject>();
+        if (keyObject == null)
+        {
+            return false;
+        }
+        else if (obj.name != keyObjectName)
+        {
+            keyObject = null;
+            return false;
+        }
+        else
+        {
+            return keyObject.Color != so.Color;
+        }
+
+    }
+
+    private void ToggleOn()
+    {
+        generatedObject = World.Instance.InstantiateNewObjectToDimension(generatedObjectRef, so.Dim.Color);
+        generatedObject.Color = so.Dim.Color;
+    }
+
+    private void ToggleOff()
+    {
+        World.Instance.DeactivateObject(generatedObject);
+        generatedObject = null;
+    }
+
+    public void OnkeyObjectColorChanged()
+    {
+        if (generatedObject == null && keyObject.Color == so.Color)
+        {
+            ToggleOn();
+        }
+        else if (generatedObject != null && keyObject.Color != so.Color)
+        {
+            ToggleOff();
+        }
+    }
+
+    public void BeforeSplitAndMerge()
+    {
+        if (generatedObject != null)
+        {
+            World.Instance.DeactivateObject(generatedObject);
+            generatedObject = null;
+            keyObject.ObjectColor.OnColorChanged.RemoveListener(OnkeyObjectColorChanged);
+        }
+    }
 }

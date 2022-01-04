@@ -5,22 +5,18 @@ using UnityEngine.SceneManagement;
 
 using Core;
 
-[RequireComponent(typeof(Core.SplittableObject))]
 public class DeathZone : MonoBehaviour
 {
-    [SerializeField] Dimension.Color activeColor; // None if no restriction
     void OnTriggerEnter(Collider col)
     {
-        if (activeColor != Dimension.Color.NONE && GetComponent<Core.SplittableObject>().Color != activeColor)
-            return;
-
-        var player = col.GetComponent<Character.PlayerController>();
-        if (player != null)
+        Util.Debug.Log(gameObject, col.gameObject.name + " enter death zone.");
+        if (col.gameObject.tag == "Player")
         {
-            Death(player);
+            ReloadLevel();
+            return;
         }
     }
-    protected void Death(Character.PlayerController player)
+    protected void ReloadLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 

@@ -3,15 +3,24 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour {
 
-    // moving camera
-    // spliting or merging
-    // moving character
+    static InputManager _instance;
+    public static InputManager Instance {
+        get => _instance;
+    }
 
     [SerializeField] Core.World world;
-
-    [SerializeField] bool locked;
+    [SerializeField] public bool pause;
     [SerializeField] PlayerInteraction playerInteraction;
+
+    private void Awake() {
+        _instance = this;
+    }
+
     private void Update() {
+        if (pause) return;
+        if(Input.GetButtonDown("Hint")){
+            FindObjectOfType<HintPageController>().EnableHintPage();
+        }
         if (!playerInteraction.IsInteracting()) {
             if (Input.GetButtonUp("WorldToggle"))
             {
@@ -19,11 +28,11 @@ public class InputManager : MonoBehaviour {
             }
             else if (Input.GetButtonUp("WorldShiftLeft"))
             {
-                world.RotateDimensions(1);
+                world.RotateDimensions(-1);
             }
             else if (Input.GetButtonUp("WorldShiftRight"))
             {
-                world.RotateDimensions(-1);
+                world.RotateDimensions(1);
             }
         }
         if (Input.GetButtonDown("Interact"))
