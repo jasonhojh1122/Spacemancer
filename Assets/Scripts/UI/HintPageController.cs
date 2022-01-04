@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.EventSystems;
 public class HintPageController : MonoBehaviour
 {
     UnityEngine.UI.Button button;
@@ -10,16 +10,19 @@ public class HintPageController : MonoBehaviour
     MenuController_Paused pauseMenu;
     bool turnOnOnce = true;
     bool hintPageEnable = true;
+    EventSystem eventSystem;
     // Start is called before the first frame update
     void Start()
     {
         currentCanvas = GetComponentInChildren<Canvas>();
+        
         InputManager.Instance.pause = true;
         pauseMenu = FindObjectOfType<MenuController_Paused>();
     }
     // Update is called once per frame
     void Update()
     {
+        eventSystem = GetComponentInParent<EventSystem>();
         if(currentCanvas.enabled && turnOnOnce && hintPageEnable){
             turnOnOnce = false;
 		    button = currentCanvas.GetComponentInChildren<UnityEngine.UI.Button>();
@@ -41,10 +44,12 @@ public class HintPageController : MonoBehaviour
             return;
         }
         InputManager.Instance.pause = true;
+        eventSystem.enabled = true;
         hintButton.onClick.Invoke();
     }
     public void ExitHintPage(){
         hintPageEnable = false;
+        eventSystem.enabled = false;
         //hintButton.gameObject.SetActive(true);
         if(!pauseMenu.isPaused)
             InputManager.Instance.pause = false;   
