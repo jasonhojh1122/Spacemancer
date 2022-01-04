@@ -12,6 +12,7 @@ public class MenuController : MonoBehaviour
 
 	void Start()
 	{
+		Time.timeScale = 1;
 		canvasIndex = startingCanvasIndex; // We set the current canvas index equal to that of the starting canvas index string
 	}
 }
