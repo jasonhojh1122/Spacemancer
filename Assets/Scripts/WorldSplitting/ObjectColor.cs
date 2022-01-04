@@ -10,8 +10,19 @@ namespace Core
         [SerializeField] Dimension.Color color = Dimension.Color.WHITE;
         [SerializeField] bool usingMaterial = true;
 
+        /// <summary>
+        /// Called after the withdrawing animation is finished.
+        /// </summary>
         [HideInInspector] public UnityEvent OnWithdrew;
+
+        /// <summary>
+        /// Called after the inserting animation is finished.
+        /// </summary>
         [HideInInspector] public UnityEvent OnInserted;
+
+        /// <summary>
+        /// Called when the color is changed.
+        /// </summary>
         [HideInInspector] public UnityEvent OnColorChanged;
 
         SplittableObject so;
@@ -100,9 +111,11 @@ namespace Core
                 _renderer = GetComponent<Renderer>();
                 Reset();
             }
+            OnColorChanged = new UnityEvent();
         }
 
-        private void OnEnable() {
+        private void OnEnable()
+        {
             if (usingMaterial)
                 Reset();
         }

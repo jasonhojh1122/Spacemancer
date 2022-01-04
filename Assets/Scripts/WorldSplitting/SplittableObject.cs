@@ -79,6 +79,12 @@ namespace Core
             get => isPersistentColor;
         }
 
+        /// <summary>
+        /// Invoked after <c>SplittableObject</c> is initialized by <c>World</c>.
+        /// </summary>
+        /// <returns></returns>
+        [HideInInspector] public UnityEngine.Events.UnityEvent OnInitialized = new UnityEngine.Events.UnityEvent();
+
         void Awake()
         {
             col = GetComponent<Collider>();
@@ -87,6 +93,8 @@ namespace Core
             foreach (Dimension.Color bc in Dimension.BaseColor)
                 Siblings.Add(bc, null);
             IsMerged = false;
+            Dim = World.Instance.Dims[World.Instance.StartDimensionColor];
+            objectColor.Init();
         }
 
         protected void OnDisable()
@@ -304,6 +312,7 @@ namespace Core
         /// <returns> A boolean represent if the object is in the correct dimension. </returns>
         public bool IsInCorrectDim()
         {
+            if (Dim == null) return false;
             return this.Color == Dim.Color;
         }
 
