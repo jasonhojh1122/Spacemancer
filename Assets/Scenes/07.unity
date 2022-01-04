@@ -2242,7 +2242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BindingMode: 4
   m_FollowOffset: {x: 0, y: 8, z: -6}
-  m_XDamping: 0.5
+  m_XDamping: 0
   m_YDamping: 2
   m_ZDamping: 2
   m_AngularDampingMode: 0
@@ -5940,7 +5940,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5271560906802576799, guid: b5c13530133d4af4f9e5fb908afa391a, type: 3}
       propertyPath: sceneName
-      value: 07
+      value: 08
       objectReference: {fileID: 0}
     - target: {fileID: 9046595557245425916, guid: b5c13530133d4af4f9e5fb908afa391a, type: 3}
       propertyPath: m_Name
@@ -7399,7 +7399,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1493262508443202591, guid: 637a1d407c1959dd2b0d259317cfefa6, type: 3}
       propertyPath: color
-      value: 4
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4680171180281169903, guid: 637a1d407c1959dd2b0d259317cfefa6, type: 3}
       propertyPath: m_Name
@@ -7407,7 +7407,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4779543709339888408, guid: 637a1d407c1959dd2b0d259317cfefa6, type: 3}
       propertyPath: isPersistentColor
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5456284984025177429, guid: 637a1d407c1959dd2b0d259317cfefa6, type: 3}
       propertyPath: m_RootOrder
@@ -8153,6 +8153,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 881859774}
     m_Modifications:
+    - target: {fileID: 1493262508443202591, guid: 637a1d407c1959dd2b0d259317cfefa6, type: 3}
+      propertyPath: color
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4680171180281169903, guid: 637a1d407c1959dd2b0d259317cfefa6, type: 3}
       propertyPath: m_Name
       value: ElectricityFence
@@ -9606,7 +9610,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1493262508443202591, guid: 637a1d407c1959dd2b0d259317cfefa6, type: 3}
       propertyPath: color
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4680171180281169903, guid: 637a1d407c1959dd2b0d259317cfefa6, type: 3}
       propertyPath: m_Name
@@ -9614,7 +9618,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4779543709339888408, guid: 637a1d407c1959dd2b0d259317cfefa6, type: 3}
       propertyPath: isPersistentColor
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5456284984025177429, guid: 637a1d407c1959dd2b0d259317cfefa6, type: 3}
       propertyPath: m_RootOrder
@@ -10740,7 +10744,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7037722069045786910, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
       propertyPath: maxSpeed
-      value: 2.5
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7037722069045786910, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7037722069045786910, guid: 5c5a82c271c4e21438576888296a678b, type: 3}
       propertyPath: jumpTakeOffSpeed
