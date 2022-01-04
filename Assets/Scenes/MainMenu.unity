@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1273174, g: 0.13414761, b: 0.12107885, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414729, b: 0.121078685, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -123,6 +123,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &437949978 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2364380537358858442, guid: e736466e9ae79c04cb15175e5833d252, type: 3}
+  m_PrefabInstance: {fileID: 1606913177}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &994929458
 GameObject:
   m_ObjectHideFlags: 0
@@ -294,5 +305,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7684112404422629711, guid: e736466e9ae79c04cb15175e5833d252, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 1830410149}
+    - target: {fileID: 7684112404422629711, guid: e736466e9ae79c04cb15175e5833d252, type: 3}
+      propertyPath: m_Navigation.m_SelectOnRight
+      value: 
+      objectReference: {fileID: 437949978}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e736466e9ae79c04cb15175e5833d252, type: 3}
+--- !u!114 &1830410149 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 307504241987219398, guid: e736466e9ae79c04cb15175e5833d252, type: 3}
+  m_PrefabInstance: {fileID: 1606913177}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
