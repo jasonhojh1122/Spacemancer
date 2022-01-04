@@ -18,6 +18,9 @@ public class InputManager : MonoBehaviour {
 
     private void Update() {
         if (pause) return;
+        if(Input.GetButtonDown("Hint")){
+            FindObjectOfType<HintPageController>().EnableHintPage();
+        }
         if (!playerInteraction.IsInteracting()) {
             if (Input.GetButtonUp("WorldToggle"))
             {
