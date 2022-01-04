@@ -12,7 +12,14 @@ public class CanvasController_Paused : MonoBehaviour
 	public string myIndex; // A string which defines the index of this currently loaded canvas
 	Canvas myCanvas; // A canvas which defines what the canvas is on the object this script is attached to
 
-
+	UnityEngine.UI.Button button;
+	bool turnOnOnce = true;
+	void SelectButton(){
+		turnOnOnce = false;
+		button = myCanvas.GetComponentInChildren<UnityEngine.UI.Button>();
+		Debug.Log(button.name);
+		button.Select();
+	}
 	void Start()
 	{
 		myCanvas = gameObject.GetComponent<Canvas> (); // We set our canvas
@@ -29,11 +36,16 @@ public class CanvasController_Paused : MonoBehaviour
 
 			if (pauseControl.canvasIndex != myIndex) { // But if we are paused, and the indexes aren't the same...
 				myCanvas.enabled = false; // We do NOT render this canvas.
+				turnOnOnce = true;
 			}
 		}
 
 		if (!pauseControl.isPaused) { // And, if at any point in time our game is not paused, we do NOT render our canvas.
 			myCanvas.enabled = false;
+			turnOnOnce = true;
+		}
+		if(turnOnOnce && myCanvas.enabled){
+			SelectButton();
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class CanvasController : MonoBehaviour 
 {
@@ -10,9 +11,22 @@ public class CanvasController : MonoBehaviour
 	MenuController menuControl; // A reference to the "MenuController" script
 
 	public string myIndex; // The string which defines which canvas we are
-
+	UnityEngine.UI.Button button;
 	Canvas thisCanvas; // A private Canvas which tells our game what this canvas actually is
-
+	bool turnOnOnce = true;
+	void OnEnable(){
+		if(thisCanvas == null){
+			return;
+		}
+		Debug.Log(thisCanvas.gameObject.name);
+		SelectButton();
+	}
+	void SelectButton(){
+		turnOnOnce = false;
+		button = thisCanvas.GetComponentInChildren<UnityEngine.UI.Button>();
+		Debug.Log(button.name);
+		button.Select();
+	}
 	void Start()
 	{
 		menuControl = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<MenuController> (); // We set our menuControl equal to a game object with a tag of GameManager - which holds a component of Canvas Indexer.
@@ -28,13 +42,17 @@ public class CanvasController : MonoBehaviour
 			thisCanvas.enabled = false; // We disable our canvas at start.
 		}
 	}
-
 	void Update() 
 	{
 		if (myIndex == menuControl.canvasIndex) { // If, at any point in time, our string matches the string that is defined on the MenuController...
 			thisCanvas.enabled = true; // We enable our canvas
 		} else { // In any other case...
 			thisCanvas.enabled = false; // We disable our canvas.
+			
+			turnOnOnce = true;
+		}
+		if(turnOnOnce && thisCanvas.enabled){
+			SelectButton();
 		}
 	}
 }

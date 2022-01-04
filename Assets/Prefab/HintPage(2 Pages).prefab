@@ -144,6 +144,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8577212264250527787}
+        m_TargetAssemblyTypeName: HintPageController, Assembly-CSharp
+        m_MethodName: EnableHintPage
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &808448081134011243
 GameObject:
   m_ObjectHideFlags: 0
@@ -397,6 +409,7 @@ GameObject:
   - component: {fileID: 2588494126032541280}
   - component: {fileID: 2588494126020332328}
   - component: {fileID: 8910455677064670828}
+  - component: {fileID: 8577212264250527787}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -487,6 +500,19 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
+--- !u!114 &8577212264250527787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2588494126010667428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41cd09144db353247abb93855377edda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hintButton: {fileID: 3340177490143465712}
 --- !u!1 &2588494126010843102
 GameObject:
   m_ObjectHideFlags: 0
@@ -1021,6 +1047,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 8577212264250527787}
+        m_TargetAssemblyTypeName: HintPageController, Assembly-CSharp
+        m_MethodName: ExitHintPage
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
