@@ -22,7 +22,7 @@ public class HintPageController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        eventSystem = GetComponentInParent<EventSystem>();
+        eventSystem = FindObjectOfType<EventSystem>();
         if(currentCanvas.enabled && turnOnOnce && hintPageEnable){
             turnOnOnce = false;
 		    button = currentCanvas.GetComponentInChildren<UnityEngine.UI.Button>();
@@ -49,15 +49,19 @@ public class HintPageController : MonoBehaviour
     }
     public void ExitHintPage(){
         hintPageEnable = false;
-        eventSystem.enabled = false;
+        
         //hintButton.gameObject.SetActive(true);
-        if(!pauseMenu.isPaused)
-            InputManager.Instance.pause = false;   
+        if (!pauseMenu.isPaused)
+        {
+            InputManager.Instance.pause = false;
+            eventSystem.enabled = false;
+        }
+            
         else{
             for(int i = 0;i<transform.childCount;i++){
                 transform.GetChild(i).gameObject.SetActive(false);
             }
-            hintButton.gameObject.SetActive(true);            
+            hintButton.gameObject.SetActive(true);
         }            
     }
 }
