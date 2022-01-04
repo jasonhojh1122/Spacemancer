@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
 	/// <summary>
-	/// To contact me for any reason, please email me at jadewirestudios@gmail.com. 
+	/// To contact me for any reason, please email me at jadewirestudios@gmail.com.
 	/// </summary>
 
 	public bool modifyFontSize; // The bool value which tells our game wether or not we want to modify the size of the font when we highlight our button
@@ -44,17 +44,17 @@ public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
 			FullScreen = true;
 			soundOn = true;
-			ScreenTypeIndex = 0;
+			ScreenTypeIndex = 2;
 			firstLoadGame = false;
         }
-			
+
 		textForButton = gameObject.GetComponentInChildren<Text> (); // Set our variable equal to a text component which is set as a child of our button
 
 		if (modifyFontSize) { // If we are modifying our font size, we want to...
 			textForButton.fontSize = startingFontSize; // We set the font size of that text equal to the font size we specified once we start the game
 		}
 
-		if (modifyFontColor) { // If we are modifying the color of our button... 
+		if (modifyFontColor) { // If we are modifying the color of our button...
 			textForButton.color = regularColor; // We set the color of the button at start equal to the color we specified in "regularColor"
 		}
 
@@ -120,7 +120,7 @@ public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 		}
 	}
 
-	public void LoadScene(string SceneToLoad) 
+	public void LoadScene(string SceneToLoad)
 	{
 		Time.timeScale = 1;
 		SceneManager.LoadScene (SceneToLoad); // We use the SceneManager to load a scene whose name matches that of the string that we passed in with the function
@@ -160,10 +160,10 @@ public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
 	public void LoadWebsite(string URLToOpen) // Maybe you want your users to be able to contact you?
 	{
-		Application.OpenURL (URLToOpen); // This opens up a website specified through the string passed in with the function. 
+		Application.OpenURL (URLToOpen); // This opens up a website specified through the string passed in with the function.
 	}
 
-	public void LoadCanvas(string canvasIndex) 
+	public void LoadCanvas(string canvasIndex)
 	{
 		menuControl.canvasIndex = canvasIndex; // We change the canvasIndex to a specified string value that is passed in with the function
 	}
