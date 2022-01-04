@@ -1024,10 +1024,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 8674129025976174901}
+    m_SelectOnDown: {fileID: 8674129026645629480}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -1267,22 +1267,23 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Left Analog Stick:Move
+  m_Text: 'Move: Left Analog Stick
 
-    A: Jump
+    Jump: A
 
-    B:Split/Merge
+    Split/Merge: B
 
-    Menu:Pause
+    Pause: Menu
 
-    LB/RB:Switch
-    World
+    Switch
+    World: LB/RB
 
-    X: Laser
+    Laser: X
 
-    Y: Interact with Item
+    Interact with Item: Y
 
-    LT/RT: Switch Laser Color'
+    Switch Laser Color:
+    LT/RT'
 --- !u!1 &579833332
 GameObject:
   m_ObjectHideFlags: 0
@@ -2381,20 +2382,19 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'WASD/Space : Move/Jump
+  m_Text: 'Move/Jump: WASD/Space
 
-    Shift : Split/Merge the world
+    Split/Merge the world: Shift
 
-    Q/E : Switch
-    world (Only when world is split)
-
+    Switch world
+    (Only when world is split): Q/E
 
     Skill
 
-    [ / ] : Select skill color
+    Select skill color: [ / ]
 
-    Ctrl
-    : Absorb/Release color'
+    Absorb/Release
+    color: Ctrl'
 --- !u!1 &5964003920110573805
 GameObject:
   m_ObjectHideFlags: 0

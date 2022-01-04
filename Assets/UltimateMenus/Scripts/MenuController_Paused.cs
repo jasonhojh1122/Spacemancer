@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class MenuController_Paused : MonoBehaviour 
@@ -20,9 +21,10 @@ public class MenuController_Paused : MonoBehaviour
 
 	public MenuTypes menuType;
 	[SerializeField] UnityEngine.UI.Button PauseButton;
-
+	EventSystem eventSystem;
 	void Start() 
 	{
+		
 		useCursorLock = false;
 		if (menuType == MenuTypes.unity2D) {
 			pauseCamFor3D = null;
@@ -38,7 +40,9 @@ public class MenuController_Paused : MonoBehaviour
 
 	void Update()
 	{
-		if (Input.GetButtonDown (buttonToTogglePause) && isPaused == false) {
+		eventSystem = GetComponentInChildren<EventSystem>();
+		if (Input.GetButtonDown (buttonToTogglePause)) {
+			eventSystem.enabled = true;
 			PauseButton.onClick.Invoke();
 		}
 
@@ -51,7 +55,7 @@ public class MenuController_Paused : MonoBehaviour
 
 	public void Pause()
     {
-		isPaused = true;
+		isPaused = !isPaused;
 		CheckPause();
 	}
 
@@ -72,6 +76,7 @@ public class MenuController_Paused : MonoBehaviour
 		}
 
 		if (!isPaused) {
+			eventSystem.enabled = false;
 			InputManager.Instance.pause = false;
 			Time.timeScale = 1;
 			canvasIndex = startingIndex;
