@@ -9,13 +9,10 @@ public class InputManager : MonoBehaviour {
     }
 
     [SerializeField] Core.World world;
-    [SerializeField] bool locked;
+    [SerializeField] public bool pause;
     [SerializeField] PlayerInteraction playerInteraction;
 
-    public bool pause;
-
     private void Awake() {
-        pause = false;
         _instance = this;
     }
 
