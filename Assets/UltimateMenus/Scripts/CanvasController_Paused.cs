@@ -11,7 +11,7 @@ public class CanvasController_Paused : MonoBehaviour
 	MenuController_Paused pauseControl; // A reference to the MenuController for our pause menu
 	public string myIndex; // A string which defines the index of this currently loaded canvas
 	Canvas myCanvas; // A canvas which defines what the canvas is on the object this script is attached to
-
+	
 	UnityEngine.UI.Button button;
 	bool turnOnOnce = true;
 	void SelectButton(){
@@ -25,7 +25,6 @@ public class CanvasController_Paused : MonoBehaviour
 		myCanvas = gameObject.GetComponent<Canvas> (); // We set our canvas
 		pauseControl = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<MenuController_Paused> (); // We define the pauseControl variable
 	}
-
 	void Update()
 	{
 
@@ -36,7 +35,7 @@ public class CanvasController_Paused : MonoBehaviour
 
 			if (pauseControl.canvasIndex != myIndex) { // But if we are paused, and the indexes aren't the same...
 				myCanvas.enabled = false; // We do NOT render this canvas.
-				turnOnOnce = true;
+				turnOnOnce = true;	
 			}
 		}
 

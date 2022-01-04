@@ -38,7 +38,7 @@ public class MenuController_Paused : MonoBehaviour
 
 	void Update()
 	{
-		if (Input.GetButtonDown (buttonToTogglePause)) {
+		if (Input.GetButtonDown (buttonToTogglePause) && isPaused == false) {
 			PauseButton.onClick.Invoke();
 		}
 
@@ -51,7 +51,7 @@ public class MenuController_Paused : MonoBehaviour
 
 	public void Pause()
     {
-		isPaused = !isPaused;
+		isPaused = true;
 		CheckPause();
 	}
 
