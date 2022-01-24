@@ -21,7 +21,7 @@ namespace Core
             public AnimationCurve curve;
         }
 
-        [SerializeField] Character.PlayerController playerController;
+        [SerializeField] InputController playerController;
         [SerializeField] List<Transform> targetPos;
         [SerializeField] float transitionDuration = 1.0f;
         [SerializeField] float endPause = 0.2f;
@@ -156,9 +156,10 @@ namespace Core
 
         void OnTransitionStartEnd(bool isStart)
         {
+            // playerController.pause = !isStart;
+            Debug.Log("Is Start " + isStart);
             Physics.gravity = isStart ? Vector3.zero : new Vector3(0f, -9.8f, 0f);
             Physics.autoSimulation = !isStart;
-            playerController.paused = isStart;
             transitting = isStart;
         }
 

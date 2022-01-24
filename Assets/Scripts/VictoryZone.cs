@@ -31,9 +31,9 @@ public class VictoryZone : MonoBehaviour
             Victory(player);
         }
     }
+
     protected void Victory(Character.PlayerController player)
     {
-        player.controlEnabled = false;
         victoryAudio.Play();
         if(nextSceneName != null)
         {

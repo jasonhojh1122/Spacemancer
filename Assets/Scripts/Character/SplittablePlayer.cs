@@ -4,10 +4,6 @@ using System.Collections.Generic;
 using Core;
 namespace Character
 {
-    [RequireComponent(typeof(Collider))]
-    [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(Animator))]
-    [RequireComponent(typeof(KinematicObject))]
     public class SplittablePlayer : SplittableObject
     {
         [SerializeField] PlayerDummy dummyPrefab;

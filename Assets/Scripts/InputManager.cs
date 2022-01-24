@@ -8,6 +8,7 @@ public class InputManager : MonoBehaviour {
         get => _instance;
     }
 
+
     [SerializeField] Core.World world;
     [SerializeField] public bool pause;
     [SerializeField] PlayerInteraction playerInteraction;
@@ -17,28 +18,7 @@ public class InputManager : MonoBehaviour {
     }
 
     private void Update() {
-        if (pause) return;
-        if(Input.GetButtonDown("Hint")){
-            FindObjectOfType<HintPageController>().EnableHintPage();
-        }
-        if (!playerInteraction.IsInteracting()) {
-            if (Input.GetButtonUp("WorldToggle"))
-            {
-                world.Toggle();
-            }
-            else if (Input.GetButtonUp("WorldShiftLeft"))
-            {
-                world.RotateDimensions(-1);
-            }
-            else if (Input.GetButtonUp("WorldShiftRight"))
-            {
-                world.RotateDimensions(1);
-            }
-        }
-        if (Input.GetButtonDown("Interact"))
-        {
-            playerInteraction.Interact();
-        }
+
     }
 
 }
