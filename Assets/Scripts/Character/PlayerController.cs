@@ -1,113 +1,73 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Character {
 
-    [RequireComponent(typeof(Character.SplittablePlayer))]
-    public class PlayerController : KinematicObject
+    [RequireComponent(typeof(CharacterController), typeof(PlayerInput))]
+    public class PlayerController : MonoBehaviour
     {
-        public float maxSpeed = 5;
-        public float jumpTakeOffSpeed = 3.5f;
-        public float jumpDeceleration = 0.7f;
-        public float rotateSpeed = 20.0f;
-        public JumpState jumpState = JumpState.Grounded;
-        public Collider playerCollider;
-        public bool controlEnabled = true;
-
+        [SerializeField] float maxSpeed;
+        [SerializeField] float rotateSpeed;
         [SerializeField] RuntimeAnimatorController idleAC;
         [SerializeField] RuntimeAnimatorController walkAC;
-        [SerializeField] RuntimeAnimatorController jumpAC;
 
-        bool jump;
-        bool stopJump;
-        Vector3 move;
+        CharacterController characterController;
+        PlayerInput playerInput;
+        InputAction moveAction;
+
         Animator animator;
         SplittablePlayer player;
+        Vector3 vel;
+        [SerializeField] bool moving;
+        [SerializeField] bool onLattice;
+        [SerializeField] bool onGround;
 
         void Awake()
         {
-            playerCollider = GetComponent<Collider>();
             animator = GetComponent<Animator>();
             player = GetComponent<SplittablePlayer>();
+            playerInput = GetComponent<PlayerInput>();
+            characterController = GetComponent<CharacterController>();
+            moveAction = playerInput.actions["Movement"];
             animator.runtimeAnimatorController = idleAC;
+            vel = Vector3.zero;
+            moving = false;
+            onLattice = true;
         }
 
-        protected override void Update()
+        protected void Update()
         {
-            if (paused)
-            {
-                animator.speed = 0.0f;
-                player.SetDummyAnimatorSpeed(animator.speed);
-                return;
-            }
-
-            if (controlEnabled&&!InputManager.Instance.pause)
-            {
-                animator.speed = 1.0f;
-                player.SetDummyAnimatorSpeed(animator.speed);
-                move.x = Input.GetAxis("Horizontal");
-                move.z = Input.GetAxis("Vertical");
-                if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
-                {
-                    jumpState = JumpState.PrepareToJump;
-                    SetAnimatorController(jumpAC);
-                }
-                else if (Input.GetButtonUp("Jump"))
-                {
-                    stopJump = true;
-                }
-
-                if (move.x != 0 || move.z != 0) // change face direction when moveing
-                {
-                    Vector3 target = new Vector3(move.x, 0.0f, move.z);
-                    transform.forward = Vector3.RotateTowards(transform.forward, target, rotateSpeed * Time.deltaTime, 0.0f);
-                    if (jumpState == JumpState.Grounded)
-                    {
-                        SetAnimatorController(walkAC);
-                    }
-                }
-                else if (jumpState == JumpState.Grounded)
-                {
-                    SetAnimatorController(idleAC);
-                }
-            }
-            else
-            {
-                move.x = 0;
-                move.z = 0;
-            }
-            UpdateJumpState();
-            base.Update();
-            player.UpdateDummyTransform();
+            UpdateVelocity();
+            UpdateMovingState();
+            Move();
         }
 
-        void UpdateJumpState()
-        {
-            jump = false;
-            switch (jumpState)
-            {
-                case JumpState.PrepareToJump:
-                    jumpState = JumpState.Jumping;
-                    jump = true;
-                    stopJump = false;
-                    break;
-                case JumpState.Jumping:
-                    if (!IsGrounded)
-                    {
-                        jumpState = JumpState.InFlight;
-                    }
-                    break;
-                case JumpState.InFlight:
-                    if (IsGrounded)
-                    {
-                        jumpState = JumpState.Landed;
-                    }
-                    break;
-                case JumpState.Landed:
+        void Move() {
+            onGround = characterController.SimpleMove(vel);
+            transform.forward = Vector3.RotateTowards(transform.forward, vel, rotateSpeed * Time.deltaTime, 0.0f);
+        }
+
+        void UpdateVelocity() {
+            var dir2d = moveAction.ReadValue<Vector2>();
+            vel = new Vector3(dir2d.x, 0, dir2d.y) * maxSpeed;
+            if (Util.Fuzzy.CloseFloat(vel.magnitude, 0)) {
+                vel = Vector3.zero;
+            }
+        }
+
+        void UpdateMovingState() {
+            if (!Util.Fuzzy.CloseFloat(vel.magnitude, 0)) {
+                if (!moving) {
+                    SetAnimatorController(walkAC);
+                    moving = true;
+                }
+            }
+            else {
+                if (moving) {
                     SetAnimatorController(idleAC);
-                    jumpState = JumpState.Grounded;
-                    break;
+                    moving = false;
+                }
             }
         }
 
@@ -117,32 +77,6 @@ namespace Character {
             player.SetDummyAnimatorController(controller);
         }
 
-        protected override void ComputeVelocity()
-        {
-            if (jump && IsGrounded)
-            {
-                velocity.y = jumpTakeOffSpeed;
-                jump = false;
-            }
-            else if (stopJump)
-            {
-                stopJump = false;
-                if (velocity.y > 0)
-                {
-                    velocity.y = velocity.y * jumpDeceleration;
-                }
-            }
-
-            targetVelocity = move * maxSpeed;
-        }
-        public enum JumpState
-        {
-            Grounded,
-            PrepareToJump,
-            Jumping,
-            InFlight,
-            Landed
-        }
     }
 
 }

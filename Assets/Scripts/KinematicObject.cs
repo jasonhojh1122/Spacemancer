@@ -14,11 +14,6 @@ public class KinematicObject : MonoBehaviour
     [SerializeField] protected float minGroundNormalY = .65f;
 
     /// <summary>
-    /// A custom gravity coefficient applied to this entity.
-    /// </summary>
-    [SerializeField] protected float gravityModifier = 1f;
-
-    /// <summary>
     /// The current velocity of the entity.
     /// </summary>
     [SerializeField] protected Vector3 velocity;
@@ -36,48 +31,13 @@ public class KinematicObject : MonoBehaviour
     public float minMoveDistance = 0.001f;
     public float shellRadius = 0.01f;
 
-
-
-    /// <summary>
-    /// Bounce the object's vertical velocity.
-    /// </summary>
-    /// <param name="value"></param>
-    public void Bounce(float value)
-    {
-        velocity.y = value;
-    }
-
-    /// <summary>
-    /// Bounce the objects velocity in a direction.
-    /// </summary>
-    /// <param name="dir"></param>
-    public void Bounce(Vector3 dir)
-    {
-        velocity.z = dir.z;
-        velocity.y = dir.y;
-        velocity.x = dir.x;
-    }
-
-    /// <summary>
-    /// Teleport to some position.
-    /// </summary>
-    /// <param name="position"></param>
-    public void Teleport(Vector3 position)
-    {
-        body.position = position;
-        velocity *= 0;
-        body.velocity *= 0;
-    }
-
     protected virtual void OnEnable()
     {
         body = GetComponent<Rigidbody>();
-        //body.isKinematic = true;
     }
 
     protected virtual void OnDisable()
     {
-        //body.isKinematic = false;
     }
 
     protected virtual void Start()
@@ -106,12 +66,7 @@ public class KinematicObject : MonoBehaviour
             return;
         }
 
-        //if already falling, fall faster than the jump speed, otherwise use normal gravity.
-
-        if (velocity.y < 0)
-            velocity += gravityModifier * Physics.gravity * Time.deltaTime;
-        else
-            velocity += Physics.gravity * Time.deltaTime;
+        velocity += Physics.gravity * Time.deltaTime;
 
         velocity.x = targetVelocity.x;
         velocity.z = targetVelocity.z;

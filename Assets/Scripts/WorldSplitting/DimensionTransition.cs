@@ -158,7 +158,6 @@ namespace Core
         {
             Physics.gravity = isStart ? Vector3.zero : new Vector3(0f, -9.8f, 0f);
             Physics.autoSimulation = !isStart;
-            playerController.paused = isStart;
             transitting = isStart;
         }
 
