@@ -110,7 +110,7 @@
                     "name": "Zoom",
                     "type": "Value",
                     "id": "15b9b590-4f9e-48e1-988f-de4864bacb55",
-                    "expectedControlType": "Axis",
+                    "expectedControlType": "Analog",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -173,13 +173,103 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "cc85f66d-0735-47a9-a4e5-ddc723a0545a",
-                    "path": "",
+                    "name": "1D Axis",
+                    "id": "6de0364d-2734-420c-8c25-7f337d0e36ee",
+                    "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Zoom",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "8367c0a0-80c7-4f1f-9a19-0fa86e2f0481",
+                    "path": "<Keyboard>/pageDown",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "5eaf0afd-d65e-4ec9-83ea-2e0b45a97a13",
+                    "path": "<Keyboard>/pageUp",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        },
+        {
+            "name": "World",
+            "id": "bc099c60-11f1-4929-bb6f-a643107531d5",
+            "actions": [
+                {
+                    "name": "SplitMerge",
+                    "type": "Button",
+                    "id": "6d8f10e0-d32a-4b4c-81d9-683e6023ab74",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RotateLeft",
+                    "type": "Button",
+                    "id": "fbc8ab10-779a-4d18-a357-158b7550ed06",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RotateRight",
+                    "type": "Button",
+                    "id": "da0503a6-4799-4c38-9d1b-1c16638a5ef1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "94303eba-2766-4162-872f-3f3fd9d64b05",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SplitMerge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4ab84f16-7af3-4050-91c7-8fab6a06b750",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a15fa511-0ebb-4405-8c6a-5fc9bab93726",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
