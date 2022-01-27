@@ -34,7 +34,22 @@ namespace Core {
         /// </summary>
         public static List<Color> BaseColor = new List<Color> {Color.RED, Color.GREEN, Color.BLUE};
 
-        public static List<Color> AllColor = new List<Color> {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.WHITE};
+        /// <summary>
+        /// A list of all the valid color.
+        /// </summary>
+        public static List<Color> ValidColor = new List<Color>
+        {
+            Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.WHITE
+        };
+
+        /// <summary>
+        /// A dictionary that maps the splitted color to the index that it locates in <c>SplittedColor</c>
+        /// </summary>
+        /// <value></value>
+        public static Dictionary<Dimension.Color, int> ValidColorIndex = new Dictionary<Dimension.Color, int>
+        {
+            {Color.RED, 0}, {Color.GREEN, 1}, {Color.BLUE, 2}, {Color.YELLOW, 3}, {Color.CYAN, 4}, {Color.MAGENTA, 5}, {Color.WHITE, 6}
+        };
 
         /// <summary>
         /// A <c>Dictionary</c> mapping from <c>Dimension.Color</c> to the <c>UnityEngine.Color</c> used

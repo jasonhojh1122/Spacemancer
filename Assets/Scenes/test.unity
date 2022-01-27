@@ -268,75 +268,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 20347850}
   m_CullTransparentMesh: 1
---- !u!1001 &28424294
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4916285961177127663, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5724629985168425045, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
-      propertyPath: m_Name
-      value: FloorDeep
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 7fa7f7347c5e8a7458f11f4a22cae264, type: 3}
 --- !u!1 &61346891
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,7 +357,7 @@ Camera:
   far clip plane: 100
   field of view: 45
   orthographic: 1
-  orthographic size: 7
+  orthographic size: 6.144568
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -450,7 +381,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 61346891}
   m_LocalRotation: {x: 0.35355338, y: -0.35355338, z: 0.1464466, w: 0.8535535}
-  m_LocalPosition: {x: 6, y: 9.17197, z: -6}
+  m_LocalPosition: {x: 6, y: 8, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1540764065}
@@ -611,7 +542,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 85292246}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1100891764}
+        m_TargetAssemblyTypeName: SpaceDevice.SplitMergeMachine, Assembly-CSharp
+        m_MethodName: RotateColor
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &85292246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -683,7 +626,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &115184019
 GameObject:
@@ -946,9 +889,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2300709263366824459}
-        m_TargetAssemblyTypeName: Core.World, Assembly-CSharp
-        m_MethodName: Toggle
+      - m_Target: {fileID: 1100891764}
+        m_TargetAssemblyTypeName: SpaceDevice.SplitMergeMachine, Assembly-CSharp
+        m_MethodName: SplitMerge
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2382,7 +2325,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &493824985
 MonoBehaviour:
@@ -2491,7 +2434,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &570990917
 Transform:
   m_ObjectHideFlags: 0
@@ -2544,7 +2487,7 @@ Transform:
   - {fileID: 446694216}
   - {fileID: 398946833}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &587429264 stripped
 Transform:
@@ -3243,6 +3186,7 @@ GameObject:
   m_Component:
   - component: {fileID: 768842591}
   - component: {fileID: 768842590}
+  - component: {fileID: 768842592}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -3284,6 +3228,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &768842592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768842589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a10af218658ac0d43b51de80537a8942, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorSettings:
+  - colorTag: 4
+    color32:
+      serializedVersion: 2
+      rgba: 4284374701
+  - colorTag: 2
+    color32:
+      serializedVersion: 2
+      rgba: 4284192859
+  - colorTag: 1
+    color32:
+      serializedVersion: 2
+      rgba: 4289550681
+  - colorTag: 3
+    color32:
+      serializedVersion: 2
+      rgba: 4287993158
+  - colorTag: 5
+    color32:
+      serializedVersion: 2
+      rgba: 4287852179
+  - colorTag: 6
+    color32:
+      serializedVersion: 2
+      rgba: 4283144344
+  - colorTag: 7
+    color32:
+      serializedVersion: 2
+      rgba: 4294967295
+  - colorTag: 8
+    color32:
+      serializedVersion: 2
+      rgba: 4282137660
 --- !u!1001 &781125854
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3865,7 +3854,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1028727470
 PrefabInstance:
@@ -4098,7 +4087,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1080831707}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1100891764}
+        m_TargetAssemblyTypeName: SpaceDevice.SplitMergeMachine, Assembly-CSharp
+        m_MethodName: EnterDimension
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1080831707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4203,19 +4204,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pause: 0
-  colorWithdrawerOn: 0
-  dimensionColorSelectorOn: 0
-  dimensionButtons:
+  withdrawerOn: 0
+  dimChangerOn: 1
+  dimEnterButtons:
   - {fileID: 1393059861}
   - {fileID: 1080831706}
   - {fileID: 1689502134}
-  dimensionColors:
-  - {fileID: 85292246}
-  - {fileID: 2078963529}
-  - {fileID: 1175244756}
+  dimChangeButtons:
+  - {fileID: 85292245}
+  - {fileID: 2078963528}
+  - {fileID: 1175244755}
   splitMergeToggle: {fileID: 196849844}
-  dimensionColorSelector: {fileID: 1501179448}
-  colorWithdrawer: {fileID: 20347850}
+  withdrawerToggle: {fileID: 1887674630}
+  withdrawerChangeButton: {fileID: 354120081}
+  dimColorIndicators:
+  - {fileID: 245157263}
+  - {fileID: 191883220}
+  - {fileID: 1076241935}
+  dimChanger: {fileID: 1501179448}
+  withdrawer: {fileID: 20347850}
 --- !u!222 &1100891765
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4340,7 +4347,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1122764776
 GameObject:
@@ -4509,7 +4516,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1175244756}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1100891764}
+        m_TargetAssemblyTypeName: SpaceDevice.SplitMergeMachine, Assembly-CSharp
+        m_MethodName: RotateColor
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1175244756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4794,7 +4813,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1307206635
 MonoBehaviour:
@@ -4901,7 +4920,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1393059862}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1100891764}
+        m_TargetAssemblyTypeName: SpaceDevice.SplitMergeMachine, Assembly-CSharp
+        m_MethodName: EnterDimension
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1393059862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4985,7 +5016,7 @@ MonoBehaviour:
   m_Follow: {fileID: 115184020}
   m_Lens:
     FieldOfView: 45
-    OrthographicSize: 7
+    OrthographicSize: 6.144568
     NearClipPlane: 0.001
     FarClipPlane: 100
     Dutch: 0
@@ -5295,7 +5326,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1756250368707381344, guid: 04361f129b8098349a74a4f8a38924fe, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5660,7 +5691,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1519670635
 MonoBehaviour:
@@ -6245,7 +6276,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1663976608
 MonoBehaviour:
@@ -6378,7 +6409,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1689502135}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1100891764}
+        m_TargetAssemblyTypeName: SpaceDevice.SplitMergeMachine, Assembly-CSharp
+        m_MethodName: EnterDimension
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1689502135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7359,7 +7402,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2078963529}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1100891764}
+        m_TargetAssemblyTypeName: SpaceDevice.SplitMergeMachine, Assembly-CSharp
+        m_MethodName: RotateColor
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2078963529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9485,9 +9540,6 @@ GameObject:
   - component: {fileID: 2300709263366824460}
   - component: {fileID: 304825660760719199}
   - component: {fileID: 304825660760719198}
-  - component: {fileID: 2022313487057377129}
-  - component: {fileID: 4070284392175895269}
-  - component: {fileID: 8284688518502086394}
   m_Layer: 0
   m_Name: Worlds
   m_TagString: Untagged
@@ -9923,102 +9975,6 @@ MonoBehaviour:
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 2
   m_ConstraintCount: 1
---- !u!82 &2022313487057377129
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 304825660760719197}
-  m_Enabled: 0
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: efaa72ad86589af43a8a9b9f8601726c, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &2254175883915956154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10066,40 +10022,8 @@ MonoBehaviour:
   - {fileID: 493824985}
   - {fileID: 1519670635}
   inactiveRoot: {fileID: 1307206634}
-  colorSettings:
-  - colorTag: 4
-    color32:
-      serializedVersion: 2
-      rgba: 4284374701
-  - colorTag: 2
-    color32:
-      serializedVersion: 2
-      rgba: 4284192859
-  - colorTag: 1
-    color32:
-      serializedVersion: 2
-      rgba: 4289550681
-  - colorTag: 3
-    color32:
-      serializedVersion: 2
-      rgba: 4287993158
-  - colorTag: 5
-    color32:
-      serializedVersion: 2
-      rgba: 4287852179
-  - colorTag: 6
-    color32:
-      serializedVersion: 2
-      rgba: 4283144344
-  - colorTag: 7
-    color32:
-      serializedVersion: 2
-      rgba: 4292993505
-  - colorTag: 8
-    color32:
-      serializedVersion: 2
-      rgba: 4282137660
   startDimensionColor: 6
+  splitMergeMachine: {fileID: 1100891764}
   BeforeMerge:
     m_PersistentCalls:
       m_Calls: []
@@ -10319,102 +10243,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!82 &4070284392175895269
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 304825660760719197}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: d00a92ff81740844dbf59b5dbac78198, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 0.1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!137 &4408529144005469878
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -11655,7 +11483,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8129962908970087253, guid: a8ae6f89b9ade84499def96c06ad4993, type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 8129962908970087253, guid: a8ae6f89b9ade84499def96c06ad4993, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11767,102 +11595,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!82 &8284688518502086394
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 304825660760719197}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: d990af16e2588a14c9fd87e061e0c616, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 0.1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!224 &9022197376229213351
 RectTransform:
   m_ObjectHideFlags: 0

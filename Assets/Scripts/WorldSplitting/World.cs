@@ -17,8 +17,8 @@ namespace Core
         }
         [SerializeField] List<ObjectColor> dimensions;
         [SerializeField] Transform inactiveRoot;
-        [SerializeField] List<Dimension.ColorSetting> colorSettings;
         [SerializeField] Dimension.Color startDimensionColor = Dimension.Color.WHITE;
+        [SerializeField] SpaceDevice.SplitMergeMachine splitMergeMachine;
         [HideInInspector] public UnityEvent BeforeMerge = new UnityEvent();
         [HideInInspector] public UnityEvent BeforeSplit = new UnityEvent();
         DimensionTransition dimensionTransition;
@@ -49,6 +49,7 @@ namespace Core
 
         public int ActiveDimId {
             get => activeDimId;
+            set => activeDimId = value;
         }
 
         /// <summary>
@@ -86,12 +87,12 @@ namespace Core
         {
             if (_instance != null)
                 Debug.LogError("Multiple instance of World created");
-
             _instance = this;
+
             dimensionTransition = GetComponent<DimensionTransition>();
 
             dimId = new Dictionary<Dimension.Color, int>();
-            foreach (Dimension.Color c in Dimension.AllColor)
+            foreach (Dimension.Color c in Dimension.ValidColor)
                 dimId.Add(c, -1);
             dimId[Dimension.Color.WHITE] = 0;
             activeDimId = 0;
@@ -101,14 +102,6 @@ namespace Core
 
             objectPool = new SplittableObjectPool();
             splitted = false;
-
-            if(Dimension.MaterialColor.Count == 0)
-            {
-                foreach (Dimension.ColorSetting setting in colorSettings)
-                {
-                    Dimension.MaterialColor.Add(setting.colorTag, setting.color32);
-                }
-            }
         }
 
         private void Start()
@@ -132,6 +125,7 @@ namespace Core
             }
             if (startDimensionColor != Dimension.Color.WHITE)
                 DefaultSplit();
+            splitMergeMachine.SyncColorFromWorld();
         }
 
         private void DefaultSplit()
@@ -369,31 +363,37 @@ namespace Core
             {
                 splitted = false;
                 BeforeMerge.Invoke();
-                dimensions[0].Color = Dimension.Color.NONE;
-                dimensions[1].Color = Dimension.Color.WHITE;
-                dimensions[2].Color = Dimension.Color.NONE;
-                dimId[Dimension.Color.WHITE] = 1;
-                dimId[Dimension.Color.RED] = -1;
-                dimId[Dimension.Color.BLUE] = -1;
-                dimId[Dimension.Color.GREEN] = -1;
-                activeDimId = 1;
+                for (int i = 0; i < dimensions.Count; i++)
+                    dimensions[activeDimId].Color = Dimension.Color.NONE;
+                dimensions[activeDimId].Color = Dimension.Color.WHITE;
+                UpdateDimId();
                 StartCoroutine(dimensionTransition.MergeTransition());
             }
             else
             {
                 splitted = true;
                 BeforeSplit.Invoke();
-                dimensions[0].Color = Dimension.Color.RED;
-                dimensions[1].Color = Dimension.Color.BLUE;
-                dimensions[2].Color = Dimension.Color.GREEN;
-                dimId[Dimension.Color.RED] = 0;
-                dimId[Dimension.Color.BLUE] = 1;
-                dimId[Dimension.Color.GREEN] = 2;
-                dimId[Dimension.Color.WHITE] = -1;
-                activeDimId = 1;
+                for (int i = 0; i < dimensions.Count; i++)
+                {
+                    if (splitMergeMachine.DimColorIds[i] == -1)
+                        dimensions[i].Color = Dimension.Color.NONE;
+                    else
+                        dimensions[i].Color = Dimension.ValidColor[splitMergeMachine.DimColorIds[i]];
+                }
+                UpdateDimId();
                 StartCoroutine(dimensionTransition.SplitTransition());
 
             }
+        }
+
+        void UpdateDimId()
+        {
+            foreach (var c in Dimension.ValidColor)
+                dimId[c] = -1;
+
+            for (int i = 0; i < dimensions.Count; i++)
+                if (dimensions[i].Color != Dimension.Color.NONE)
+                    dimId[dimensions[i].Color] = i;
         }
 
         /// <summary>

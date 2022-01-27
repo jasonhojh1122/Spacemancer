@@ -67,7 +67,8 @@ namespace Character
             World.Instance.MoveObjectToDimension(this, World.Instance.ActiveDimension.Color);
             for (int i = 0; i < dummies.Count; i++)
             {
-                if (World.Instance.Splitted && enableDummies && i != World.Instance.ActiveDimId)
+                if (World.Instance.Splitted && enableDummies && i != World.Instance.ActiveDimId
+                    && World.Instance.Dimensions[i].Color != Dimension.Color.NONE)
                 {
                     dummies[i].gameObject.SetActive(true);
                 }
@@ -76,12 +77,14 @@ namespace Character
                     dummies[i].gameObject.SetActive(false);
                 }
             }
+            UpdateDummyTransform();
         }
 
         private void FixedUpdate()
         {
             if (World.Instance.Transitting) return;
-            MoveToActiveDimension(World.Instance.Splitted);
+            if (Dim.Color != World.Instance.ActiveDimension.Color)
+                MoveToActiveDimension(World.Instance.Splitted);
         }
     }
 
