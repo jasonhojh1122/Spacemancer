@@ -7,43 +7,18 @@ namespace Character
     public class SplittablePlayer : SplittableObject
     {
         [SerializeField] PlayerDummy dummyPrefab;
-        Dictionary<Dimension.Color, PlayerDummy> dummies;
+        List<PlayerDummy> dummies;
 
-        void Start()
+        void Awake()
         {
-            dummies = new Dictionary<Dimension.Color, PlayerDummy>();
-            foreach (Dimension.Color bc in Dimension.BaseColor)
+            dummies = new List<PlayerDummy>();
+            for (int i = 0; i < World.Instance.Dimensions.Count; i++)
             {
-                dummies[bc] = GameObject.Instantiate<PlayerDummy>(dummyPrefab);
-                World.Instance.MoveObjectToDimension(dummies[bc].gameObject, bc);
-                dummies[bc].gameObject.SetActive(false);
-            }
-        }
-
-        public void UpdateDummyTransform()
-        {
-            foreach (Dimension.Color bc in Dimension.BaseColor)
-            {
-                if (!dummies[bc].gameObject.activeSelf) continue;
-                dummies[bc].transform.localPosition = transform.localPosition;
-                dummies[bc].transform.localRotation = transform.localRotation;
-            }
-        }
-
-        public void SetDummyAnimatorController(RuntimeAnimatorController controller)
-        {
-            foreach (Dimension.Color bc in Dimension.BaseColor)
-            {
-                if (!dummies[bc].gameObject.activeSelf) continue;
-                dummies[bc].SetAnimatorController(controller);
-            }
-        }
-
-        public void SetDummyAnimatorSpeed(float speed)
-        {
-            foreach (Dimension.Color bc in Dimension.BaseColor)
-            {
-                dummies[bc].SetAnimatorSpeed(speed);
+                dummies.Add(GameObject.Instantiate<PlayerDummy>(dummyPrefab));
+                dummies[i].transform.localPosition = transform.position;
+                dummies[i].transform.localRotation = transform.rotation;
+                World.Instance.MoveObjectToDimension(dummies[i].gameObject, i);
+                dummies[i].gameObject.SetActive(false);
             }
         }
 
@@ -59,18 +34,46 @@ namespace Character
             World.Instance.MoveToProcessed(this);
         }
 
+        public void UpdateDummyTransform()
+        {
+            for (int i = 0; i < dummies.Count; i++)
+            {
+                if (!dummies[i].gameObject.activeSelf) continue;
+                dummies[i].transform.localPosition = transform.localPosition;
+                dummies[i].transform.localRotation = transform.localRotation;
+            }
+        }
+
+        public void SetDummyAnimatorController(RuntimeAnimatorController controller)
+        {
+            for (int i = 0; i < dummies.Count; i++)
+            {
+                if (!dummies[i].gameObject.activeSelf) continue;
+                dummies[i].SetAnimatorController(controller);
+            }
+        }
+
+        public void SetDummyAnimatorSpeed(float speed)
+        {
+            for (int i = 0; i < dummies.Count; i++)
+            {
+                if (!dummies[i].gameObject.activeSelf) continue;
+                dummies[i].SetAnimatorSpeed(speed);
+            }
+        }
+
         void MoveToActiveDimension(bool enableDummies)
         {
             World.Instance.MoveObjectToDimension(this, World.Instance.ActiveDimension.Color);
-            foreach (Dimension.Color sc in Dimension.BaseColor)
+            for (int i = 0; i < dummies.Count; i++)
             {
-                if (World.Instance.Splitted && enableDummies && sc != World.Instance.ActiveDimension.Color)
+                if (World.Instance.Splitted && enableDummies && i != World.Instance.ActiveDimId)
                 {
-                    dummies[sc].gameObject.SetActive(true);
+                    dummies[i].gameObject.SetActive(true);
                 }
                 else
                 {
-                    dummies[sc].gameObject.SetActive(false);
+                    dummies[i].gameObject.SetActive(false);
                 }
             }
         }

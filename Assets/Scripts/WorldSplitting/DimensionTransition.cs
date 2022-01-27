@@ -3,9 +3,6 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-using VecDic = System.Collections.Generic.Dictionary<Core.Dimension.Color, UnityEngine.Vector3>;
-using QuaDic = System.Collections.Generic.Dictionary<Core.Dimension.Color, UnityEngine.Quaternion>;
-
 namespace Core
 {
     public class DimensionTransition : MonoBehaviour
@@ -21,143 +18,57 @@ namespace Core
             public AnimationCurve curve;
         }
 
-        [SerializeField] InputController playerController;
         [SerializeField] List<Transform> targetPos;
         [SerializeField] float transitionDuration = 1.0f;
         [SerializeField] float endPause = 0.2f;
         [SerializeField] GlitchSetting glitchSetting;
 
-        List<Dimension.Color> dimensionOrder;
         bool transitting;
 
         public bool Transitting {
             get => transitting;
         }
 
-        public Dimension.Color ActiveDimensionColor {
-            get => dimensionOrder[0];
-        }
-
         private void Awake()
         {
-            dimensionOrder = new List<Dimension.Color>();
-            foreach (Dimension.Color color in Dimension.BaseColor)
-            {
-                dimensionOrder.Add(color);
-            }
+            transitting = false;
         }
 
         public IEnumerator SplitTransition()
         {
             OnTransitionStartEnd(true);
-            StartCoroutine(Glitch());
+            for (int i = 0; i < targetPos.Count; i++)
+            {
+                World.Instance.Dimensions[i].transform.position = targetPos[i].transform.position;
+                World.Instance.Dimensions[i].gameObject.SetActive(true);
+            }
             World.Instance.SplitObjects();
-            ToggleDimensionActivation(true);
-            yield return StartCoroutine(MoveAnimation(false));
-            World.Instance.Dims[Dimension.Color.WHITE].gameObject.SetActive(false);
             Physics.SyncTransforms();
             OnTransitionStartEnd(false);
-            yield return new WaitForSeconds(endPause);
+            yield return null;
         }
 
         public IEnumerator MergeTransition()
         {
             OnTransitionStartEnd(true);
-            StartCoroutine(Glitch());
-            yield return StartCoroutine(MoveAnimation(true));
+            for (int i = 0; i < targetPos.Count; i++)
+            {
+                World.Instance.Dimensions[i].transform.position = World.Instance.ActiveDimension.transform.position;
+            }
             Physics.SyncTransforms();
             World.Instance.MergeObjects();
-            World.Instance.Dims[Dimension.Color.WHITE].gameObject.SetActive(true);
-            ToggleDimensionActivation(false);
+            for (int i = 0; i < targetPos.Count; i++)
+            {
+                World.Instance.Dimensions[i].gameObject.SetActive(false);
+            }
+            World.Instance.ActiveDimension.gameObject.SetActive(true);
             OnTransitionStartEnd(false);
-            yield return new WaitForSeconds(endPause);
-        }
-
-        public IEnumerator RotateTransition(int direction)
-        {
-            OnTransitionStartEnd(true);
-            StartCoroutine(Glitch());
-            yield return StartCoroutine(RotateAnimation(direction));
-            OnTransitionStartEnd(false);
-            yield return new WaitForSeconds(endPause);
-        }
-
-        IEnumerator MoveAnimation(bool ToCenter)
-        {
-            float t = 0.0f;
-            while (t < transitionDuration)
-            {
-                t += Time.deltaTime;
-                for (int i = 0; i < dimensionOrder.Count; i++)
-                {
-                    Transform dim = World.Instance.Dims[dimensionOrder[i]].transform;
-                    Vector3 start, end;
-                    if (ToCenter)
-                    {
-                        start = targetPos[i].position;
-                        end = World.Instance.Dims[Dimension.Color.WHITE].transform.position;
-                    }
-                    else
-                    {
-                        start = World.Instance.Dims[Dimension.Color.WHITE].transform.position;
-                        end = targetPos[i].position;
-                    }
-                    dim.position = Vector3.Lerp(start, end, t / transitionDuration);
-                }
-                yield return null;
-            }
-        }
-
-        IEnumerator RotateAnimation(int direction)
-        {
-            Dictionary<Dimension.Color, int> newOrder = new Dictionary<Dimension.Color, int>();
-            for (int i = 0; i < dimensionOrder.Count; i++)
-            {
-                if (direction > 0)
-                {
-                    int n = (i-1) < 0 ? (i-1) + dimensionOrder.Count : (i-1);
-                    newOrder.Add(dimensionOrder[i], n);
-                }
-                else
-                {
-                    newOrder.Add(dimensionOrder[i], (i+1) % dimensionOrder.Count);
-                }
-            }
-
-            float t = 0.0f;
-            while (t < transitionDuration)
-            {
-                t += Time.deltaTime;
-
-                for (int i = 0; i < dimensionOrder.Count; i++)
-                {
-                    Vector3 start = targetPos[i].position;
-                    Vector3 end = targetPos[newOrder[dimensionOrder[i]]].position;
-                    Transform dim = World.Instance.Dims[dimensionOrder[i]].transform;
-                    dim.position = Vector3.Lerp(start, end, t / transitionDuration);
-                }
-                yield return null;
-            }
-
-            foreach (KeyValuePair<Dimension.Color, int> pair in newOrder)
-            {
-                dimensionOrder[pair.Value] = pair.Key;
-            }
-        }
-
-
-        void ToggleDimensionActivation(bool status)
-        {
-            foreach (Dimension.Color color in Dimension.BaseColor)
-            {
-                World.Instance.Dims[color].gameObject.SetActive(status);
-            }
+            yield return null;
         }
 
         void OnTransitionStartEnd(bool isStart)
         {
             // playerController.pause = !isStart;
-            Debug.Log("Is Start " + isStart);
             Physics.gravity = isStart ? Vector3.zero : new Vector3(0f, -9.8f, 0f);
             Physics.autoSimulation = !isStart;
             transitting = isStart;
@@ -186,6 +97,16 @@ namespace Core
                 yield return null;
             }
             glitchSetting.mat.SetFloat("_Transitting", 0.0f);
+        }
+
+        public void DefaultSplit()
+        {
+            for (int i = 0; i < targetPos.Count; i++)
+            {
+                World.Instance.Dimensions[i].transform.position = targetPos[i].transform.position;
+                World.Instance.Dimensions[i].gameObject.SetActive(true);
+            }
+            Physics.SyncTransforms();
         }
 
     }

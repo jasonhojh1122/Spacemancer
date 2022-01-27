@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Core
 {
+    // TODO: persistent color?
     /// <summary>
     /// Base class of splittable object.
     /// </summary>
@@ -17,7 +18,6 @@ namespace Core
         protected ObjectColor objectColor;
         protected ObjectColor dimension;
         protected Collider col;
-        protected Dictionary<Dimension.Color, SplittableObject> siblings;
         protected bool _IsMerged;
 
         /// <summary>
@@ -66,13 +66,6 @@ namespace Core
         }
 
         /// <summary>
-        /// A <c>Dictionary</c> mapping of color and the sibling objects in different dimension.
-        /// </summary>
-        public Dictionary<Dimension.Color, SplittableObject> Siblings {
-            get => siblings;
-        }
-
-        /// <summary>
         /// If the object's color is persistent.
         /// </summary>
         public bool IsPersistentColor {
@@ -89,11 +82,8 @@ namespace Core
         {
             col = GetComponent<Collider>();
             objectColor = GetComponent<ObjectColor>();
-            siblings = new Dictionary<Dimension.Color, SplittableObject>();
-            foreach (Dimension.Color bc in Dimension.BaseColor)
-                Siblings.Add(bc, null);
             IsMerged = false;
-            Dim = World.Instance.Dims[World.Instance.StartDimensionColor];
+            Dim = World.Instance.ActiveDimension;
             objectColor.Init();
         }
 
@@ -107,74 +97,20 @@ namespace Core
         /// </summary>
         public virtual void Split()
         {
-            if (Dim.Color != Dimension.Color.WHITE)
+            foreach (ObjectColor dim in World.Instance.Dimensions)
             {
-                World.Instance.MoveToProcessed(this);
-                return;
-            }
-            else if (isPersistentColor)
-                SplitPersistent();
-            else
-                SplitColor();
-        }
-
-        /// <summary>
-        /// Splits the object with persistent color.
-        /// </summary>
-        protected void SplitPersistent()
-        {
-            List<Dimension.Color> splittedColor;
-            if (this.Color == Dimension.Color.BLACK || this.Color == Dimension.Color.NONE)
-                splittedColor = Dimension.BaseColor;
-            else
-                splittedColor = Dimension.SplitColor(this.Color);
-            foreach (Dimension.Color sc in splittedColor)
-            {
-                if (Siblings[sc] == null)
+                if (dim.Color == Dimension.Color.NONE)
+                    continue;
+                var splittedColor = objectColor.Color & dim.Color;
+                if (splittedColor != Dimension.Color.NONE)
                 {
-                    var so = World.Instance.InstantiateNewObjectToDimension(this, sc);
-                    so.Color = this.Color;
-                    Siblings[sc] = so;
-                }
-                else
-                {
-                    Siblings[sc].transform.localPosition = transform.localPosition;
-                }
-                World.Instance.RemoveFromSet(Siblings[sc]);
-            }
-            World.Instance.RemoveFromSet(this);
-        }
-
-        /// <summary>
-        /// Splits the object with normal color.
-        /// </summary>
-        protected void SplitColor()
-        {
-            var splittedColor = Dimension.SplitColor(Color);
-            var missingColor = Dimension.MissingColor(Color);
-            foreach (Dimension.Color sc in splittedColor)
-            {
-                if (Siblings[sc] == null)
-                {
-                    Siblings[sc] = World.Instance.InstantiateNewObjectToDimension(this, sc);
-                    Siblings[sc].Color = sc;
-                }
-                else
-                {
-                    Siblings[sc].transform.localPosition = transform.localPosition;
-                    Siblings[sc].IsMerged = false;
-                }
-                World.Instance.MoveToProcessed(Siblings[sc]);
-            }
-
-            foreach (Dimension.Color sc in missingColor)
-            {
-                if (Siblings[sc] != null)
-                {
-                    World.Instance.DeactivateObject(Siblings[sc]);
-                    Siblings[sc] = null;
+                    var splitted = World.Instance.InstantiateNewObjectToDimension(this, dim.Color);
+                    splitted.Color = splittedColor;
+                    splitted.IsMerged = false;
+                    World.Instance.MoveToProcessed(splitted);
                 }
             }
+            this.IsMerged = false;
             World.Instance.DeactivateObject(this);
         }
 
@@ -183,32 +119,34 @@ namespace Core
         /// </summary>
         /// <param name="parent"> The parent object in recursive merging. </param>
         public virtual void Merge(SplittableObject parent) {
-            if (isPersistentColor)
-            {
-                World.Instance.MoveToProcessed(this);
-                return;
-            }
 
             IsMerged = true;
 
             Dimension.Color mergedColor = this.Color;
             if (parent != null && parent.Color == Dimension.Color.BLACK)
                 mergedColor = Dimension.Color.BLACK;
-            List<SplittableObject> curSiblings = new List<SplittableObject>();
-            ProcessCollidedObjects(ref mergedColor, curSiblings);
+            var siblings = new List<SplittableObject>();
+            var others = new List<SplittableObject>();
+            ProcessCollidedObjects(ref mergedColor, siblings, others);
 
-            if (mergedColor == Dimension.Color.BLACK)
-                MergeToBlack(curSiblings);
-            else
-                MergeToNewParent(mergedColor, curSiblings);
+            World.Instance.MoveObjectToDimension(this, Dimension.Color.WHITE);
+            World.Instance.MoveToProcessed(this);
+            Color = mergedColor;
+            foreach (var so in siblings)
+            {
+                World.Instance.DeactivateObject(so);
+            }
+
         }
 
         /// <summary>
         /// It recursively calculates the merged color and siblings with collided objects.
         /// </summary>
         /// <param name="mergedColor"> The final merged color. </param>
-        /// <param name="curSiblings"> A <c>List</c> of collided siblings. </param>
-        protected void ProcessCollidedObjects(ref Dimension.Color mergedColor, List<SplittableObject> curSiblings)
+        /// <param name="siblings"> A <c>List</c> of collided siblings. </param>
+        /// <param name="others"> A <c>List</c> of collided objects that're not siblings. </param>
+        protected void ProcessCollidedObjects(ref Dimension.Color mergedColor,
+                        List<SplittableObject> siblings, List<SplittableObject> others)
         {
             Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents - Util.Fuzzy.amountVec3, transform.rotation);
             foreach (Collider c in colliders)
@@ -219,21 +157,31 @@ namespace Core
                 {
                     continue;
                 }
-                else if (so.Color == Dimension.Color.BLACK)
+                else if (c.gameObject.name == gameObject.name)
                 {
-                    mergedColor = Dimension.Color.BLACK;
+                    siblings.Add(so);
+                    if (so.Color == Dimension.Color.BLACK ||
+                        !Util.Fuzzy.CloseVector3(c.transform.localPosition, transform.localPosition))
+                    {
+                        mergedColor = Dimension.Color.BLACK;
+                        Color = Dimension.Color.BLACK;
+                        so.Merge(this);
+                    }
+                    else
+                    {
+                        mergedColor = Dimension.AddColor(mergedColor, so.Color);
+                        so.IsMerged = true;
+                    }
                 }
-                else if (c.gameObject.name == gameObject.name && Util.Fuzzy.CloseVector3(c.transform.localPosition, transform.localPosition))
+                else
                 {
-                    mergedColor = Dimension.AddColor(mergedColor, so.Color);
-                    so.IsMerged = true;
-                    curSiblings.Add(so);
-                }
-                else if (IsPenetrated(so))
-                {
-                    mergedColor = Dimension.Color.BLACK;
-                    Color = Dimension.Color.BLACK;
-                    so.Merge(this);
+                    others.Add(so);
+                    if (IsPenetrated(so))
+                    {
+                        mergedColor = Dimension.Color.BLACK;
+                        Color = Dimension.Color.BLACK;
+                        so.Merge(this);
+                    }
                 }
             }
         }
@@ -259,51 +207,6 @@ namespace Core
                     return true;
             }
             return false;
-        }
-
-        /// <summary>
-        /// Merges the siblings into a black object in white dimension.
-        /// </summary>
-        /// <param name="curSiblings"> A <c>List</c> of collided siblings. </param>
-        protected void MergeToBlack(List<SplittableObject> curSiblings)
-        {
-            World.Instance.MoveObjectToDimension(this, Dimension.Color.WHITE);
-            this.Color = Dimension.Color.BLACK;
-            isPersistentColor = true;
-            World.Instance.MoveToProcessed(this);
-            for (int i = 0 ; i < curSiblings.Count; i++)
-            {
-                World.Instance.DeactivateObject(curSiblings[i]);
-            }
-        }
-
-        /// <summary>
-        /// Merges the siblings into a new object in white dimension.
-        /// </summary>
-        /// <param name="mergedColor"> The color of the new object. </param>
-        /// <param name="curSiblings"> A <c>List</c> of collided siblings. </param>
-        protected void MergeToNewParent(Dimension.Color mergedColor, List<SplittableObject> curSiblings)
-        {
-            var parent = World.Instance.InstantiateNewObjectToDimension(this, Dimension.Color.WHITE);
-            parent.Color = mergedColor;
-            World.Instance.MoveToProcessed(parent);
-
-            curSiblings.Add(this);
-
-            var splittedColor = Dimension.SplitColor(mergedColor);
-            var missingColor = Dimension.MissingColor(mergedColor);
-
-            for (int i = 0; i < curSiblings.Count; i++)
-            {
-                World.Instance.MoveObjectToDimension(curSiblings[i], splittedColor[i]);
-                curSiblings[i].Color = splittedColor[i];
-                parent.Siblings[splittedColor[i]] = curSiblings[i];
-                World.Instance.MoveToProcessed(curSiblings[i]);
-            }
-            for (int i = 0; i < missingColor.Count; i++)
-            {
-                parent.Siblings[missingColor[i]] = null;
-            }
         }
 
         /// <summary>

@@ -34,6 +34,8 @@ namespace Core {
         /// </summary>
         public static List<Color> BaseColor = new List<Color> {Color.RED, Color.GREEN, Color.BLUE};
 
+        public static List<Color> AllColor = new List<Color> {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.WHITE};
+
         /// <summary>
         /// A <c>Dictionary</c> mapping from <c>Dimension.Color</c> to the <c>UnityEngine.Color</c> used
         /// in material.

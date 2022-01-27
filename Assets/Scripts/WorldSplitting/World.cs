@@ -16,23 +16,39 @@ namespace Core
             get => _instance;
         }
         [SerializeField] List<ObjectColor> dimensions;
+        [SerializeField] Transform inactiveRoot;
         [SerializeField] List<Dimension.ColorSetting> colorSettings;
-        [SerializeField] AudioSource splitMergeAudio, rotateAudio;
         [SerializeField] Dimension.Color startDimensionColor = Dimension.Color.WHITE;
         [HideInInspector] public UnityEvent BeforeMerge = new UnityEvent();
         [HideInInspector] public UnityEvent BeforeSplit = new UnityEvent();
         DimensionTransition dimensionTransition;
-        PlayerInteraction playerInteraction;
-        Dictionary<Dimension.Color, ObjectColor> dimensionMap;
+        Dictionary<Dimension.Color, int> dimId;
         SplittableObjectPool objectPool;
         Set processedObjects, unprocessedObjects;
         bool splitted;
+        int activeDimId;
 
         /// <summary>
-        /// A <c>Dictionary</c> mapping of color and dimensions' <c>ObjectColor</c>.
+        /// The list of dimensions' root.
         /// </summary>
-        public Dictionary<Dimension.Color, ObjectColor> Dims {
-            get => dimensionMap;
+        /// <value></value>
+        public List<ObjectColor> Dimensions {
+            get => dimensions;
+        }
+
+        public Dictionary<Dimension.Color, int> DimId {
+            get => dimId;
+        }
+
+        /// <summary>
+        /// The currently active dimension.
+        /// </summary>
+        public ObjectColor ActiveDimension {
+            get => dimensions[activeDimId];
+        }
+
+        public int ActiveDimId {
+            get => activeDimId;
         }
 
         /// <summary>
@@ -40,16 +56,6 @@ namespace Core
         /// </summary>
         public bool Splitted {
             get => splitted;
-        }
-
-        /// <summary>
-        /// The currently active dimension.
-        /// </summary>
-        public ObjectColor ActiveDimension {
-            get {
-                if (splitted) return Dims[dimensionTransition.ActiveDimensionColor];
-                else return Dims[Dimension.Color.WHITE];
-            }
         }
 
         /// <summary>
@@ -79,23 +85,21 @@ namespace Core
         void Awake()
         {
             if (_instance != null)
-            {
                 Debug.LogError("Multiple instance of World created");
-            }
+
             _instance = this;
-            playerInteraction = FindObjectOfType<PlayerInteraction>();
             dimensionTransition = GetComponent<DimensionTransition>();
-            dimensionMap = new Dictionary<Dimension.Color, ObjectColor>();
-            foreach (ObjectColor d in dimensions)
-            {
-                dimensionMap.Add(d.Color, d);
-            }
+
+            dimId = new Dictionary<Dimension.Color, int>();
+            foreach (Dimension.Color c in Dimension.AllColor)
+                dimId.Add(c, -1);
+            dimId[Dimension.Color.WHITE] = 0;
+            activeDimId = 0;
 
             processedObjects = new Set();
             unprocessedObjects = new Set();
 
             objectPool = new SplittableObjectPool();
-
             splitted = false;
 
             if(Dimension.MaterialColor.Count == 0)
@@ -113,9 +117,9 @@ namespace Core
             foreach (SplittableObject s in so)
             {
                 s.OnInitialized.Invoke();
-                var localPos = Dims[Dimension.Color.WHITE].transform.InverseTransformPoint(s.transform.position);
-                var localRot = Quaternion.Inverse(Dims[Dimension.Color.WHITE].transform.rotation) * s.transform.rotation;
-                MoveTransformToNewParent(s.transform, Dims[Dimension.Color.WHITE].transform, localPos, localRot);
+                var localPos = s.transform.position;
+                var localRot = s.transform.rotation;
+                MoveTransformToNewParent(s.transform, dimensions[dimId[Dimension.Color.WHITE]].transform, localPos, localRot);
                 if (s.DefaultInactive)
                 {
                     DeactivateObject(s);
@@ -126,6 +130,28 @@ namespace Core
                     objectPool.SetActive(s);
                 }
             }
+            if (startDimensionColor != Dimension.Color.WHITE)
+                DefaultSplit();
+        }
+
+        private void DefaultSplit()
+        {
+            dimensionTransition.DefaultSplit();
+            dimensions[0].Color = startDimensionColor;
+            dimId[startDimensionColor] = 0;
+            dimId[Dimension.Color.WHITE] = -1;
+
+            var missingColors = Dimension.MissingColor(startDimensionColor);
+            int i = 1;
+            for (; i < missingColors.Count + 1; i++)
+            {
+                dimensions[i].Color = missingColors[i-1];
+                dimId[missingColors[i-1]] = i;
+            }
+            for (; i < dimensions.Count; i++)
+                dimensions[i].Color = Dimension.Color.NONE;
+            SplitObjects();
+            splitted = true;
         }
 
         /// <summary>
@@ -164,9 +190,7 @@ namespace Core
         {
             unprocessedObjects.Remove(so);
             if (!processedObjects.Add(so))
-            {
                 Util.Debug.Log(gameObject, so.gameObject.name + " " + so.Dim.Color.ToString() + " existed in processed objects");
-            }
         }
 
         /// <summary>
@@ -204,7 +228,7 @@ namespace Core
                 objectPool.SetActive(newSo);
             }
             newSo.gameObject.name = so.name;
-            newSo.Dim = Dims[color];
+            newSo.Dim = dimensions[dimId[color]];
             MoveTransformToNewParent(newSo.transform, newSo.Dim.transform, so.transform.localPosition, so.transform.localRotation);
             return newSo;
         }
@@ -219,9 +243,21 @@ namespace Core
         {
             var newSo = objectPool.Instantiate(soName);
             newSo.gameObject.name = soName;
-            newSo.Dim = Dims[color];
+            newSo.Dim = dimensions[dimId[color]];
             MoveTransformToNewParent(newSo.transform, newSo.Dim.transform, newSo.transform.localPosition, newSo.transform.localRotation);
             return newSo;
+        }
+
+        /// <summary>
+        /// Moves the given <c>SplittableObject</c> to the active dimension.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be moved. </param>
+        public void MoveObjectToActiveDimension(SplittableObject so)
+        {
+            Vector3 localPos = so.transform.localPosition;
+            Quaternion localRot = so.transform.localRotation;
+            so.Dim = dimensions[activeDimId];
+            MoveTransformToNewParent(so.transform, so.Dim.transform, localPos, localRot);
         }
 
         /// <summary>
@@ -233,7 +269,20 @@ namespace Core
         {
             Vector3 localPos = so.transform.localPosition;
             Quaternion localRot = so.transform.localRotation;
-            so.Dim = Dims[color];
+            so.Dim = dimensions[dimId[color]];
+            MoveTransformToNewParent(so.transform, so.Dim.transform, localPos, localRot);
+        }
+
+        /// <summary>
+        /// Moves the given <c>SplittableObject</c> to a specified dimension.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be moved. </param>
+        /// <param name="id"> The id of the target dimension to move into. </param>
+        public void MoveObjectToDimension(SplittableObject so, int id)
+        {
+            Vector3 localPos = so.transform.localPosition;
+            Quaternion localRot = so.transform.localRotation;
+            so.Dim = dimensions[id];
             MoveTransformToNewParent(so.transform, so.Dim.transform, localPos, localRot);
         }
 
@@ -246,7 +295,19 @@ namespace Core
         {
             Vector3 localPos = go.transform.localPosition;
             Quaternion localRot = go.transform.localRotation;
-            MoveTransformToNewParent(go.transform, Dims[color].transform, localPos, localRot);
+            MoveTransformToNewParent(go.transform, dimensions[dimId[color]].transform, localPos, localRot);
+        }
+
+        /// <summary>
+        /// Moves the given <c>GameObject</c> to a specified dimension.
+        /// </summary>
+        /// <param name="go"> The <c>GameObject</c> to be moved. </param>
+        /// <param name="id"> The id of the target diemension to move into. </param>
+        public void MoveObjectToDimension(GameObject go, int id)
+        {
+            Vector3 localPos = go.transform.localPosition;
+            Quaternion localRot = go.transform.localRotation;
+            MoveTransformToNewParent(go.transform, dimensions[id].transform, localPos, localRot);
         }
 
         /// <summary>
@@ -258,7 +319,7 @@ namespace Core
             RemoveFromSet(so);
             Vector3 localPos = so.transform.localPosition;
             Quaternion localRot = so.transform.localRotation;
-            MoveTransformToNewParent(so.transform, Dims[Dimension.Color.NONE].transform, localPos, localRot);
+            MoveTransformToNewParent(so.transform, inactiveRoot, localPos, localRot);
             objectPool.SetInactive(so);
         }
 
@@ -272,9 +333,9 @@ namespace Core
             objectPool.SetActive(so);
             Vector3 localPos = so.transform.localPosition;
             Quaternion localRot = so.transform.localRotation;
-            MoveTransformToNewParent(so.transform, Dims[color].transform, localPos, localRot);
+            MoveTransformToNewParent(so.transform, dimensions[dimId[color]].transform, localPos, localRot);
             unprocessedObjects.Add(so);
-            so.Dim = Dims[color];
+            so.Dim = dimensions[dimId[color]];
             so.Color = so.Color;
         }
 
@@ -302,72 +363,51 @@ namespace Core
             processedObjects = tmp;
         }
 
-        /// <summary>
-        /// Starts the split process.
-        /// </summary>
-        void SplitDimensions()
-        {
-            splitMergeAudio.Play();
-            StartCoroutine(dimensionTransition.SplitTransition());
-        }
-
-        /// <summary>
-        /// Starts the merge process.
-        /// </summary>
-        void MergeDimensions()
-        {
-            splitMergeAudio.Play();
-            StartCoroutine(dimensionTransition.MergeTransition());
-        }
-
-        /// <summary>
-        /// Rotates the dimensions if the world is splitted.
-        /// </summary>
-        /// <param name="dir">The direction to rotate. Greater than zero for right rotation.
-        /// Less than zero for left rotation. </param>
-        public void RotateDimensions(int dir)
-        {
-            rotateAudio.Play();
-            if (!Splitted || dimensionTransition.Transitting) return;
-            playerInteraction.OnDimensionChange();
-            StartCoroutine(dimensionTransition.RotateTransition(dir));
-        }
-
-        /// <summary>
-        /// Toggles world's splitting and merging.
-        /// </summary>
         public void Toggle()
         {
-            if (dimensionTransition.Transitting) return;
-            playerInteraction.OnDimensionChange();
             if (splitted)
             {
                 splitted = false;
                 BeforeMerge.Invoke();
-                MergeDimensions();
+                dimensions[0].Color = Dimension.Color.NONE;
+                dimensions[1].Color = Dimension.Color.WHITE;
+                dimensions[2].Color = Dimension.Color.NONE;
+                dimId[Dimension.Color.WHITE] = 1;
+                dimId[Dimension.Color.RED] = -1;
+                dimId[Dimension.Color.BLUE] = -1;
+                dimId[Dimension.Color.GREEN] = -1;
+                activeDimId = 1;
+                StartCoroutine(dimensionTransition.MergeTransition());
             }
             else
             {
                 splitted = true;
                 BeforeSplit.Invoke();
-                SplitDimensions();
+                dimensions[0].Color = Dimension.Color.RED;
+                dimensions[1].Color = Dimension.Color.BLUE;
+                dimensions[2].Color = Dimension.Color.GREEN;
+                dimId[Dimension.Color.RED] = 0;
+                dimId[Dimension.Color.BLUE] = 1;
+                dimId[Dimension.Color.GREEN] = 2;
+                dimId[Dimension.Color.WHITE] = -1;
+                activeDimId = 1;
+                StartCoroutine(dimensionTransition.SplitTransition());
+
             }
         }
 
-        public void Log()
+        /// <summary>
+        /// Gets the dimension based on the color.
+        /// </summary>
+        /// <param name="color"> The dimension color. </param>
+        /// <returns> If the dimension is active, the the <c>ObjectColor</c> of the dimension is returned,
+        /// otherwise null is returned. </returns>
+        public ObjectColor GetDim(Dimension.Color color)
         {
-            Debug.Log("");
-            Debug.Log("-----processed Object-----");
-            foreach (SplittableObject so in processedObjects) {
-                if (so.gameObject.name != "Box") continue;
-                Debug.Log(so.gameObject.name + ", " + so.Color.ToString() + ", ID: " + so.transform.GetInstanceID());
-            }
-            Debug.Log("");
-            Debug.Log("-----unprocessedObjects Object-----");
-            foreach (SplittableObject so in unprocessedObjects) {
-                if (so.gameObject.name != "Box") continue;
-                Debug.Log(so.gameObject.name + ", " + so.Color.ToString() + ", ID: " + so.transform.GetInstanceID());
-            }
+            if (dimId[color] > 0 && dimId[color] < dimensions.Count)
+                return dimensions[dimId[color]];
+            else
+                return null;
         }
 
     }
