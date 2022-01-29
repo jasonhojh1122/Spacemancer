@@ -32,7 +32,7 @@ namespace SpaceDevice
 
         public void AddEnergy(float amount)
         {
-
+            slider.value += amount;
         }
 
 

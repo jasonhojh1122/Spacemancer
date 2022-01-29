@@ -13,8 +13,10 @@ namespace SpaceDevice
             OFF, TO_WITHDRAW, TO_INSERT, WAIT
         }
         [SerializeField] Laser laser;
+        [SerializeField] EnergyBar energyBar;
         [SerializeField] RectTransform colorSelector;
         [SerializeField] UnityEngine.UI.Image withdrawContainer;
+        [SerializeField] float energyCost = 0.2f;
 
         /// <summary>
         /// Current color for withdrawing.
@@ -146,6 +148,7 @@ namespace SpaceDevice
             oc.Insert(laser.ContactPoint);
             curState = WithdrawerState.WAIT;
             withdrawContainer.color = transparentColor;
+            energyBar.AddEnergy(-energyCost);
             InputManager.Instance.pause = true;
         }
 
