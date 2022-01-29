@@ -252,7 +252,7 @@
                 {
                     "name": "negative",
                     "id": "37f6aee2-5693-417e-854c-d21f1ba28751",
-                    "path": "<XInputController>/rightShoulder",
+                    "path": "<XInputController>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -263,7 +263,7 @@
                 {
                     "name": "positive",
                     "id": "bb3061e7-bee4-40e5-9396-7f53eabf81d5",
-                    "path": "<XInputController>/leftShoulder",
+                    "path": "<XInputController>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -320,7 +320,7 @@
                 {
                     "name": "",
                     "id": "389172a8-f786-452c-82a4-311e6985707a",
-                    "path": "<XInputController>/buttonNorth",
+                    "path": "<XInputController>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -341,8 +341,30 @@
                 },
                 {
                     "name": "",
+                    "id": "4a203060-4b66-42cd-96fe-e2f08283a0cb",
+                    "path": "<XInputController>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "a15fa511-0ebb-4405-8c6a-5fc9bab93726",
                     "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "71c9c05e-7f96-4626-99d7-7226c0addde2",
+                    "path": "<XInputController>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -353,13 +375,31 @@
             ]
         },
         {
-            "name": "UI",
-            "id": "ae1868a6-a8fb-40b2-ac3c-38233b01304b",
+            "name": "SpaceDevice",
+            "id": "6aed3d5c-e720-4bdb-a4f6-ed9e8b2c3360",
             "actions": [
                 {
                     "name": "Toggle",
                     "type": "Button",
-                    "id": "11c4f123-6c3a-4103-a213-0538a58dfa39",
+                    "id": "3c7fc3e1-b8aa-4c23-be45-91ff2ba943ea",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "WithdrawerToggle",
+                    "type": "Button",
+                    "id": "bb133b8c-079d-4de9-b05d-abe97a4f5b64",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "WithdrawerPerform",
+                    "type": "Button",
+                    "id": "c2ac457a-489c-4b7b-94b9-2c28227e9793",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -369,7 +409,7 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "0317e7c7-99dd-4a22-92c4-9774e540ef5c",
+                    "id": "e43fcb88-6d90-4da0-8fe0-3c7da9c8ac5a",
                     "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
@@ -380,12 +420,56 @@
                 },
                 {
                     "name": "",
-                    "id": "b7e90758-2bc8-4fda-93b0-98ee8114b4c9",
+                    "id": "f7d30fe0-040a-40d7-95a9-d7465a164f93",
                     "path": "<XInputController>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Toggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d9c8d71a-6d58-4142-9ed0-7aec1e7ae219",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WithdrawerToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e9432e77-ba93-46ae-8995-cfe1d19e71a9",
+                    "path": "<XInputController>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WithdrawerToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "81eae6c5-5676-4a3e-8022-c3dfb03e18d0",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WithdrawerPerform",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c8cde893-d951-4b12-ac93-390b03c10bc3",
+                    "path": "<XInputController>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WithdrawerPerform",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

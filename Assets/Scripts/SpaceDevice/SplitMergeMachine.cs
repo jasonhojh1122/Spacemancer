@@ -14,13 +14,7 @@ namespace SpaceDevice
 
         [SerializeField] bool withdrawerOn = false;
         [SerializeField] bool dimChangerOn = false;
-        [SerializeField] List<UnityEngine.UI.Button> dimEnterButtons;
-        [SerializeField] List<UnityEngine.UI.Button> dimChangeButtons;
-        [SerializeField] UnityEngine.UI.Button splitMergeToggle;
-        [SerializeField] UnityEngine.UI.Button withdrawerToggle;
-        [SerializeField] UnityEngine.UI.Button withdrawerChangeButton;
         [SerializeField] List<Image> dimColorIndicators;
-
         [SerializeField] GameObject dimChanger;
         [SerializeField] GameObject withdrawer;
 
@@ -47,13 +41,12 @@ namespace SpaceDevice
                 dimChanger.SetActive(false);
 
             dimColorIds = new List<int>();
-            for (int i = 0; i < dimEnterButtons.Count; i++)
+            for (int i = 0; i < Dimension.BaseColor.Count; i++)
             {
                 dimColorIds.Add(i);
                 UpdateDimColorIndicator(i);
             }
         }
-
         void Toggle(InputAction.CallbackContext context)
         {
             fader.Toggle();

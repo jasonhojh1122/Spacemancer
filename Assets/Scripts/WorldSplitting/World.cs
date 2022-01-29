@@ -112,7 +112,7 @@ namespace Core
                 s.OnInitialized.Invoke();
                 var localPos = s.transform.position;
                 var localRot = s.transform.rotation;
-                MoveTransformToNewParent(s.transform, dimensions[dimId[Dimension.Color.WHITE]].transform, localPos, localRot);
+                MoveObjectToDimension(s, Dimension.Color.WHITE);
                 if (s.DefaultInactive)
                 {
                     DeactivateObject(s);

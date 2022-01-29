@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Core;
 
-namespace Skill
+namespace SpaceDevice
 {
     [RequireComponent(typeof(LineRenderer))]
     public class Laser : MonoBehaviour
