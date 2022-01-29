@@ -29,16 +29,6 @@ namespace Core
                 world.Toggle();
                 Debug.Log("Split");
             }
-            if (rotateLeft.triggered)
-            {
-                world.RotateDimensions(-1);
-                Debug.Log("Rotate Left");
-            }
-            if (rotateRight.triggered)
-            {
-                world.RotateDimensions(1);
-                Debug.Log("Rotate Right");
-            }
 
         }
 

@@ -32,6 +32,10 @@ namespace Character {
             moving = false;
         }
 
+        private void Start() {
+
+        }
+
         protected void Update()
         {
             if (pause) return;
@@ -44,6 +48,7 @@ namespace Character {
         {
             characterController.SimpleMove(vel);
             transform.forward = Vector3.RotateTowards(transform.forward, vel, rotateSpeed * Time.deltaTime, 0.0f);
+            player.UpdateDummyTransform();
         }
 
         void UpdateVelocity()

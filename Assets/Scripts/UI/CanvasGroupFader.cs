@@ -9,6 +9,12 @@ namespace UI
         [SerializeField] bool defaultOn = true;
         CanvasGroup canvasGroup;
 
+        bool isOn;
+
+        public bool IsOn {
+            get => isOn;
+        }
+
         private void Awake()
         {
             canvasGroup = GetComponent<CanvasGroup>();
@@ -22,12 +28,14 @@ namespace UI
                 canvasGroup.blocksRaycasts = false;
                 canvasGroup.alpha = 0;
             }
+            isOn = defaultOn;
         }
 
         public void FadeOut()
         {
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
+            isOn = false;
             StartCoroutine(Fade(false));
         }
 
@@ -35,6 +43,7 @@ namespace UI
         {
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
+            isOn = true;
             StartCoroutine(Fade(true));
         }
 
@@ -49,6 +58,14 @@ namespace UI
                 canvasGroup.alpha = Mathf.Lerp(start, target, t / duration);
                 yield return null;
             }
+        }
+
+        public void Toggle()
+        {
+            if (isOn)
+                FadeOut();
+            else
+                FadeIn();
         }
 
     }

@@ -112,6 +112,8 @@ public class MovingPlatform : MonoBehaviour
 
     void Register()
     {
+        // TODO: update to new split/merge system.
+        /*
         var startPos = Core.World.Instance.Dims[Core.Dimension.Color.WHITE].
                         transform.InverseTransformPoint(startPoint.position);
         var endPos = Core.World.Instance.Dims[Core.Dimension.Color.WHITE].
@@ -120,6 +122,7 @@ public class MovingPlatform : MonoBehaviour
                     transform.InverseTransformPoint(transform.position);
         ID = manager.Register(isMovingToEnd, startPos, endPos, curPos);
         isRegistered = true;
+        */
     }
 
     private void FixedUpdate()
