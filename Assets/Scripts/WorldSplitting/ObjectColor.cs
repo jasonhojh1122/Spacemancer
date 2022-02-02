@@ -25,7 +25,7 @@ namespace Core
         /// </summary>
         [HideInInspector] public UnityEvent OnColorChanged;
 
-        SplittableObject so;
+        Splittable.SplittableObject so;
         Renderer _renderer;
         MaterialPropertyBlock _propBlock;
         Vector3 contactPos;
@@ -95,7 +95,7 @@ namespace Core
 
         private void Awake()
         {
-            so = GetComponent<SplittableObject>();
+            so = GetComponent<Splittable.SplittableObject>();
             var col = GetComponent<Collider>();
             if (col != null)
             {

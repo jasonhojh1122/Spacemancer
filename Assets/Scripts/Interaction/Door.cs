@@ -11,7 +11,6 @@ namespace Interaction
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
             }
-           
         }
 
         public override bool IsInteracting()

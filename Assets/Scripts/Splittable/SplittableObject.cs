@@ -2,7 +2,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Core
+using Core;
+
+namespace Splittable
 {
     // TODO: persistent color?
     /// <summary>
@@ -78,7 +80,7 @@ namespace Core
         /// <returns></returns>
         [HideInInspector] public UnityEngine.Events.UnityEvent OnInitialized = new UnityEngine.Events.UnityEvent();
 
-        void Awake()
+        protected void Awake()
         {
             col = GetComponent<Collider>();
             objectColor = GetComponent<ObjectColor>();
@@ -128,13 +130,24 @@ namespace Core
             var siblings = new List<SplittableObject>();
             var others = new List<SplittableObject>();
             ProcessCollidedObjects(ref mergedColor, siblings, others);
-
-            World.Instance.MoveObjectToDimension(this, Dimension.Color.WHITE);
-            World.Instance.MoveToProcessed(this);
-            Color = mergedColor;
-            foreach (var so in siblings)
+            if (mergedColor == Dimension.Color.BLACK)
             {
-                World.Instance.DeactivateObject(so);
+                var error = World.Instance.InstantiateNewObjectToDimension("ErrorSpace", Dimension.Color.WHITE);
+                error.transform.localPosition = Util.Coordinate.Lattice(transform.localPosition);
+                foreach (var so in siblings)
+                {
+                    so.Merge(this);
+                    World.Instance.DeactivateObject(so);
+                }
+                World.Instance.DeactivateObject(this);
+            }
+            else
+            {
+                World.Instance.MoveObjectToDimension(this, Dimension.Color.WHITE);
+                World.Instance.MoveToProcessed(this);
+                Color = mergedColor;
+                foreach (var so in siblings)
+                    World.Instance.DeactivateObject(so);
             }
 
         }
@@ -153,7 +166,7 @@ namespace Core
             {
                 if (c == null || !c.gameObject.activeSelf || c.gameObject.GetInstanceID() == col.gameObject.GetInstanceID()) continue;
                 var so = c.gameObject.GetComponent<SplittableObject>();
-                if (so == null || so.IsMerged)
+                if (so == null || so.IsMerged || so.gameObject.name == "ErrorSpace")
                 {
                     continue;
                 }
@@ -165,7 +178,6 @@ namespace Core
                     {
                         mergedColor = Dimension.Color.BLACK;
                         Color = Dimension.Color.BLACK;
-                        so.Merge(this);
                     }
                     else
                     {

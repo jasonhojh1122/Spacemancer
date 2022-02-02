@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-namespace Character
+namespace Splittable.Character
 {
 
     [RequireComponent(typeof(Animator))]

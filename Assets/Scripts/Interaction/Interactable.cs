@@ -6,23 +6,24 @@ namespace Interaction
 {
         public abstract class Interactable : MonoBehaviour
         {
+            [SerializeField] IK.IKSetting ikSetting;
 
-            protected static PlayerInteraction player = null;
-
-            protected void Awake()
-            {
-                if (player == null)
-                    player = FindObjectOfType<PlayerInteraction>();
+            public IK.IKSetting IKSetting {
+                get => ikSetting;
             }
 
             public abstract void Interact();
             public abstract bool IsInteracting();
+            public virtual void BeforePose()
+            {
+                return;
+            }
 
             public virtual void OnZoneEnter(Collider other)
             {
                 if (other.gameObject.tag == "Player")
                 {
-                    player.SetInteractable(this);
+                    InteractionManager.Instance.SetInteractable(this);
                 }
             }
 
@@ -34,7 +35,7 @@ namespace Interaction
             public virtual void OnZoneExit(Collider other) {
                 if (other.gameObject.tag == "Player")
                 {
-                    player.ClearInteractable(this);
+                    InteractionManager.Instance.ClearInteractable(this);
                 }
             }
         }

@@ -2,8 +2,8 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 
-
-using Set = System.Collections.Generic.HashSet<Core.SplittableObject>;
+using Splittable;
+using Set = System.Collections.Generic.HashSet<Splittable.SplittableObject>;
 
 namespace Core
 {

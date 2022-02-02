@@ -1,26 +1,33 @@
 using UnityEngine;
 
-namespace Interaction {
-public class Zone : MonoBehaviour {
+namespace Interaction
+{
+public class Zone : MonoBehaviour
+{
 
     [SerializeField] Interactable interactable;
     Collider col;
 
-    public Interactable InteractableObect {
+    public Interactable InteractableObject
+    {
         get => interactable;
     }
 
-    private void Awake() {
+    private void Awake()
+    {
         col = GetComponent<Collider>();
     }
 
-    private void OnTriggerEnter(Collider other) {
+    private void OnTriggerEnter(Collider other)
+    {
         interactable.OnZoneEnter(other);
     }
-    private void OnTriggerStay(Collider other) {
+    private void OnTriggerStay(Collider other)
+    {
         interactable.OnZoneStay(other);
     }
-    private void OnTriggerExit(Collider other) {
+    private void OnTriggerExit(Collider other)
+    {
         interactable.OnZoneExit(other);
     }
 

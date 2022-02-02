@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Splittable;
 
-using Set = System.Collections.Generic.HashSet<Core.SplittableObject>;
+using Set = System.Collections.Generic.HashSet<Splittable.SplittableObject>;
 
 namespace Core
 {
@@ -124,8 +125,11 @@ namespace Core
                 }
             }
             if (startDimensionColor != Dimension.Color.WHITE)
+            {
                 DefaultSplit();
-            splitMergeMachine.SyncColorFromWorld();
+                splitMergeMachine.SyncColorFromWorld();
+
+            }
         }
 
         private void DefaultSplit()
@@ -207,12 +211,11 @@ namespace Core
         }
 
         /// <summary>
-        /// Instantiates a <c>SplittableObject</c> into a specified dimension.
+        /// Instainates the given <c>SplittableObject</c>.
         /// </summary>
-        /// <param name="so"> The <c>SplittableObject</c> to be instantiated. </param>
-        /// <param name="color"> The color of the target dimension to instantiate into. </param>
-        /// <returns> The instantiated <c>SplittableObject</c>. </returns>
-        public SplittableObject InstantiateNewObjectToDimension(SplittableObject so, Dimension.Color color)
+        /// <param name="so"> The <c>SplittableObject</c> to instantiate. </param>
+        /// <returns> The instantiated object. </returns>
+        SplittableObject InstantiateNewObject(SplittableObject so)
         {
             var newSo = objectPool.Instantiate(so.name);
             if (newSo == null)
@@ -222,7 +225,33 @@ namespace Core
                 objectPool.SetActive(newSo);
             }
             newSo.gameObject.name = so.name;
+            return newSo;
+        }
+
+        /// <summary>
+        /// Instantiates a <c>SplittableObject</c> into a specified dimension.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be instantiated. </param>
+        /// <param name="color"> The color of the target dimension to instantiate into. </param>
+        /// <returns> The instantiated <c>SplittableObject</c>. </returns>
+        public SplittableObject InstantiateNewObjectToDimension(SplittableObject so, Dimension.Color color)
+        {
+            var newSo = InstantiateNewObject(so);
             newSo.Dim = dimensions[dimId[color]];
+            MoveTransformToNewParent(newSo.transform, newSo.Dim.transform, so.transform.localPosition, so.transform.localRotation);
+            return newSo;
+        }
+
+        /// <summary>
+        /// Instantiates a <c>SplittableObject</c> into a specified dimension.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be instantiated. </param>
+        /// <param name="id"> The id of the target dimension to instantiate into. </param>
+        /// <returns> The instantiated <c>SplittableObject</c>. </returns>
+        public SplittableObject InstantiateNewObjectToDimension(SplittableObject so, int id)
+        {
+            var newSo = InstantiateNewObject(so);
+            newSo.Dim = dimensions[id];
             MoveTransformToNewParent(newSo.transform, newSo.Dim.transform, so.transform.localPosition, so.transform.localRotation);
             return newSo;
         }

@@ -15,7 +15,7 @@ namespace Core
         private void Awake()
         {
             if (_instance != null)
-                Debug.LogError("Multiple instance of World created");
+                Debug.LogError("Multiple instance of DefaultMaterialColor created");
             _instance = this;
 
             if(Dimension.MaterialColor.Count == 0)

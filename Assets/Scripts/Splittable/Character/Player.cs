@@ -2,15 +2,16 @@ using UnityEngine;
 using System.Collections.Generic;
 
 using Core;
-namespace Character
+namespace Splittable.Character
 {
-    public class SplittablePlayer : SplittableObject
+    public class Player : SplittableObject
     {
         [SerializeField] PlayerDummy dummyPrefab;
         List<PlayerDummy> dummies;
 
-        void Awake()
+        new void Awake()
         {
+            base.Awake();
             dummies = new List<PlayerDummy>();
             for (int i = 0; i < World.Instance.Dimensions.Count; i++)
             {

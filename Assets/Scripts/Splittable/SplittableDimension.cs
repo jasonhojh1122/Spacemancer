@@ -1,19 +1,19 @@
 
 using UnityEngine;
 
-namespace Core
+namespace Splittable
 {
     public class SplittableDimension : SplittableObject
     {
 
         public override void Split()
         {
-            World.Instance.RemoveFromSet(this);
+            Core.World.Instance.RemoveFromSet(this);
         }
 
         public override void Merge(SplittableObject parent)
         {
-            World.Instance.RemoveFromSet(this);
+            Core.World.Instance.RemoveFromSet(this);
         }
 
     }

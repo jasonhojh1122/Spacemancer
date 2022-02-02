@@ -7,7 +7,7 @@ namespace Gameplay
 {
     public class ElectricityFence : MonoBehaviour
     {
-        [SerializeField] Core.SplittableObject fence;
+        [SerializeField] Splittable.SplittableObject fence;
         [SerializeField] ParticleSystem ps;
         [SerializeField] AudioSource audioSource;
         [SerializeField] List<LineRenderer> lineRenderers;

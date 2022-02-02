@@ -11,10 +11,7 @@ public class InputManager : MonoBehaviour {
 
     [SerializeField] List<InputController> uiInputs;
     [SerializeField] List<InputController> gameplayInputs;
-
-    [SerializeField] Core.World world;
     [SerializeField] public bool pause;
-    [SerializeField] PlayerInteraction playerInteraction;
 
     public void ToggleGameplayInput(bool isPaused)
     {
@@ -34,10 +31,6 @@ public class InputManager : MonoBehaviour {
 
     private void Awake() {
         _instance = this;
-    }
-
-    private void Update() {
-
     }
 
 }

@@ -14,7 +14,7 @@ namespace SpaceDevice
         [SerializeField] Transform player;
         LineRenderer lr;
         MaterialPropertyBlock _property;
-        SplittableObject hittedObject;
+        Splittable.SplittableObject hittedObject;
         Dimension.Color _color;
         bool _IsOn = false;
         Vector3 lastContactPoint;
@@ -69,7 +69,7 @@ namespace SpaceDevice
         /// The <c>SplittableObject</c> hitted by laser.
         /// </summary>
         /// <value></value>
-        public SplittableObject HittedObject
+        public Splittable.SplittableObject HittedObject
         {
             get => hittedObject;
             set => hittedObject = value;
@@ -151,13 +151,13 @@ namespace SpaceDevice
         bool CheckHit()
         {
             RaycastHit[] hits = Physics.RaycastAll(transform.position, player.forward);
-            SplittableObject newHittedObject;
+            Splittable.SplittableObject newHittedObject;
             bool hitted = false;;
             IEnumerable<RaycastHit> orderedHits = hits.OrderBy(hit => hit.distance);
             foreach (RaycastHit hit in orderedHits)
             {
                 if (hit.collider != null && !hit.collider.isTrigger &&
-                    (newHittedObject = hit.collider.gameObject.GetComponent<SplittableObject>()) != null)
+                    (newHittedObject = hit.collider.gameObject.GetComponent<Splittable.SplittableObject>()) != null)
                 {
                     var hitPosLocal = transform.InverseTransformPoint(hit.point);
                     lr.SetPosition(1, hitPosLocal);
@@ -177,7 +177,7 @@ namespace SpaceDevice
         /// </summary>
         /// <param name="contactPoint"> The contact position hitted on the object. </param>
         /// <param name="newHittedObject"> The new hitted object. </param>
-        void UpdateObjectAndMaterial(Vector3 contactPoint, SplittableObject newHittedObject)
+        void UpdateObjectAndMaterial(Vector3 contactPoint, Splittable.SplittableObject newHittedObject)
         {
             bool selectNew = false, unselectOld = false;
             if (hittedObject == null)
