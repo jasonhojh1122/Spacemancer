@@ -20,14 +20,14 @@ namespace SpaceDevice
 
         private void Update()
         {
-            if (Core.World.Instance.Splitted)
+            /* if (Core.World.Instance.Splitted)
             {
                 slider.value = Mathf.Clamp01(slider.value - decreasePerSec * Time.deltaTime);
                 if (Util.Fuzzy.CloseFloat(slider.value, 0))
                 {
                     Core.World.Instance.Toggle();
                 }
-            }
+            } */
         }
 
         public void AddEnergy(float amount)

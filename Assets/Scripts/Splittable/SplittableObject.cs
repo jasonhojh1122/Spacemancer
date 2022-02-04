@@ -89,11 +89,6 @@ namespace Splittable
             objectColor.Init();
         }
 
-        protected void OnDisable()
-        {
-            // World.Instance.RemoveFromSet(this);
-        }
-
         /// <summary>
         /// Splits the object into 3 dimensions based on the Color.
         /// </summary>

@@ -1,5 +1,6 @@
 
 using UnityEngine;
+using UnityEngine.VFX;
 using System.Collections.Generic;
 
 using Core;
@@ -9,11 +10,14 @@ namespace Splittable
     public class ErrorSpace : SplittableObject
     {
         public bool splitted;
-        [SerializeField] GameObject particle;
+        [SerializeField] VisualEffect vf;
+        bool playing;
 
         new void Awake() {
             base.Awake();
             splitted = false;
+            playing = true;
+            ReEnableVF();
         }
 
         public override void Split()
@@ -25,7 +29,7 @@ namespace Splittable
                     if (i != World.Instance.DimId[dimension.Color])
                         World.Instance.InstantiateNewObjectToDimension(this, i);
             }
-            particle.SetActive(true);
+            ReEnableVF();
             World.Instance.MoveToProcessed(this);
         }
 
@@ -33,12 +37,23 @@ namespace Splittable
         {
             IsMerged = true;
             World.Instance.MoveToProcessed(this);
-            return;
+            ReEnableVF();
         }
 
         public void Fix()
         {
-            particle.SetActive(false);
+            vf.Stop();
+            col.enabled = false;
+            playing = false;
+        }
+
+        void ReEnableVF()
+        {
+            if (playing) return;
+            vf.Play();
+            col.enabled = true;
+            playing = true;
+            Debug.Log("Play ve");
         }
     }
 }

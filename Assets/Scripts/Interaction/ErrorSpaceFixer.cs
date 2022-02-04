@@ -7,9 +7,11 @@ namespace Interaction
     public class ErrorSpaceFixer : Interactable
     {
         Splittable.ErrorSpace errorSpace;
+        Collider col;
 
-        private void Awake()
+        new protected void Awake()
         {
+            base.Awake();
             errorSpace = GetComponent<Splittable.ErrorSpace>();
         }
 

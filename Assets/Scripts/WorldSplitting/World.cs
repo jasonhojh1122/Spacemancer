@@ -388,6 +388,7 @@ namespace Core
 
         public void Toggle()
         {
+            if (Interaction.InteractionManager.Instance.IsInteracting) return;
             if (splitted)
             {
                 splitted = false;
