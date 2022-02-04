@@ -9,6 +9,7 @@ public class CameraController : InputController
     [SerializeField] float maxZoomSpeed;
     [SerializeField] float minZoom;
     [SerializeField] float maxZoom;
+    [SerializeField] float defaultZoom;
     [SerializeField] float accelInterval = 1.5f;
     [SerializeField] AnimationCurve accelCurve;
     [SerializeField] Transform followTarget;
@@ -31,11 +32,12 @@ public class CameraController : InputController
         zooming = false;
         moveSpeedDiff = maxMoveSpeed - minMoveSpeed;
         zoomSpeedDiff = maxZoomSpeed - minZoomSpeed;
+        cam.m_Lens.OrthographicSize = defaultZoom;
     }
 
     private void Update()
     {
-        if (pause) return;
+        if (IsPaused()) return;
         Move();
         Zoom();
     }

@@ -12,7 +12,27 @@ namespace IK
         [SerializeField] Transform rightHintIK;
         [SerializeField] TwoBoneIKConstraint rightArmConstraint;
 
+        public Transform LeftHandIK {
+            get => leftHandIK;
+        }
+        public Transform LeftHintIK {
+            get => leftHintIK;
+        }
+        public Transform RightHandIK {
+            get => rightHandIK;
+        }
+        public Transform RightHintIK {
+            get => rightHintIK;
+        }
+
+        public UnityEngine.Events.UnityEvent OnPosed;
+        public IKSetting setting;
+
         float weight;
+
+        public float Weight {
+            get => weight;
+        }
 
         private void Awake()
         {
@@ -26,7 +46,23 @@ namespace IK
             weight = 0;
         }
 
-        public System.Collections.IEnumerator Pose(IKSetting setting)
+        private void Update()
+        {
+            if (setting != null)
+                SyncIKTargets();
+        }
+
+        /// <summary>
+        /// Starts the animation of posing towards the <c>IKSetting</c>.
+        /// </summary>
+        /// <param name="setting"> The <c>IKSetting</c> of the target pose. </param>
+        public void Pose(IKSetting setting)
+        {
+            this.setting = setting;
+            StartCoroutine(PoseAnim());
+        }
+
+        System.Collections.IEnumerator PoseAnim()
         {
             float t = 0;
             while (t < setting.TransitionTime)
@@ -36,28 +72,56 @@ namespace IK
                 weight = Mathf.Lerp(0.0f, 1.0f, p);
                 yield return null;
             }
+            weight = 1.0f;
+            OnPosed.Invoke();
         }
 
-        public void SetIKTarget(IKSetting setting)
+        /// <summary>
+        /// Starts the animation of ending the current IK pose.
+        /// </summary>
+        public void EndPose()
+        {
+            StartCoroutine(EndPoseAnim());
+        }
+
+        System.Collections.IEnumerator EndPoseAnim()
+        {
+            float t = 0;
+            while (t < setting.TransitionTime)
+            {
+                t += Time.deltaTime;
+                var p = t / setting.TransitionTime;
+                weight = Mathf.Lerp(weight, 0.0f, p);
+                yield return null;
+            }
+        }
+
+        /// <summary>
+        /// Synchronizes the IK position.
+        /// </summary>
+        void SyncIKTargets()
         {
             if (setting.LeftHandTarget != null)
             {
                 leftHandIK.position = setting.LeftHandTarget.position;
                 leftHandIK.rotation = setting.LeftHandTarget.rotation;
                 leftHintIK.position = setting.LeftHintTarget.position;
-                leftHandIK.rotation = setting.LeftHandTarget.rotation;
+                leftHintIK.rotation = setting.LeftHintTarget.rotation;
             }
             if (setting.RightHandTarget != null)
             {
                 rightHandIK.position = setting.RightHandTarget.position;
                 rightHandIK.rotation = setting.RightHandTarget.rotation;
                 rightHintIK.position = setting.RightHintTarget.position;
-                rightHandIK.rotation = setting.RightHandTarget.rotation;
+                rightHintIK.rotation = setting.RightHintTarget.rotation;
             }
-            SetIKWeight(setting);
+            SetIKWeight();
         }
 
-        void SetIKWeight(IKSetting setting)
+        /// <summary>
+        /// Synchronizes the IK weight.
+        /// </summary>
+        void SetIKWeight()
         {
             if (setting.LeftHandTarget != null)
             {

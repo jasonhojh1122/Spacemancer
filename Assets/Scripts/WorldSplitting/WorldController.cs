@@ -23,7 +23,7 @@ namespace Core
 
         private void Update()
         {
-            if (pause) return;
+            if (IsPaused()) return;
             if (splitMerge.triggered)
             {
                 world.Toggle();

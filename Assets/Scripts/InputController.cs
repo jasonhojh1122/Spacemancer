@@ -14,4 +14,9 @@ public class InputController : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
     }
 
+    protected bool IsPaused()
+    {
+        return pause || InputManager.Instance.pause;
+    }
+
 }

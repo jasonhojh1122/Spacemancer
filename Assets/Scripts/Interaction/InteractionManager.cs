@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace Interaction
 {
-    [RequireComponent(typeof(IK.PlayerIK))]
+    [RequireComponent(typeof(IK.PlayerIK), typeof(Splittable.Character.Player))]
     public class InteractionManager : InputController
     {
         static InteractionManager _instance;
@@ -18,6 +18,10 @@ namespace Interaction
                 if (interactable == null) return false;
                 else return interactable.IsInteracting();
             }
+        }
+
+        public IK.PlayerIK PlayerIK {
+            get => playerIK;
         }
 
         IK.PlayerIK playerIK;
@@ -38,19 +42,9 @@ namespace Interaction
 
         void Update()
         {
-            if (pause) return;
+            if (IsPaused()) return;
             if (interactAction.triggered && interactable != null)
-                StartCoroutine(Interact());
-            if (IsInteracting && interactable.IKSetting != null)
-                playerIK.SetIKTarget(interactable.IKSetting);
-        }
-
-        IEnumerator Interact()
-        {
-            interactable.BeforePose();
-            if (interactable.IKSetting != null)
-                yield return StartCoroutine(playerIK.Pose(interactable.IKSetting));
-            interactable.Interact();
+                interactable.Interact();
         }
 
         public void OnDimensionChange()

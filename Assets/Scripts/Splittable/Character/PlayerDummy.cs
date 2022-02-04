@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Splittable.Character
 {
 
-    [RequireComponent(typeof(Animator))]
+    [RequireComponent(typeof(Animator), typeof(IK.PlayerDummyIK))]
     public class PlayerDummy : MonoBehaviour
     {
 

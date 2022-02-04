@@ -47,7 +47,7 @@ namespace SpaceDevice
 
         private void Update()
         {
-            if (pause) return;
+            if (IsPaused()) return;
             if (toggle.triggered)
                 Toggle();
             if (perform.triggered)

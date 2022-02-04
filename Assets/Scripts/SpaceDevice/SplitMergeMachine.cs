@@ -49,6 +49,7 @@ namespace SpaceDevice
         }
         void Toggle(InputAction.CallbackContext context)
         {
+            if (IsPaused()) return;
             fader.Toggle();
             InputManager.Instance.ToggleGameplayInput(fader.IsOn);
         }

@@ -38,7 +38,7 @@ namespace Splittable.Character {
 
         protected void Update()
         {
-            if (pause) return;
+            if (IsPaused()) return;
             UpdateVelocity();
             UpdateMovingState();
             Move();
