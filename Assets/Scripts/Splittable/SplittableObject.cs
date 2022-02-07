@@ -54,7 +54,7 @@ namespace Splittable
         }
 
         /// <summary>
-        /// The color of the object.
+        /// The <c>Dimension.Color</c> of the <c>SplittableObject</c>.
         /// </summary>
         public Dimension.Color Color {
             get => objectColor.Color;

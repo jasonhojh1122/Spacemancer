@@ -37,6 +37,11 @@ namespace Core
             get => dimensions;
         }
 
+        /// <summary>
+        /// A <c>Dictionary</c> that maps Dimensions' color to their id.
+        /// </summary>
+        /// <value> Returns the id of the dimension if the given color's dimension
+        /// is active, otherwise return negative number. </value>
         public Dictionary<Dimension.Color, int> DimId {
             get => dimId;
         }
@@ -48,6 +53,10 @@ namespace Core
             get => dimensions[activeDimId];
         }
 
+        /// <summary>
+        /// The id of the currently active dimensions.
+        /// </summary>
+        /// <value></value>
         public int ActiveDimId {
             get => activeDimId;
             set => activeDimId = value;
@@ -82,6 +91,13 @@ namespace Core
         /// <value></value>
         public Dimension.Color StartDimensionColor {
             get => startDimensionColor;
+        }
+
+        /// <summary>
+        /// The inactive root of not-used objects.
+        /// </summary>
+        public Transform InactiveRoot {
+            get => inactiveRoot;
         }
 
         void Awake()
@@ -128,10 +144,12 @@ namespace Core
             {
                 DefaultSplit();
                 splitMergeMachine.SyncColorFromWorld();
-
             }
         }
 
+        /// <summary>
+        /// Splits the world if the start color is not white.
+        /// </summary>
         private void DefaultSplit()
         {
             dimensionTransition.DefaultSplit();
@@ -369,7 +387,7 @@ namespace Core
         /// <param name="parent"> The <c>Transform</c> of the parent</param>
         /// <param name="localPos"> The local position. </param>
         /// <param name="localRot"> The local rotation. </param>
-        void MoveTransformToNewParent(Transform child, Transform parent, Vector3 localPos, Quaternion localRot)
+        public void MoveTransformToNewParent(Transform child, Transform parent, Vector3 localPos, Quaternion localRot)
         {
             child.SetParent(parent);
             child.localPosition = localPos;
@@ -386,6 +404,9 @@ namespace Core
             processedObjects = tmp;
         }
 
+        /// <summary>
+        /// Toggles world's splitting and merging.
+        /// </summary>
         public void Toggle()
         {
             if (Interaction.InteractionManager.Instance.IsInteracting) return;
@@ -405,17 +426,19 @@ namespace Core
                 BeforeSplit.Invoke();
                 for (int i = 0; i < dimensions.Count; i++)
                 {
-                    if (splitMergeMachine.DimColorIds[i] == -1)
+                    if (splitMergeMachine.DimColorIds[i] < 0)
                         dimensions[i].Color = Dimension.Color.NONE;
                     else
                         dimensions[i].Color = Dimension.ValidColor[splitMergeMachine.DimColorIds[i]];
                 }
                 UpdateDimId();
                 StartCoroutine(dimensionTransition.SplitTransition());
-
             }
         }
 
+        /// <summary>
+        /// Updates <c>dimId</c> based on the dimensions' colors.
+        /// </summary>
         void UpdateDimId()
         {
             foreach (var c in Dimension.ValidColor)

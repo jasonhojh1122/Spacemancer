@@ -73,7 +73,7 @@ namespace SpaceDevice
         public void RotateColor(int i)
         {
             if (World.Instance.Splitted) return;
-            if (dimColorIds[i] == -1)
+            if (dimColorIds[i] < 0)
                 dimColorIds[i] = 0;
             else
                 dimColorIds[i] = (dimColorIds[i] + 1) % Dimension.ValidColor.Count;
@@ -83,7 +83,7 @@ namespace SpaceDevice
 
         void UpdateDimColorIndicator(int i)
         {
-            if (dimColorIds[i] == -1)
+            if (dimColorIds[i] < 0)
                 dimColorIndicators[i].color = Dimension.MaterialColor[Dimension.Color.BLACK];
             else
                 dimColorIndicators[i].color = Dimension.MaterialColor[Dimension.ValidColor[dimColorIds[i]]];
@@ -103,7 +103,7 @@ namespace SpaceDevice
         {
             if (!World.Instance.Splitted)
             {
-                if (dimColorIds[World.Instance.ActiveDimId]  == -1)
+                if (dimColorIds[World.Instance.ActiveDimId] < 0)
                     return;
                 var c = Dimension.Color.NONE;
                 for (int i = 0; i < dimColorIds.Count; i++)
