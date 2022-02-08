@@ -10,9 +10,8 @@ namespace Interaction
         Splittable.ErrorSpace errorSpace;
         Collider col;
 
-        new protected void Awake()
+        void Awake()
         {
-            base.Awake();
             errorSpace = GetComponent<Splittable.ErrorSpace>();
             if (container == null)
                 container = FindObjectOfType<SpaceDevice.SpaceFragmentContainer>();

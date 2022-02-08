@@ -27,8 +27,6 @@ namespace Interaction
         IK.PlayerIK playerIK;
         Interactable interactable;
         InputAction interactAction;
-        Splittable.SplittableObject interactableSo;
-        Collider interactableCol;
 
         new void Awake()
         {
@@ -57,11 +55,6 @@ namespace Interaction
             if (interactable != null && interactable.IsInteracting())
                 return;
             interactable = newInteractable;
-            if (interactable != null)
-            {
-                interactableCol = interactable.GetComponent<Collider>();
-                interactableSo = interactable.GetComponent<Splittable.SplittableObject>();
-            }
         }
 
         public void ClearInteractable(Interactable oldInteractable)

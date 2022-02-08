@@ -4,14 +4,16 @@ using UnityEngine;
 
 namespace Interaction
 {
+    [RequireComponent(typeof(Splittable.SplittableObject))]
     public class PickableObject : Interactable
     {
         [SerializeField] Vector3 pickUpOffset = new Vector3(0.0f, 0.2f, 0.26f);
+        Splittable.SplittableObject so;
         bool picked;
 
-        protected new void Awake()
+        void Awake()
         {
-            base.Awake();
+            so = GetComponent<Splittable.SplittableObject>();
             picked = false;
         }
 

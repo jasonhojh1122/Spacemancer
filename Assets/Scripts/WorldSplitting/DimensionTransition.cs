@@ -45,6 +45,7 @@ namespace Core
             World.Instance.SplitObjects();
             Physics.SyncTransforms();
             OnTransitionStartEnd(false);
+            World.Instance.OnDimensionChange.Invoke();
             yield return null;
         }
 
@@ -63,6 +64,7 @@ namespace Core
             }
             World.Instance.ActiveDimension.gameObject.SetActive(true);
             OnTransitionStartEnd(false);
+            World.Instance.OnDimensionChange.Invoke();
             yield return null;
         }
 

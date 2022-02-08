@@ -22,8 +22,7 @@ namespace Gameplay
             explosionLength = Mathf.Max(audioSource.clip.length, ps.main.duration) - 0.3f;
             curOn = true;
             InitLineRenderer();
-            Core.World.Instance.BeforeSplit.AddListener(CheckFences);
-            Core.World.Instance.BeforeMerge.AddListener(CheckFences);
+            Core.World.Instance.OnDimensionChange.AddListener(CheckFences);
             fence.ObjectColor.OnColorChanged.AddListener(CheckFences);
             fence.OnInitialized.AddListener(CheckFences);
         }

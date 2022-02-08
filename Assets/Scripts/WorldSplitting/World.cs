@@ -20,8 +20,7 @@ namespace Core
         [SerializeField] Transform inactiveRoot;
         [SerializeField] Dimension.Color startDimensionColor = Dimension.Color.WHITE;
         [SerializeField] SpaceDevice.SplitMergeMachine splitMergeMachine;
-        [HideInInspector] public UnityEvent BeforeMerge = new UnityEvent();
-        [HideInInspector] public UnityEvent BeforeSplit = new UnityEvent();
+        [HideInInspector] public UnityEvent OnDimensionChange = new UnityEvent();
         DimensionTransition dimensionTransition;
         Dictionary<Dimension.Color, int> dimId;
         SplittableObjectPool objectPool;
@@ -83,14 +82,6 @@ namespace Core
         /// </summary>
         public SplittableObjectPool ObjectPool {
             get => objectPool;
-        }
-
-        /// <summary>
-        /// The dimension color at start time.
-        /// </summary>
-        /// <value></value>
-        public Dimension.Color StartDimensionColor {
-            get => startDimensionColor;
         }
 
         /// <summary>
@@ -413,7 +404,6 @@ namespace Core
             if (splitted)
             {
                 splitted = false;
-                BeforeMerge.Invoke();
                 for (int i = 0; i < dimensions.Count; i++)
                     dimensions[activeDimId].color = Dimension.Color.NONE;
                 dimensions[activeDimId].color = Dimension.Color.WHITE;
@@ -423,7 +413,6 @@ namespace Core
             else
             {
                 splitted = true;
-                BeforeSplit.Invoke();
                 for (int i = 0; i < dimensions.Count; i++)
                 {
                     if (splitMergeMachine.DimColorIds[i] < 0)

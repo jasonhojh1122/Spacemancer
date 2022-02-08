@@ -9,12 +9,11 @@ using Splittable;
 namespace Gameplay
 {
     [RequireComponent(typeof(SplittableObject))]
-    public class Button : MonoBehaviour
+    public class BatteryPlate : MonoBehaviour
     {
 
         [SerializeField] SplittableObject generatedObjectRef;
         [SerializeField] string keyObjectName;
-        [SerializeField] AudioSource audioSource;
         [SerializeField] SplittableObject keyObject;
 
         SplittableObject so;
@@ -27,8 +26,7 @@ namespace Gameplay
 
         private void Start()
         {
-            World.Instance.BeforeSplit.AddListener(BeforeSplitAndMerge);
-            World.Instance.BeforeMerge.AddListener(BeforeSplitAndMerge);
+            World.Instance.OnDimensionChange.AddListener(BeforeSplitAndMerge);
         }
 
         void OnTriggerEnter(Collider other)
@@ -49,7 +47,6 @@ namespace Gameplay
                 }
                 else
                 {
-                    audioSource.Play();
                     OnkeyObjectColorChanged();
                     keyObject.ObjectColor.OnColorChanged.AddListener(OnkeyObjectColorChanged);
                 }
@@ -59,7 +56,6 @@ namespace Gameplay
 
         void OnTriggerExit(Collider other)
         {
-            audioSource.Play();
             if (!so.IsInCorrectDim())
                 return;
             if (keyObject != null && other.transform.parent.gameObject.GetInstanceID() == keyObject.gameObject.GetInstanceID())

@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+using Set = System.Collections.Generic.HashSet<Core.ObjectColor>;
+
 namespace Core
 {
     public class ObjectColor : MonoBehaviour
@@ -11,6 +13,8 @@ namespace Core
         [SerializeField] protected bool usingMaterial = true;
         [SerializeField] ObjectColor root;
         [SerializeField] List<ObjectColor> group;
+
+        Set groupSet;
 
         /// <summary>
         /// Called after the withdrawing animation is finished.
@@ -47,7 +51,7 @@ namespace Core
             set
             {
                 if (isRoot)
-                    foreach(var oc in group)
+                    foreach(var oc in groupSet)
                         oc.SetColor(value);
                 else
                     root.Color = value;
@@ -70,7 +74,7 @@ namespace Core
             set
             {
                 if (isRoot)
-                    foreach(var oc in group)
+                    foreach(var oc in groupSet)
                         oc.SetSelectColor(value);
                 else
                     root.SelectColor = value;
@@ -92,7 +96,7 @@ namespace Core
             set
             {
                 if (isRoot)
-                    foreach(var oc in group)
+                    foreach(var oc in groupSet)
                         oc.SetSecondColor(value);
                 else
                     root.SecondColor = value;
@@ -105,31 +109,15 @@ namespace Core
             dirty = true;
         }
 
-        public Dimension.Color DimensionColor {
-            get => dimensionColor;
-            set
-            {
-                if (isRoot)
-                    foreach(var oc in group)
-                        oc.SetDimensionColor(value);
-                else
-                    root.DimensionColor = value;
-            }
-        }
-
-        public void SetDimensionColor(Dimension.Color value)
-        {
-            Debug.Log(gameObject.name + " " + transform.GetInstanceID() + " set dim " + value.ToString());
-            dimensionColor = value;
-            dirty = true;
-        }
-
+        /// <summary>
+        /// The laser's contact point.
+        /// </summary>
         public Vector3 ContactPoint {
             get => contactPoint;
             set
             {
                 if (isRoot)
-                    foreach(var oc in group)
+                    foreach(var oc in groupSet)
                         oc.SetContactPoint(value);
                 else
                     root.ContactPoint = value;
@@ -140,6 +128,27 @@ namespace Core
         {
             dirty = true;
             contactPoint = value;
+        }
+
+        /// <summary>
+        /// The dimension's color that this object located in.
+        /// </summary>
+        public Dimension.Color DimensionColor {
+            get => dimensionColor;
+            set
+            {
+                if (isRoot)
+                    foreach(var oc in groupSet)
+                        oc.SetDimensionColor(value);
+                else
+                    root.DimensionColor = value;
+            }
+        }
+
+        public void SetDimensionColor(Dimension.Color value)
+        {
+            dimensionColor = value;
+            dirty = true;
         }
 
         public bool IsRoot {
@@ -154,14 +163,23 @@ namespace Core
             get => animator;
         }
 
+        public Set GroupSet {
+            get => groupSet;
+        }
+
         protected void Awake()
         {
             isRoot = (root == null);
+            groupSet = new Set();
             if (isRoot)
             {
-                if (group == null)
-                    group = new List<ObjectColor>();
+                groupSet.Add(this);
                 group.Add(this);
+                if (group != null)
+                {
+                    foreach (var oc in group)
+                        groupSet.Add(oc);
+                }
             }
             if (usingMaterial)
             {
@@ -202,7 +220,7 @@ namespace Core
         public void Select()
         {
             if (isRoot)
-                foreach(var oc in group)
+                foreach(var oc in groupSet)
                     oc.Animator.SetTrigger("Select");
             else
                 root.Select();
@@ -211,11 +229,10 @@ namespace Core
         /// <summary>
         /// Hides the selected hinting.
         /// </summary>
-        /// <param name="contactPoint"> The laser contact point. </param>
         public void Unselect()
         {
             if (isRoot)
-                foreach(var oc in group)
+                foreach(var oc in groupSet)
                     oc.Animator.SetTrigger("Unselect");
             else
                 root.Unselect();
@@ -227,7 +244,7 @@ namespace Core
         public void Insert()
         {
             if (isRoot)
-                foreach(var oc in group)
+                foreach(var oc in groupSet)
                     oc.Animator.SetTrigger("Insert");
             else
                 root.Insert();
@@ -239,7 +256,7 @@ namespace Core
         public void Withdraw()
         {
             if (isRoot)
-                foreach(var oc in group)
+                foreach(var oc in groupSet)
                 {
                     if (Color == Dimension.Color.NONE)
                         oc.Animator.SetTrigger("Dissolve");

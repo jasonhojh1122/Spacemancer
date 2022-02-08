@@ -5,6 +5,7 @@ using Splittable;
 
 namespace Interaction
 {
+    [RequireComponent(typeof(Splittable.SplittableObject))]
     public class MovingPlatform : Interactable
     {
         [SerializeField] Transform startPoint;
@@ -12,13 +13,14 @@ namespace Interaction
         [SerializeField] bool isMovingToEnd = true;
         [SerializeField] float moveSpeed = 1.5f;
 
+        Splittable.SplittableObject so;
         bool isMoving;
         Vector3 startPosition;
         Vector3 endPosition;
 
-        protected new void Awake()
+        void Awake()
         {
-            base.Awake();
+            so = GetComponent<SplittableObject>();
             startPosition = transform.TransformPoint(startPoint.localPosition);
             endPosition = transform.TransformPoint(endPoint.localPosition);
         }

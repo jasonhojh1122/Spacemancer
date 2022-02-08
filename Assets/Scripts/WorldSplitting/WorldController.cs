@@ -27,7 +27,6 @@ namespace Core
             if (splitMerge.triggered)
             {
                 world.Toggle();
-                Debug.Log("Split");
             }
 
         }
