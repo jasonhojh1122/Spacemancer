@@ -75,8 +75,6 @@ namespace SpaceDevice
 
         void TurnOff()
         {
-            if (laser.HittedObject != null)
-                laser.HittedObject.ObjectColor.Reset();
             laser.IsOn = false;
             curState = WithdrawerState.OFF;
         }
@@ -87,7 +85,7 @@ namespace SpaceDevice
                 return;
             else if (curState == WithdrawerState.TO_WITHDRAW) // Try to withdraw the color.
             {
-                if (laser.HittedObject != null && !laser.HittedObject.IsPersistentColor &&
+                if (laser.HittedObject != null &&
                     ((laser.HittedObject.Color & withdrawColor) != Dimension.Color.NONE) )
                     Withdraw();
                 else
@@ -95,7 +93,7 @@ namespace SpaceDevice
             }
             else if (curState == WithdrawerState.TO_INSERT)
             {
-                if (laser.HittedObject != null && !laser.HittedObject.IsPersistentColor &&
+                if (laser.HittedObject != null &&
                     ((laser.HittedObject.Color & holdColor) == Dimension.Color.NONE) )
                     Insert();
                 else
@@ -109,12 +107,12 @@ namespace SpaceDevice
         /// </summary>
         private void Withdraw()
         {
-            var oc = laser.HittedObject.ObjectColor;
-            oc.SecondColor = oc.Color;
-            oc.Color = Dimension.SubColor(oc.Color, withdrawColor);
-            oc.OnWithdrew.RemoveAllListeners();
-            oc.OnWithdrew.AddListener(OnWithdrawCallback);
-            oc.Withdraw(laser.ContactPoint);
+            laser.HittedObject.SecondColor =  laser.HittedObject.Color;
+            laser.HittedObject.Color = Dimension.SubColor(laser.HittedObject.Color, withdrawColor);
+            laser.HittedObject.ContactPoint = laser.ContactPoint;
+            laser.HittedObject.OnWithdrew.RemoveAllListeners();
+            laser.HittedObject.OnWithdrew.AddListener(OnWithdrawCallback);
+            laser.HittedObject.Withdraw();
             curState = WithdrawerState.WAIT;
             InputManager.Instance.pause = true;
         }
@@ -122,12 +120,17 @@ namespace SpaceDevice
         public void OnWithdrawCallback()
         {
             holdColor = withdrawColor;
-            curState = WithdrawerState.TO_INSERT;
             laser.Color = holdColor;
             withdrawContainer.color = Dimension.MaterialColor[holdColor];
+            curState = WithdrawerState.TO_INSERT;
             if (laser.HittedObject.Color == Dimension.Color.NONE)
             {
-                World.Instance.DeactivateObject(laser.HittedObject);
+                Splittable.SplittableObject so;
+                if (laser.HittedObject.IsRoot)
+                    so = laser.HittedObject.GetComponent<Splittable.SplittableObject>();
+                else
+                    so = laser.HittedObject.Root.GetComponent<Splittable.SplittableObject>();
+                World.Instance.DeactivateObject(so);
                 laser.HittedObject = null;
             }
             TurnOff();
@@ -140,12 +143,12 @@ namespace SpaceDevice
         /// </summary>
         private void Insert()
         {
-            Debug.Log("INSERT");
-            var oc = laser.HittedObject.ObjectColor;
-            oc.SecondColor = Dimension.AddColor(holdColor, oc.Color);
-            oc.OnInserted.RemoveAllListeners();
-            oc.OnInserted.AddListener(OnInsertCallback);
-            oc.Insert(laser.ContactPoint);
+            laser.HittedObject.SecondColor = laser.HittedObject.Color;
+            laser.HittedObject.Color = Dimension.AddColor(holdColor, laser.HittedObject.Color);
+            laser.HittedObject.ContactPoint = laser.ContactPoint;
+            laser.HittedObject.OnInserted.RemoveAllListeners();
+            laser.HittedObject.OnInserted.AddListener(OnInsertCallback);
+            laser.HittedObject.Insert();
             curState = WithdrawerState.WAIT;
             withdrawContainer.color = transparentColor;
             energyBar.AddEnergy(-energyCost);
@@ -154,7 +157,6 @@ namespace SpaceDevice
 
         public void OnInsertCallback()
         {
-            laser.HittedObject.ObjectColor.Color = laser.HittedObject.ObjectColor.SecondColor;
             holdColor = Dimension.Color.NONE;
             TurnOff();
             InputManager.Instance.pause = false;

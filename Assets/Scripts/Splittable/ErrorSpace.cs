@@ -26,7 +26,7 @@ namespace Splittable
             {
                 splitted = true;
                 for (int i = 0; i < World.Instance.Dimensions.Count; i++)
-                    if (i != World.Instance.DimId[dimension.Color])
+                    if (i != World.Instance.DimId[dimension.color])
                         World.Instance.InstantiateNewObjectToDimension(this, i);
             }
             ReEnableVF();

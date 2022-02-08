@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,8 +7,10 @@ namespace Core
     public class ObjectColor : MonoBehaviour
     {
 
-        [SerializeField] Dimension.Color color = Dimension.Color.WHITE;
-        [SerializeField] bool usingMaterial = true;
+        [SerializeField] protected Dimension.Color color = Dimension.Color.WHITE;
+        [SerializeField] protected bool usingMaterial = true;
+        [SerializeField] ObjectColor root;
+        [SerializeField] List<ObjectColor> group;
 
         /// <summary>
         /// Called after the withdrawing animation is finished.
@@ -25,21 +27,15 @@ namespace Core
         /// </summary>
         [HideInInspector] public UnityEvent OnColorChanged;
 
-        Splittable.SplittableObject so;
+        Animator animator;
         Renderer _renderer;
-        MaterialPropertyBlock _propBlock;
-        Vector3 contactPos;
-        Dimension.Color selectColor;
-        Dimension.Color secondColor;
-        static float MixDur = 0.5f;
-        static float defaultMixDistMax = 20.0f;
-        float mixDistMax;
-        float selectDistStart;
-        float selectDistEnd;
-        float secondDistStart;
-        float secondDistEnd;
-        float dissolveDistStart;
-        float dissolveDistEnd;
+        protected MaterialPropertyBlock _propBlock;
+        protected Vector3 contactPoint;
+        protected Dimension.Color dimensionColor;
+        protected Dimension.Color selectColor;
+        protected Dimension.Color secondColor;
+        bool isRoot;
+        bool dirty;
 
         /// <summary>
         /// The color of the object.
@@ -48,244 +44,221 @@ namespace Core
         public Dimension.Color Color
         {
             get => color;
-            set {
-                color = value;
-                OnColorChanged.Invoke();
-                if (!usingMaterial) return;
-                if (color != Dimension.Color.NONE)
-                {
-                    _renderer.GetPropertyBlock(_propBlock);
-                    _propBlock.SetFloat("_MainColor", (float)color);
-                    if (color != so.Dim.color)
-                        _propBlock.SetFloat("_Error", 1);
-                    else
-                        _propBlock.SetFloat("_Error", 0);
-                    _renderer.SetPropertyBlock(_propBlock);
-                }
+            set
+            {
+                if (isRoot)
+                    foreach(var oc in group)
+                        oc.SetColor(value);
+                else
+                    root.Color = value;
             }
+        }
+
+        public void SetColor(Dimension.Color value)
+        {
+            color = value;
+            dirty = true;
+            OnColorChanged.Invoke();
         }
 
         /// <summary>
         /// The color of the laser selection.
         /// </summary>
-        public Dimension.Color SelectColor
+        public virtual Dimension.Color SelectColor
         {
             get => selectColor;
-            set {
-                selectColor = value;
-                _renderer.GetPropertyBlock(_propBlock);
-                _propBlock.SetFloat("_SelectColor", (float)selectColor);
-                _renderer.SetPropertyBlock(_propBlock);
+            set
+            {
+                if (isRoot)
+                    foreach(var oc in group)
+                        oc.SetSelectColor(value);
+                else
+                    root.SelectColor = value;
             }
+        }
+
+        public void SetSelectColor(Dimension.Color value)
+        {
+            selectColor = value;
+            dirty = true;
         }
 
         /// <summary>
         /// The secondary color at insertion and withdrawal of color.
         /// </summary>
-        public Dimension.Color SecondColor
+        public virtual Dimension.Color SecondColor
         {
             get => secondColor;
-            set {
-                secondColor = value;
-                _renderer.GetPropertyBlock(_propBlock);
-                _propBlock.SetFloat("_SecondColor", (float)SecondColor);
-                _renderer.SetPropertyBlock(_propBlock);
+            set
+            {
+                if (isRoot)
+                    foreach(var oc in group)
+                        oc.SetSecondColor(value);
+                else
+                    root.SecondColor = value;
             }
         }
 
-        private void Awake()
+        public void SetSecondColor(Dimension.Color value)
         {
-            so = GetComponent<Splittable.SplittableObject>();
-            var col = GetComponent<Collider>();
-            if (col != null)
+            secondColor = value;
+            dirty = true;
+        }
+
+        public Dimension.Color DimensionColor {
+            get => dimensionColor;
+            set
             {
-                mixDistMax = Mathf.Max(Mathf.Max(col.bounds.size.x, col.bounds.size.y), col.bounds.size.z) * 2.0f;
+                if (isRoot)
+                    foreach(var oc in group)
+                        oc.SetDimensionColor(value);
+                else
+                    root.DimensionColor = value;
             }
-            else
+        }
+
+        public void SetDimensionColor(Dimension.Color value)
+        {
+            Debug.Log(gameObject.name + " " + transform.GetInstanceID() + " set dim " + value.ToString());
+            dimensionColor = value;
+            dirty = true;
+        }
+
+        public Vector3 ContactPoint {
+            get => contactPoint;
+            set
             {
-                mixDistMax = defaultMixDistMax;
+                if (isRoot)
+                    foreach(var oc in group)
+                        oc.SetContactPoint(value);
+                else
+                    root.ContactPoint = value;
+            }
+        }
+
+        public void SetContactPoint(Vector3 value)
+        {
+            dirty = true;
+            contactPoint = value;
+        }
+
+        public bool IsRoot {
+            get => isRoot;
+        }
+
+        public ObjectColor Root {
+            get => root;
+        }
+
+        public Animator Animator {
+            get => animator;
+        }
+
+        protected void Awake()
+        {
+            isRoot = (root == null);
+            if (isRoot)
+            {
+                if (group == null)
+                    group = new List<ObjectColor>();
+                group.Add(this);
             }
             if (usingMaterial)
             {
-                _propBlock = new MaterialPropertyBlock();
+                animator = GetComponent<Animator>();
                 _renderer = GetComponent<Renderer>();
-                Reset();
+                _propBlock = new MaterialPropertyBlock();
             }
             OnColorChanged = new UnityEvent();
+            dirty = false;
         }
 
-        private void OnEnable()
+        private void Update()
         {
-            if (usingMaterial)
-                Reset();
+            if (dirty && usingMaterial)
+            {
+                dirty = false;
+                UpdateProperties();
+            }
+        }
+
+        void UpdateProperties()
+        {
+            _renderer.GetPropertyBlock(_propBlock);
+            _propBlock.SetFloat("_MainColor", (float)color);
+            if (color != DimensionColor)
+                _propBlock.SetFloat("_Error", 1);
+            else
+                _propBlock.SetFloat("_Error", 0);
+            _propBlock.SetFloat("_SelectColor", (float)SelectColor);
+            _propBlock.SetFloat("_SecondColor", (float)SecondColor);
+            _propBlock.SetVector("_ContactPos", contactPoint);
+            _renderer.SetPropertyBlock(_propBlock);
         }
 
         /// <summary>
         /// Shows the selected hinting.
         /// </summary>
-        /// <param name="contactPos"> The laser contact point. </param>
-        public void Select(Vector3 contactPos)
+        public void Select()
         {
-            StopAllCoroutines();
-            this.contactPos = contactPos;
-            StartCoroutine(SelectAnim());
+            if (isRoot)
+                foreach(var oc in group)
+                    oc.Animator.SetTrigger("Select");
+            else
+                root.Select();
         }
 
         /// <summary>
         /// Hides the selected hinting.
         /// </summary>
-        /// <param name="contactPos"> The laser contact point. </param>
-        public void Unselect(Vector3 contactPos)
+        /// <param name="contactPoint"> The laser contact point. </param>
+        public void Unselect()
         {
-            StopAllCoroutines();
-            this.contactPos = contactPos;
-            StartCoroutine(UnselectAnim());
+            if (isRoot)
+                foreach(var oc in group)
+                    oc.Animator.SetTrigger("Unselect");
+            else
+                root.Unselect();
         }
 
         /// <summary>
         /// Shows the inserted secondary color.
         /// </summary>
-        /// <param name="contactPos"> The laser contact point. </param>
-        public void Insert(Vector3 contactPos)
+        public void Insert()
         {
-            StopAllCoroutines();
-            this.contactPos = contactPos;
-            StartCoroutine(InsertAnim());
+            if (isRoot)
+                foreach(var oc in group)
+                    oc.Animator.SetTrigger("Insert");
+            else
+                root.Insert();
         }
 
         /// <summary>
         /// Shows the new color after withdrawal.
         /// </summary>
-        /// <param name="contactPos"> The laser contact point. </param>
-        public void Withdraw(Vector3 contactPos)
+        public void Withdraw()
         {
-            StopAllCoroutines();
-            this.contactPos = contactPos;
-            if (Color == Dimension.Color.NONE)
-                StartCoroutine(WithdrawAnimDissolve());
+            if (isRoot)
+                foreach(var oc in group)
+                {
+                    if (Color == Dimension.Color.NONE)
+                        oc.Animator.SetTrigger("Dissolve");
+                    else
+                        oc.Animator.SetTrigger("Withdraw");
+                }
             else
-                StartCoroutine(WithdrawAnim());
+                root.Withdraw();
         }
 
-        System.Collections.IEnumerator SelectAnim()
+        public void OnWithdrawAnimFinished()
         {
-            selectDistStart = 0.0f;
-            UpdateMaterialProp();
-            float t = Mathf.Lerp(0.0f, MixDur, Mathf.InverseLerp(0.0f, mixDistMax, selectDistEnd));
-            float startSelect = selectDistEnd;
-            while (t < MixDur)
-            {
-                selectDistEnd = Mathf.Lerp(startSelect, mixDistMax, t/MixDur);
-                UpdateMaterialProp();
-                t += Time.deltaTime;
-                yield return null;
-            }
+            OnWithdrew.Invoke();
         }
 
-        System.Collections.IEnumerator UnselectAnim()
+        public void OnInsertAnimFinished()
         {
-            selectDistStart = 0.0f;
-            UpdateMaterialProp();
-            float t = Mathf.Lerp(0.0f, MixDur, Mathf.InverseLerp(mixDistMax, 0.0f, selectDistEnd));
-            float startSelect = selectDistEnd;
-            while (t < MixDur)
-            {
-                selectDistEnd = Mathf.Lerp(startSelect, 0.0f, t/MixDur);
-                UpdateMaterialProp();
-                t += Time.deltaTime;
-                yield return null;
-            }
-        }
-
-        System.Collections.IEnumerator InsertAnim()
-        {
-            selectDistStart = 0.0f;
-            secondDistStart = 0.0f;
-            UpdateMaterialProp();
-            float t = 0.0f;
-            float startSelect = selectDistEnd;
-            while (t < MixDur)
-            {
-                float p = t/MixDur;
-                secondDistEnd = Mathf.Lerp(0.0f, mixDistMax, p);
-                selectDistStart = Mathf.Lerp(0.0f, mixDistMax, p);
-                selectDistEnd = Mathf.Lerp(startSelect, mixDistMax, p);
-                UpdateMaterialProp();
-                t += Time.deltaTime;
-                yield return null;
-            }
             OnInserted.Invoke();
         }
 
-        System.Collections.IEnumerator WithdrawAnim()
-        {
-            selectDistStart = 0.0f;
-            secondDistEnd = mixDistMax;
-            UpdateMaterialProp();
-            float t = 0.0f;
-            float startSelect = selectDistEnd;
-            while (t < MixDur)
-            {
-                float p = t/MixDur;
-                secondDistEnd = Mathf.Lerp(mixDistMax, 0.0f, p);
-                selectDistEnd = Mathf.Lerp(startSelect, 0.0f, p);
-                UpdateMaterialProp();
-                t += Time.deltaTime;
-                yield return null;
-            }
-            OnWithdrew.Invoke();
-        }
-
-        System.Collections.IEnumerator WithdrawAnimDissolve()
-        {
-            selectDistStart = 0.0f;
-            dissolveDistEnd = 100.0f;
-            secondDistEnd = mixDistMax;
-            UpdateMaterialProp();
-            float t = 0.0f;
-            float startSelect = selectDistEnd;
-            while (t < MixDur)
-            {
-                float p = t/MixDur;
-                secondDistEnd = Mathf.Lerp(mixDistMax, 0.0f, p);
-                selectDistEnd = Mathf.Lerp(startSelect, 0.0f, p);
-                dissolveDistStart = Mathf.Lerp(mixDistMax, 0.0f, p);
-                UpdateMaterialProp();
-                t += Time.deltaTime;
-                yield return null;
-            }
-            OnWithdrew.Invoke();
-        }
-
-        public void Init()
-        {
-            Color = color;
-        }
-
-        public void Reset()
-        {
-            selectDistStart = 0.0f;
-            selectDistEnd = 0.0f;
-            secondDistStart = 0.0f;
-            secondDistEnd = 0.0f;
-            dissolveDistStart = mixDistMax;
-            dissolveDistEnd = -1.0f;
-            contactPos = gameObject.transform.position;
-            UpdateMaterialProp();
-        }
-
-        void UpdateMaterialProp()
-        {
-            _renderer.GetPropertyBlock(_propBlock);
-            _propBlock.SetFloat("_SelectDistStart", selectDistStart);
-            _propBlock.SetFloat("_SelectDistEnd", selectDistEnd);
-            _propBlock.SetFloat("_SecondDistStart", secondDistStart);
-            _propBlock.SetFloat("_SecondDistEnd", secondDistEnd);
-            _propBlock.SetFloat("_DissolveDistStart", dissolveDistStart);
-            _propBlock.SetFloat("_DissolveDistEnd", dissolveDistEnd);
-            _propBlock.SetVector("_ContactPos", contactPos);
-            _renderer.SetPropertyBlock(_propBlock);
-        }
     }
-
 }

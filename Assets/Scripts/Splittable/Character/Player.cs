@@ -65,11 +65,11 @@ namespace Splittable.Character
 
         void MoveToActiveDimension(bool enableDummies)
         {
-            World.Instance.MoveObjectToDimension(this, World.Instance.ActiveDimension.Color);
+            World.Instance.MoveObjectToDimension(this, World.Instance.ActiveDimension.color);
             for (int i = 0; i < dummies.Count; i++)
             {
                 if (World.Instance.Splitted && enableDummies && i != World.Instance.ActiveDimId
-                    && World.Instance.Dimensions[i].Color != Dimension.Color.NONE)
+                    && World.Instance.Dimensions[i].color != Dimension.Color.NONE)
                 {
                     dummies[i].gameObject.SetActive(true);
                 }
@@ -84,7 +84,7 @@ namespace Splittable.Character
         private void FixedUpdate()
         {
             if (World.Instance.Transitting) return;
-            if (Dim.Color != World.Instance.ActiveDimension.Color)
+            if (Dim.color != World.Instance.ActiveDimension.color)
                 MoveToActiveDimension(World.Instance.Splitted);
         }
     }

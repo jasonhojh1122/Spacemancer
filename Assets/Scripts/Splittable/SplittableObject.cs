@@ -18,7 +18,7 @@ namespace Splittable
         [SerializeField] protected bool isConvex = true;
 
         protected ObjectColor objectColor;
-        protected ObjectColor dimension;
+        protected Dimension dimension;
         protected Collider col;
         protected bool _IsMerged;
 
@@ -41,9 +41,12 @@ namespace Splittable
         /// <summary>
         /// The dimension which the object is located in.
         /// </summary>
-        public ObjectColor Dim {
+        public Dimension Dim {
             get => dimension;
-            set => dimension = value;
+            set {
+                dimension = value;
+                objectColor.DimensionColor = dimension.color;
+            }
         }
 
         /// <summary>
@@ -86,7 +89,8 @@ namespace Splittable
             objectColor = GetComponent<ObjectColor>();
             IsMerged = false;
             Dim = World.Instance.ActiveDimension;
-            objectColor.Init();
+            objectColor.Color = objectColor.Color;
+            // objectColor.InitColor();
         }
 
         /// <summary>
@@ -94,14 +98,14 @@ namespace Splittable
         /// </summary>
         public virtual void Split()
         {
-            foreach (ObjectColor dim in World.Instance.Dimensions)
+            foreach (var dim in World.Instance.Dimensions)
             {
-                if (dim.Color == Dimension.Color.NONE)
+                if (dim.color == Dimension.Color.NONE)
                     continue;
-                var splittedColor = objectColor.Color & dim.Color;
+                var splittedColor = objectColor.Color & dim.color;
                 if (splittedColor != Dimension.Color.NONE)
                 {
-                    var splitted = World.Instance.InstantiateNewObjectToDimension(this, dim.Color);
+                    var splitted = World.Instance.InstantiateNewObjectToDimension(this, dim.color);
                     splitted.Color = splittedColor;
                     splitted.IsMerged = false;
                     World.Instance.MoveToProcessed(splitted);
@@ -223,7 +227,7 @@ namespace Splittable
         public bool IsInCorrectDim()
         {
             if (Dim == null) return false;
-            return this.Color == Dim.Color;
+            return this.Color == Dim.color;
         }
 
     }

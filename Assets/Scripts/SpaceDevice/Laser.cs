@@ -14,7 +14,7 @@ namespace SpaceDevice
         [SerializeField] Transform player;
         LineRenderer lr;
         MaterialPropertyBlock _property;
-        Splittable.SplittableObject hittedObject;
+        Core.ObjectColor hittedObject;
         Dimension.Color _color;
         bool _IsOn = false;
         Vector3 lastContactPoint;
@@ -35,7 +35,7 @@ namespace SpaceDevice
                 lr.SetPropertyBlock(_property);
                 if (hittedObject != null)
                 {
-                    hittedObject.ObjectColor.SelectColor = _color;
+                    hittedObject.SelectColor = Color;
                 }
             }
         }
@@ -51,10 +51,6 @@ namespace SpaceDevice
                 _IsOn = value;
                 if(value == false)
                 {
-                    if (hittedObject != null && hittedObject.gameObject.activeSelf)
-                    {
-                        hittedObject.ObjectColor.Unselect(lastContactPoint);
-                    }
                     hittedObject = null;
                     TurnOff();
                 }
@@ -66,10 +62,10 @@ namespace SpaceDevice
         }
 
         /// <summary>
-        /// The <c>SplittableObject</c> hitted by laser.
+        /// The <c>Core.ObjectColor</c> hitted by laser.
         /// </summary>
         /// <value></value>
-        public Splittable.SplittableObject HittedObject
+        public Core.ObjectColor HittedObject
         {
             get => hittedObject;
             set => hittedObject = value;
@@ -134,7 +130,8 @@ namespace SpaceDevice
                     lr.SetPosition(1, endPosLocal);
                     if (hittedObject != null && hittedObject.gameObject.activeSelf)
                     {
-                        hittedObject.ObjectColor.Unselect(endPos);
+                        hittedObject.ContactPoint = endPos;
+                        hittedObject.Unselect();
                     }
                     hittedObject = null;
                     lastContactPoint = endPos;
@@ -151,13 +148,13 @@ namespace SpaceDevice
         bool CheckHit()
         {
             RaycastHit[] hits = Physics.RaycastAll(transform.position, player.forward);
-            Splittable.SplittableObject newHittedObject;
+            Core.ObjectColor newHittedObject;
             bool hitted = false;;
             IEnumerable<RaycastHit> orderedHits = hits.OrderBy(hit => hit.distance);
             foreach (RaycastHit hit in orderedHits)
             {
                 if (hit.collider != null && !hit.collider.isTrigger &&
-                    (newHittedObject = hit.collider.gameObject.GetComponent<Splittable.SplittableObject>()) != null)
+                    (newHittedObject = hit.collider.gameObject.GetComponent<Core.ObjectColor>()) != null)
                 {
                     var hitPosLocal = transform.InverseTransformPoint(hit.point);
                     lr.SetPosition(1, hitPosLocal);
@@ -177,7 +174,7 @@ namespace SpaceDevice
         /// </summary>
         /// <param name="contactPoint"> The contact position hitted on the object. </param>
         /// <param name="newHittedObject"> The new hitted object. </param>
-        void UpdateObjectAndMaterial(Vector3 contactPoint, Splittable.SplittableObject newHittedObject)
+        void UpdateObjectAndMaterial(Vector3 contactPoint, Core.ObjectColor newHittedObject)
         {
             bool selectNew = false, unselectOld = false;
             if (hittedObject == null)
@@ -192,20 +189,15 @@ namespace SpaceDevice
 
             if (unselectOld)
             {
-                hittedObject.ObjectColor.Unselect(lastContactPoint);
+                hittedObject.ContactPoint = lastContactPoint;
+                hittedObject.Unselect();
             }
             hittedObject = newHittedObject;
             if (selectNew)
             {
-                if (hittedObject.IsPersistentColor)
-                {
-                    hittedObject = null;
-                }
-                else
-                {
-                    hittedObject.ObjectColor.SelectColor = _color;
-                    hittedObject.ObjectColor.Select(contactPoint);
-                }
+                hittedObject.SelectColor = Color;
+                hittedObject.ContactPoint = contactPoint;
+                hittedObject.Select();
             }
         }
 

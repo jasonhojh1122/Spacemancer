@@ -58,10 +58,10 @@ namespace SpaceDevice
         {
             for (int i = 0; i < dimColorIds.Count; i++)
             {
-                if (World.Instance.Dimensions[i].Color == Dimension.Color.NONE)
+                if (World.Instance.Dimensions[i].color == Dimension.Color.NONE)
                     dimColorIds[i] = -1;
                 else
-                    dimColorIds[i] = Dimension.ValidColorIndex[World.Instance.Dimensions[i].Color];
+                    dimColorIds[i] = Dimension.ValidColorIndex[World.Instance.Dimensions[i].color];
                 UpdateDimColorIndicator(i);
             }
         }

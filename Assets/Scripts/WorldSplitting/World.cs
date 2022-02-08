@@ -16,7 +16,7 @@ namespace Core
         public static World Instance {
             get => _instance;
         }
-        [SerializeField] List<ObjectColor> dimensions;
+        [SerializeField] List<Dimension> dimensions;
         [SerializeField] Transform inactiveRoot;
         [SerializeField] Dimension.Color startDimensionColor = Dimension.Color.WHITE;
         [SerializeField] SpaceDevice.SplitMergeMachine splitMergeMachine;
@@ -33,7 +33,7 @@ namespace Core
         /// The list of dimensions' root.
         /// </summary>
         /// <value></value>
-        public List<ObjectColor> Dimensions {
+        public List<Dimension> Dimensions {
             get => dimensions;
         }
 
@@ -49,7 +49,7 @@ namespace Core
         /// <summary>
         /// The currently active dimension.
         /// </summary>
-        public ObjectColor ActiveDimension {
+        public Dimension ActiveDimension {
             get => dimensions[activeDimId];
         }
 
@@ -153,7 +153,7 @@ namespace Core
         private void DefaultSplit()
         {
             dimensionTransition.DefaultSplit();
-            dimensions[0].Color = startDimensionColor;
+            dimensions[0].color = startDimensionColor;
             dimId[startDimensionColor] = 0;
             dimId[Dimension.Color.WHITE] = -1;
 
@@ -161,11 +161,11 @@ namespace Core
             int i = 1;
             for (; i < missingColors.Count + 1; i++)
             {
-                dimensions[i].Color = missingColors[i-1];
+                dimensions[i].color = missingColors[i-1];
                 dimId[missingColors[i-1]] = i;
             }
             for (; i < dimensions.Count; i++)
-                dimensions[i].Color = Dimension.Color.NONE;
+                dimensions[i].color = Dimension.Color.NONE;
             SplitObjects();
             splitted = true;
         }
@@ -206,7 +206,7 @@ namespace Core
         {
             unprocessedObjects.Remove(so);
             if (!processedObjects.Add(so))
-                Util.Debug.Log(gameObject, so.gameObject.name + " " + so.Dim.Color.ToString() + " existed in processed objects");
+                Util.Debug.Log(gameObject, so.gameObject.name + " " + so.Dim.color.ToString() + " existed in processed objects");
         }
 
         /// <summary>
@@ -415,8 +415,8 @@ namespace Core
                 splitted = false;
                 BeforeMerge.Invoke();
                 for (int i = 0; i < dimensions.Count; i++)
-                    dimensions[activeDimId].Color = Dimension.Color.NONE;
-                dimensions[activeDimId].Color = Dimension.Color.WHITE;
+                    dimensions[activeDimId].color = Dimension.Color.NONE;
+                dimensions[activeDimId].color = Dimension.Color.WHITE;
                 UpdateDimId();
                 StartCoroutine(dimensionTransition.MergeTransition());
             }
@@ -427,9 +427,9 @@ namespace Core
                 for (int i = 0; i < dimensions.Count; i++)
                 {
                     if (splitMergeMachine.DimColorIds[i] < 0)
-                        dimensions[i].Color = Dimension.Color.NONE;
+                        dimensions[i].color = Dimension.Color.NONE;
                     else
-                        dimensions[i].Color = Dimension.ValidColor[splitMergeMachine.DimColorIds[i]];
+                        dimensions[i].color = Dimension.ValidColor[splitMergeMachine.DimColorIds[i]];
                 }
                 UpdateDimId();
                 StartCoroutine(dimensionTransition.SplitTransition());
@@ -445,22 +445,8 @@ namespace Core
                 dimId[c] = -1;
 
             for (int i = 0; i < dimensions.Count; i++)
-                if (dimensions[i].Color != Dimension.Color.NONE)
-                    dimId[dimensions[i].Color] = i;
-        }
-
-        /// <summary>
-        /// Gets the dimension based on the color.
-        /// </summary>
-        /// <param name="color"> The dimension color. </param>
-        /// <returns> If the dimension is active, the the <c>ObjectColor</c> of the dimension is returned,
-        /// otherwise null is returned. </returns>
-        public ObjectColor GetDim(Dimension.Color color)
-        {
-            if (dimId[color] > 0 && dimId[color] < dimensions.Count)
-                return dimensions[dimId[color]];
-            else
-                return null;
+                if (dimensions[i].color != Dimension.Color.NONE)
+                    dimId[dimensions[i].color] = i;
         }
 
     }

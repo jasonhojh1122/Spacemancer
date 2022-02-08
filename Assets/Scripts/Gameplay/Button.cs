@@ -91,8 +91,8 @@ namespace Gameplay
 
         private void ToggleOn()
         {
-            generatedObject = World.Instance.InstantiateNewObjectToDimension(generatedObjectRef, so.Dim.Color);
-            generatedObject.Color = so.Dim.Color;
+            generatedObject = World.Instance.InstantiateNewObjectToDimension(generatedObjectRef, so.Dim.color);
+            generatedObject.Color = so.Dim.color;
         }
 
         private void ToggleOff()

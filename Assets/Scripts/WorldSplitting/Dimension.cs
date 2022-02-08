@@ -1,10 +1,12 @@
 
+using UnityEngine;
 using System;
 using System.Collections.Generic;
 
 namespace Core {
 
-    public class Dimension {
+    public class Dimension : MonoBehaviour
+    {
 
         /// <summary>
         /// The bit flag of object's color.
@@ -120,6 +122,8 @@ namespace Core {
             }
             return ret;
         }
+
+        public Color color;
 
     }
 

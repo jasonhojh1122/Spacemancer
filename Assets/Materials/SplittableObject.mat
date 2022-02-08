@@ -90,6 +90,8 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _Dissolve: 0
+    - _DissolveDistEnd: 100
+    - _DissolveDistStart: 100
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _Error: 0
@@ -98,11 +100,18 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _MainColor: 7
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _SecondColor: 1
+    - _SecondDistEnd: 0
+    - _SecondDistStart: 0
+    - _SelectColor: 1
+    - _SelectDistEnd: 0
+    - _SelectDistStart: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -112,9 +121,18 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Black: {r: 0.23529407, g: 0.23529407, b: 0.23529407, a: 1}
+    - _Blue: {r: 0.34901956, g: 0.34901956, b: 0.6784314, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 255}
+    - _ContactPos: {r: 0, g: 0, b: 0, a: 0}
+    - _Cyan: {r: 0.27450976, g: 0.58431375, b: 0.58431375, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Green: {r: 0.35686278, g: 0.5960785, b: 0.35686278, a: 1}
+    - _Magenta: {r: 0.57647055, g: 0.43137258, b: 0.57647055, a: 1}
+    - _Red: {r: 0.6784314, g: 0.36862746, b: 0.36862746, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _White: {r: 0.882353, g: 0.882353, b: 0.882353, a: 1}
+    - _Yellow: {r: 0.5960785, g: 0.5960785, b: 0.29411766, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &5321995574637192728
 MonoBehaviour:
