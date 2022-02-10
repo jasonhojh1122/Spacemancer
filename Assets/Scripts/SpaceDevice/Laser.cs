@@ -186,8 +186,7 @@ namespace SpaceDevice
         /// <returns> The <c>ObjectColor</c> is hitted, otherwise null is returned </returns>
         ObjectColor CheckHit()
         {
-            RaycastHit[] hits = Physics.RaycastAll(transform.position, player.forward);
-            IEnumerable<RaycastHit> orderedHits = hits.OrderBy(hit => hit.distance);
+            var orderedHits = Util.Ray.OrderedHits(transform.position, player.forward);
             ObjectColor newHittedObject;
             foreach (RaycastHit hit in orderedHits)
             {

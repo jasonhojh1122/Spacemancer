@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Interaction
+namespace Gameplay.Interactable
 {
     [RequireComponent(typeof(Core.ObjectColor))]
     public class DigitalLock : Interactable

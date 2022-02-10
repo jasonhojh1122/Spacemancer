@@ -17,7 +17,7 @@ namespace Core
             get => _instance;
         }
         [SerializeField] List<Dimension> dimensions;
-        [SerializeField] Transform inactiveRoot;
+        [SerializeField] Dimension inactiveRoot;
         [SerializeField] Dimension.Color startDimensionColor = Dimension.Color.WHITE;
         [SerializeField] SpaceDevice.SplitMergeMachine splitMergeMachine;
         [HideInInspector] public UnityEvent OnDimensionChange = new UnityEvent();
@@ -87,7 +87,7 @@ namespace Core
         /// <summary>
         /// The inactive root of not-used objects.
         /// </summary>
-        public Transform InactiveRoot {
+        public Dimension InactiveRoot {
             get => inactiveRoot;
         }
 
@@ -301,8 +301,12 @@ namespace Core
         {
             Vector3 localPos = so.transform.localPosition;
             Quaternion localRot = so.transform.localRotation;
-            so.Dim = dimensions[dimId[color]];
+            if (color == Dimension.Color.BLACK)
+                so.Dim = inactiveRoot;
+            else
+                so.Dim = dimensions[dimId[color]];
             MoveTransformToNewParent(so.transform, so.Dim.transform, localPos, localRot);
+
         }
 
         /// <summary>
@@ -349,9 +353,7 @@ namespace Core
         public void DeactivateObject(SplittableObject so)
         {
             RemoveFromSet(so);
-            Vector3 localPos = so.transform.localPosition;
-            Quaternion localRot = so.transform.localRotation;
-            MoveTransformToNewParent(so.transform, inactiveRoot, localPos, localRot);
+            MoveObjectToDimension(so, Dimension.Color.BLACK);
             objectPool.SetInactive(so);
         }
 
@@ -400,7 +402,7 @@ namespace Core
         /// </summary>
         public void Toggle()
         {
-            if (Interaction.InteractionManager.Instance.IsInteracting) return;
+            if (Gameplay.Interactable.InteractionManager.Instance.IsInteracting) return;
             if (splitted)
             {
                 splitted = false;

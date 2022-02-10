@@ -25,8 +25,7 @@ namespace Splittable
             if (World.Instance.DimId[Color] >= 0)
                 World.Instance.MoveObjectToDimension(this, Color);
             else
-                World.Instance.MoveTransformToNewParent(transform, World.Instance.InactiveRoot,
-                    transform.localPosition, transform.localRotation);
+                World.Instance.MoveObjectToDimension(this, Dimension.Color.BLACK);
         }
 
     }

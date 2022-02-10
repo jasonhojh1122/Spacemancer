@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-namespace Interaction
+namespace Gameplay.Interactable
 {
     [RequireComponent(typeof(Splittable.ErrorSpace))]
     public class ErrorSpaceFixer : Interactable

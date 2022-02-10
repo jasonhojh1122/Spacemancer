@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Splittable;
 
-namespace Interaction
+namespace Gameplay.Interactable
 {
     [RequireComponent(typeof(Splittable.SplittableObject))]
     public class MovingPlatform : Interactable

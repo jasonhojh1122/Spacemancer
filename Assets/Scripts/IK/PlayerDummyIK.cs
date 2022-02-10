@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
-using Interaction;
+using Gameplay.Interactable;
 namespace IK
 {
     public class PlayerDummyIK : MonoBehaviour

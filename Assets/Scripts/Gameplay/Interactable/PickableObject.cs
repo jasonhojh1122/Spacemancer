@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Interaction
+namespace Gameplay.Interactable
 {
     [RequireComponent(typeof(Splittable.SplittableObject))]
     public class PickableObject : Interactable
@@ -83,12 +83,11 @@ namespace Interaction
 
         float GetY()
         {
-            RaycastHit raycastHit;
-            bool hit = Physics.Raycast(transform.position, Vector3.down, out raycastHit);
-            if (hit)
-                return raycastHit.point.y;
-            else
-                return InteractionManager.Instance.transform.position.y;
+            var orderedHits = Util.Ray.OrderedHits(transform.position, Vector3.down);
+            foreach (var hit in orderedHits)
+                if (!hit.collider.isTrigger)
+                    return hit.point.y;
+            return InteractionManager.Instance.transform.position.y;
         }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Animations.Rigging;
 using System.Collections;
 
-namespace Interaction
+namespace Gameplay.Interactable
 {
     [RequireComponent(typeof(IK.PlayerIK), typeof(Splittable.Character.Player))]
     public class InteractionManager : InputController
