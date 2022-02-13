@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Gameplay.Electronic
 {
     [RequireComponent(typeof(Splittable.SplittableObject))]
-    public class Door : ElectronicObject
+    public class SimpleAnimatedDevice : ElectronicObject
     {
         [SerializeField] Animator doorAnimation;
         [SerializeField] bool _isOpened = true;
@@ -28,7 +28,6 @@ namespace Gameplay.Electronic
 
         public override void TurnOn()
         {
-            Debug.Log("Turn On");
             if (so.IsInCorrectDim())
                 IsOpened = true;
             else
@@ -37,7 +36,6 @@ namespace Gameplay.Electronic
 
         public override void TurnOff()
         {
-            Debug.Log("Turn Off");
             IsOpened = false;
         }
 

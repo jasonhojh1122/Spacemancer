@@ -17,6 +17,7 @@ namespace SpaceDevice
         [SerializeField] List<Image> dimColorIndicators;
         [SerializeField] GameObject dimChanger;
         [SerializeField] GameObject withdrawer;
+        [SerializeField] float energyCost = 0.1f;
 
         InputAction toggleAction;
         UI.CanvasGroupFader fader;
@@ -44,9 +45,10 @@ namespace SpaceDevice
             for (int i = 0; i < Dimension.BaseColor.Count; i++)
             {
                 dimColorIds.Add(i);
-                UpdateDimColorIndicator(i);
+                UpdateDimColorIndicator();
             }
         }
+
         void Toggle(InputAction.CallbackContext context)
         {
             if (IsPaused()) return;
@@ -62,8 +64,8 @@ namespace SpaceDevice
                     dimColorIds[i] = -1;
                 else
                     dimColorIds[i] = Dimension.ValidColorIndex[World.Instance.Dimensions[i].color];
-                UpdateDimColorIndicator(i);
             }
+            UpdateDimColorIndicator();
         }
 
         /// <summary>
@@ -73,20 +75,61 @@ namespace SpaceDevice
         public void RotateColor(int i)
         {
             if (World.Instance.Splitted) return;
+            RotateColorId(i);
+            if (i == World.Instance.ActiveDimId)
+            {
+                var missingColor = Dimension.MissingColor(GetColor(i));
+                for (int j = 0; j < dimColorIds.Count; j++)
+                {
+                    var id = (i+j+1) % dimColorIds.Count;
+                    if (id == i)
+                        continue;
+                    else if (j >= missingColor.Count && id != i)
+                        dimColorIds[id] = -1;
+                    else
+                        dimColorIds[id] = Dimension.ValidColorIndex[missingColor[j]];
+                }
+            }
+            else
+            {
+                var missingColor = Dimension.MissingColor(GetColor(i));
+                dimColorIds[World.Instance.ActiveDimId] = Dimension.ValidColorIndex[missingColor[0]];
+                for (int j = 1; j < dimColorIds.Count; j++)
+                {
+                    var id = (i+j) % dimColorIds.Count;
+                    if (id == World.Instance.ActiveDimId)
+                        continue;
+                    else if (j >= missingColor.Count)
+                        dimColorIds[id] = -1;
+                    else
+                        dimColorIds[id] = Dimension.ValidColorIndex[missingColor[j]];
+                }
+            }
+            UpdateDimColorIndicator();
+        }
+
+        void RotateColorId(int i)
+        {
             if (dimColorIds[i] < 0)
                 dimColorIds[i] = 0;
             else
-                dimColorIds[i] = (dimColorIds[i] + 1) % Dimension.ValidColor.Count;
-
-            UpdateDimColorIndicator(i);
+                dimColorIds[i] = (dimColorIds[i] + 1) % Dimension.SplittedColor.Count;
         }
 
-        void UpdateDimColorIndicator(int i)
+        void UpdateDimColorIndicator()
         {
-            if (dimColorIds[i] < 0)
-                dimColorIndicators[i].color = Dimension.MaterialColor[Dimension.Color.BLACK];
-            else
-                dimColorIndicators[i].color = Dimension.MaterialColor[Dimension.ValidColor[dimColorIds[i]]];
+            for (int i = 0; i < dimColorIds.Count; i++)
+            {
+                if (dimColorIds[i] < 0)
+                    dimColorIndicators[i].color = Dimension.MaterialColor[Dimension.Color.BLACK];
+                else
+                    dimColorIndicators[i].color = Dimension.MaterialColor[Dimension.SplittedColor[dimColorIds[i]]];
+            }
+        }
+
+        Dimension.Color GetColor(int i)
+        {
+            return Dimension.SplittedColor[dimColorIds[i]];
         }
 
         /// <summary>
@@ -108,7 +151,7 @@ namespace SpaceDevice
                 var c = Dimension.Color.NONE;
                 for (int i = 0; i < dimColorIds.Count; i++)
                     if (dimColorIds[i] != -1)
-                        c = Dimension.AddColor(c, Dimension.ValidColor[dimColorIds[i]]);
+                        c = Dimension.AddColor(c, Dimension.SplittedColor[dimColorIds[i]]);
                 if (c == Dimension.Color.BLACK)
                     return;
             }

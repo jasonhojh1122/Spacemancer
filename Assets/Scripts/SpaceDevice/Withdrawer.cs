@@ -16,7 +16,7 @@ namespace SpaceDevice
         [SerializeField] EnergyBar energyBar;
         [SerializeField] RectTransform colorSelector;
         [SerializeField] UnityEngine.UI.Image withdrawContainer;
-        [SerializeField] float energyCost = 0.2f;
+        [SerializeField] float energyCost = 0.1f;
 
         /// <summary>
         /// Current color for withdrawing.

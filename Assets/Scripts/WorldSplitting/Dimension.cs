@@ -39,6 +39,14 @@ namespace Core {
         /// <summary>
         /// A list of all the valid color.
         /// </summary>
+        public static List<Color> SplittedColor = new List<Color>
+        {
+            Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.MAGENTA
+        };
+
+        /// <summary>
+        /// A list of all the valid color.
+        /// </summary>
         public static List<Color> ValidColor = new List<Color>
         {
             Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.WHITE

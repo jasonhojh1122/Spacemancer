@@ -38,7 +38,11 @@ namespace Splittable.Character {
 
         protected void Update()
         {
-            if (IsPaused()) return;
+            if (IsPaused())
+            {
+                vel = Vector3.zero;
+                return;
+            }
             UpdateVelocity();
             UpdateMovingState();
             Move();

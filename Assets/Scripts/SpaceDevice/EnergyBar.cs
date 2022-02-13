@@ -9,30 +9,25 @@ namespace SpaceDevice
     public class EnergyBar : MonoBehaviour
     {
         [SerializeField] float decreasePerSec = 0.05f;
+        [SerializeField] float defaultAmount = 0.4f;
 
         UnityEngine.UI.Slider slider;
+
+        public float Amount
+        {
+            get => slider.value;
+            set => slider.value = Mathf.Max(0, Mathf.Min(value, 1));
+        }
 
         private void Awake()
         {
             slider = GetComponent<UnityEngine.UI.Slider>();
-        }
-
-
-        private void Update()
-        {
-            /* if (Core.World.Instance.Splitted)
-            {
-                slider.value = Mathf.Clamp01(slider.value - decreasePerSec * Time.deltaTime);
-                if (Util.Fuzzy.CloseFloat(slider.value, 0))
-                {
-                    Core.World.Instance.Toggle();
-                }
-            } */
+            Amount = defaultAmount;
         }
 
         public void AddEnergy(float amount)
         {
-            slider.value += amount;
+            Amount += amount;
         }
 
 
