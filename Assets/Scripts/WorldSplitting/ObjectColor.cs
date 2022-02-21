@@ -41,6 +41,11 @@ namespace Core
         bool isRoot;
         bool dirty;
 
+        public bool UsingMaterial
+        {
+            get => usingMaterial;
+        }
+
         /// <summary>
         /// The color of the object.
         /// Set the color of the object will immediately updates the material.

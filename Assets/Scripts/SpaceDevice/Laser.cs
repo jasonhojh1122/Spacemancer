@@ -146,7 +146,7 @@ namespace SpaceDevice
             while (true)
             {
                 var newHittedObject = CheckHit();
-                if (newHittedObject != null)
+                if (newHittedObject != null && newHittedObject.UsingMaterial)
                 {
                     UpdateHittedObject(newHittedObject);
                 }

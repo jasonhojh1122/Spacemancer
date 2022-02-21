@@ -121,6 +121,8 @@ namespace Core
                 var localPos = s.transform.position;
                 var localRot = s.transform.rotation;
                 MoveObjectToDimension(s, Dimension.Color.WHITE);
+                s.transform.localPosition = localPos;
+                s.transform.localRotation = localRot;
                 if (s.DefaultInactive)
                 {
                     DeactivateObject(s);
