@@ -36,7 +36,7 @@ namespace Gameplay.Interactable
         IEnumerator ScanHand()
         {
             yield return new WaitForSeconds(0.5f);
-            OnUnlock.Invoke();
+            Open();
             InteractionManager.Instance.PlayerIK.EndPose();
         }
 

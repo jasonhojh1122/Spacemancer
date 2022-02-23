@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.VFX;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -19,8 +19,13 @@ namespace Core
         }
 
         [SerializeField] List<Transform> targetPos;
+        [SerializeField] List<VisualEffect> vfx;
+        [SerializeField] List<Animator> vfxAnimators;
+        [SerializeField] List<Material> soMaterials;
+        [SerializeField] float dissolveRadiusMax = 20.0f;
+        [SerializeField] float dissolveRadiusMin = -10.0f;
         [SerializeField] float transitionDuration = 1.0f;
-        [SerializeField] float endPause = 0.2f;
+        [SerializeField] CameraController cameraController;
         [SerializeField] GlitchSetting glitchSetting;
 
         bool transitting;
@@ -32,47 +37,110 @@ namespace Core
         private void Awake()
         {
             transitting = false;
+            for (int i = 0; i < soMaterials.Count; i++)
+            {
+                soMaterials[i].SetVector("_Dim1Pos", World.Instance.Dimensions[0].transform.position);
+                soMaterials[i].SetVector("_Dim2Pos", World.Instance.Dimensions[1].transform.position);
+                soMaterials[i].SetVector("_Dim3Pos", World.Instance.Dimensions[2].transform.position);
+                soMaterials[i].SetFloat("_DissolveRadius", dissolveRadiusMax);
+            }
+
         }
 
         public IEnumerator SplitTransition()
         {
             OnTransitionStartEnd(true);
+
+            cameraController.ZoomOut(transitionDuration/10);
+            StartCoroutine(Glitch());
+            PlayVFX();
+            yield return StartCoroutine(MaterialAnim(dissolveRadiusMax, dissolveRadiusMin));
+            ActualSplit();
+            StopVFX();
+            cameraController.FollowPlayer();
+            cameraController.ZoomIn(transitionDuration/10);
+            yield return StartCoroutine(MaterialAnim(dissolveRadiusMin, dissolveRadiusMax));
+            cameraController.UnFollowPlayer();
+            World.Instance.OnDimensionChange.Invoke();
+
+            OnTransitionStartEnd(false);
+        }
+
+        void ActualSplit()
+        {
             for (int i = 0; i < targetPos.Count; i++)
             {
-                World.Instance.Dimensions[i].transform.position = targetPos[i].transform.position;
+                World.Instance.Dimensions[i].transform.position = targetPos[i].position;
                 World.Instance.Dimensions[i].gameObject.SetActive(true);
             }
             World.Instance.SplitObjects();
             Physics.SyncTransforms();
-            OnTransitionStartEnd(false);
-            yield return new WaitForSeconds(1);
-            World.Instance.OnDimensionChange.Invoke();
-            yield return null;
         }
 
         public IEnumerator MergeTransition()
         {
             OnTransitionStartEnd(true);
+
+            cameraController.ZoomOut(transitionDuration/10);
+            StartCoroutine(Glitch());
+            PlayVFX();
+            yield return StartCoroutine(MaterialAnim(dissolveRadiusMax, dissolveRadiusMin));
+            ActualMerge();
+            StopVFX();
+            cameraController.FollowPlayer();
+            cameraController.ZoomIn(transitionDuration/10);
+            yield return StartCoroutine(MaterialAnim(dissolveRadiusMin, dissolveRadiusMax));
+            cameraController.UnFollowPlayer();
+            World.Instance.OnDimensionChange.Invoke();
+
+            OnTransitionStartEnd(false);
+            yield return null;
+        }
+
+        void ActualMerge()
+        {
             for (int i = 0; i < targetPos.Count; i++)
-            {
                 World.Instance.Dimensions[i].transform.position = World.Instance.ActiveDimension.transform.position;
-            }
+
             Physics.SyncTransforms();
             World.Instance.MergeObjects();
+
+            for (int i = 0; i < targetPos.Count; i++)
+                World.Instance.Dimensions[i].gameObject.SetActive(false);
+            World.Instance.ActiveDimension.gameObject.SetActive(true);
+        }
+
+        IEnumerator MaterialAnim(float startRadius, float endRadius)
+        {
+            float t = 0.0f;
+            while (t < transitionDuration)
+            {
+                t += Time.deltaTime;
+                foreach (var mat in soMaterials)
+                    mat.SetFloat("_DissolveRadius", Mathf.Lerp(startRadius, endRadius, t / transitionDuration));
+                yield return null;
+            }
+        }
+
+        void PlayVFX()
+        {
             for (int i = 0; i < targetPos.Count; i++)
             {
-                World.Instance.Dimensions[i].gameObject.SetActive(false);
+                if (World.Instance.Dimensions[i].color != Dimension.Color.NONE)
+                    vfx[i].Play();
             }
-            World.Instance.ActiveDimension.gameObject.SetActive(true);
-            yield return new WaitForSeconds(1);
-            OnTransitionStartEnd(false);
-            World.Instance.OnDimensionChange.Invoke();
-            yield return null;
+        }
+
+        void StopVFX()
+        {
+            for (int i = 0; i < targetPos.Count; i++)
+            {
+                vfx[i].Stop();
+            }
         }
 
         void OnTransitionStartEnd(bool isStart)
         {
-            // playerController.pause = !isStart;
             Physics.gravity = isStart ? Vector3.zero : new Vector3(0f, -9.8f, 0f);
             Physics.autoSimulation = !isStart;
             transitting = isStart;

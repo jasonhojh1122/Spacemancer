@@ -131,8 +131,8 @@ namespace SpaceDevice
                 else
                     so = laser.HittedObject.Root.GetComponent<Splittable.SplittableObject>();
                 World.Instance.DeactivateObject(so);
-                laser.HittedObject = null;
             }
+            laser.HittedObject = null;
             TurnOff();
             InputManager.Instance.pause = false;
         }
@@ -158,6 +158,7 @@ namespace SpaceDevice
         public void OnInsertCallback()
         {
             holdColor = Dimension.Color.NONE;
+            laser.HittedObject = null;
             TurnOff();
             InputManager.Instance.pause = false;
         }

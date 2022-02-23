@@ -176,6 +176,7 @@ GameObject:
   - component: {fileID: 3309015296230574199}
   - component: {fileID: 3309015296230574198}
   - component: {fileID: 3309015296230574197}
+  - component: {fileID: 4359171101806336848}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -271,6 +272,25 @@ MonoBehaviour:
   OnColorChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!95 &4359171101806336848
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3309015296230574187}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f491053fb3fa19e4a8148a80c2645754, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &3309015297028779354
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,6 +303,7 @@ GameObject:
   - component: {fileID: 3309015297028779366}
   - component: {fileID: 3309015297028779365}
   - component: {fileID: 3309015297028779364}
+  - component: {fileID: 1994665482246653001}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -378,3 +399,22 @@ MonoBehaviour:
   OnColorChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!95 &1994665482246653001
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3309015297028779354}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f491053fb3fa19e4a8148a80c2645754, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

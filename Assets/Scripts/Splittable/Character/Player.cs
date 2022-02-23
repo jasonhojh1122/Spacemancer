@@ -7,7 +7,10 @@ namespace Splittable.Character
     public class Player : SplittableObject
     {
         [SerializeField] PlayerDummy dummyPrefab;
+        [SerializeField] Material originalMat;
+        [SerializeField] Material splittedMat;
         List<PlayerDummy> dummies;
+        Renderer _renderer;
 
         new void Awake()
         {
@@ -21,17 +24,21 @@ namespace Splittable.Character
                 World.Instance.MoveObjectToDimension(dummies[i].gameObject, i);
                 dummies[i].gameObject.SetActive(false);
             }
+            _renderer = GetComponent<Renderer>();
+            _renderer.material = originalMat;
         }
 
         public override void Split()
         {
             MoveToActiveDimension(true);
+            _renderer.material = splittedMat;
             World.Instance.MoveToProcessed(this);
         }
 
         public override void Merge(SplittableObject parent)
         {
             MoveToActiveDimension(false);
+            _renderer.material = originalMat;
             World.Instance.MoveToProcessed(this);
         }
 

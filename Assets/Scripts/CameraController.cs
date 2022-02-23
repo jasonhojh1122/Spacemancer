@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class CameraController : InputController
 {
@@ -13,6 +14,7 @@ public class CameraController : InputController
     [SerializeField] float accelInterval = 1.5f;
     [SerializeField] AnimationCurve accelCurve;
     [SerializeField] Transform followTarget;
+    [SerializeField] Transform player;
     [SerializeField] BoxCollider camConfiner;
     [SerializeField] Cinemachine.CinemachineVirtualCamera cam;
 
@@ -62,8 +64,7 @@ public class CameraController : InputController
                 accelCurve.Evaluate((Time.time - startMoveT) / accelInterval) * moveSpeedDiff;
             var vel = new Vector3(dir2d.x, 0, dir2d.y) * moveSpeed;
             var newPos = followTarget.position + vel * Time.deltaTime;
-            if (camConfiner.bounds.Contains(newPos))
-                followTarget.position = newPos;
+            followTarget.position = newPos;
         }
     }
 
@@ -90,4 +91,50 @@ public class CameraController : InputController
             cam.m_Lens.OrthographicSize = lenSize;
         }
     }
+
+    public void FollowPlayer()
+    {
+        cam.Follow = player;
+    }
+
+    public void UnFollowPlayer()
+    {
+        followTarget.position = player.transform.position;
+        cam.Follow = followTarget;
+    }
+
+    public void ZoomOut(float tLimit)
+    {
+        StartCoroutine(ZoomOutAnim(tLimit));
+    }
+
+    IEnumerator ZoomOutAnim(float tLimit)
+    {
+        float t = 0;
+        float startSize = cam.m_Lens.OrthographicSize;
+        while (t < tLimit)
+        {
+            t += Time.deltaTime;
+            cam.m_Lens.OrthographicSize = Mathf.Lerp(startSize, maxZoom, t / tLimit);
+            yield return null;
+        }
+    }
+
+    public void ZoomIn(float tLimit)
+    {
+        StartCoroutine(ZoomInAnim(tLimit));
+    }
+
+    IEnumerator ZoomInAnim(float tLimit)
+    {
+        float t = 0;
+        float startSize = cam.m_Lens.OrthographicSize;
+        while (t < tLimit)
+        {
+            t += Time.deltaTime;
+            cam.m_Lens.OrthographicSize = Mathf.Lerp(startSize, defaultZoom, t / tLimit);
+            yield return null;
+        }
+    }
+
 }

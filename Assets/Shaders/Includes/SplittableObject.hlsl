@@ -35,4 +35,32 @@ void IsInRange_float(float dist, float startDist, float endDist, out bool isInRa
     isInRange = ((dist >= startDist) && (dist <= endDist));
 }
 
+void ClosestDim_float(float3 pos, float3 dim1, float dim2, float dim3, out float distance, out float3 distanceVector)
+{
+    float3 minDistVector = pos - dim1;
+    float minDist = length(minDistVector);
+
+    float tmpVector = pos - dim2;
+    float tmpDist = length(tmpVector);
+
+    if (tmpDist < minDist)
+    {
+        minDist = tmpDist;
+        minDistVector = tmpVector;
+    }
+
+    tmpVector = pos - dim3;
+    tmpDist = length(tmpVector);
+
+    if (tmpDist < minDist)
+    {
+        minDist = tmpDist;
+
+        minDistVector = tmpVector;
+    }
+
+    distance = minDist;
+    distanceVector = minDistVector;
+}
+
 #endif

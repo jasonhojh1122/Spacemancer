@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.VFX;
 
 using System.Linq;
 using System.Collections.Generic;
@@ -11,13 +12,20 @@ namespace SpaceDevice
 {
     public class SplitMergeMachine : InputController
     {
-
+        [Header("Sub-device Settings")]
         [SerializeField] bool withdrawerOn = false;
         [SerializeField] bool dimChangerOn = false;
         [SerializeField] List<Image> dimColorIndicators;
         [SerializeField] GameObject dimChanger;
         [SerializeField] GameObject withdrawer;
+
+        [Header("Energy Cost Per Action")]
         [SerializeField] float energyCost = 0.1f;
+
+        [Header("Enter Dimension Settings")]
+        [SerializeField] VisualEffect playerTransitionVFX;
+        [SerializeField] CameraController cameraController;
+        [SerializeField] float enterDimensionDuration;
 
         InputAction toggleAction;
         UI.CanvasGroupFader fader;
@@ -78,7 +86,7 @@ namespace SpaceDevice
             RotateColorId(i);
             if (i == World.Instance.ActiveDimId)
             {
-                var missingColor = Dimension.MissingColor(GetColor(i));
+                var missingColor = Dimension.MissingColor(GetColorByID(i));
                 for (int j = 0; j < dimColorIds.Count; j++)
                 {
                     var id = (i+j+1) % dimColorIds.Count;
@@ -92,7 +100,7 @@ namespace SpaceDevice
             }
             else
             {
-                var missingColor = Dimension.MissingColor(GetColor(i));
+                var missingColor = Dimension.MissingColor(GetColorByID(i));
                 dimColorIds[World.Instance.ActiveDimId] = Dimension.ValidColorIndex[missingColor[0]];
                 for (int j = 1; j < dimColorIds.Count; j++)
                 {
@@ -127,7 +135,7 @@ namespace SpaceDevice
             }
         }
 
-        Dimension.Color GetColor(int i)
+        Dimension.Color GetColorByID(int i)
         {
             return Dimension.SplittedColor[dimColorIds[i]];
         }
@@ -138,24 +146,32 @@ namespace SpaceDevice
         /// <param name="i"> The index of the dimension to enter. </param>
         public void EnterDimension(int i)
         {
-            if (!World.Instance.Splitted) return;
+            if (!World.Instance.Splitted || dimColorIds[i] < 0
+                || i == World.Instance.ActiveDimId) return;
+            StartCoroutine(EnterAnim(i));
+        }
+
+        System.Collections.IEnumerator EnterAnim(int i)
+        {
+            fader.FadeOut();
+            InputManager.Instance.pause = true;
+            playerTransitionVFX.Stop();
+            playerTransitionVFX.Play();
+            cameraController.FollowPlayer();
             World.Instance.ActiveDimId = i;
+            yield return new WaitForSeconds(enterDimensionDuration);
+            cameraController.UnFollowPlayer();
+            playerTransitionVFX.Stop();
+            playerTransitionVFX.Play();
+            InputManager.Instance.pause = false;
+            InputManager.Instance.ToggleGameplayInput(fader.IsOn);
         }
 
         public void SplitMerge()
         {
-            if (!World.Instance.Splitted)
-            {
-                if (dimColorIds[World.Instance.ActiveDimId] < 0)
-                    return;
-                var c = Dimension.Color.NONE;
-                for (int i = 0; i < dimColorIds.Count; i++)
-                    if (dimColorIds[i] != -1)
-                        c = Dimension.AddColor(c, Dimension.SplittedColor[dimColorIds[i]]);
-                if (c == Dimension.Color.BLACK)
-                    return;
-            }
             World.Instance.Toggle();
+            fader.FadeOut();
+            InputManager.Instance.ToggleGameplayInput(fader.IsOn);
         }
 
     }

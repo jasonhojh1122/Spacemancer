@@ -12,13 +12,13 @@ namespace SpaceDevice
         [SerializeField] float width;
         [SerializeField] float speed;
         [SerializeField] Transform player;
+        [SerializeField] float maxLength = 50.0f;
         LineRenderer lr;
         MaterialPropertyBlock _property;
         ObjectColor _hittedObject;
         Dimension.Color _color;
         bool _IsOn = false;
         Vector3 _contactPoint, _localEndPoint;
-        float maxLength = 150.0f;
         float _curLength;
 
         /// <summary>
@@ -59,7 +59,11 @@ namespace SpaceDevice
                 _IsOn = value;
                 if(value == false)
                 {
-                    HittedObject = null;
+                    if (HittedObject != null)
+                    {
+                        HittedObject.Unselect();
+                        HittedObject = null;
+                    }
                     TurnOff();
                 }
                 else
