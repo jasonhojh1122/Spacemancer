@@ -9,6 +9,11 @@ namespace UI
         [SerializeField] bool defaultOn = true;
         CanvasGroup canvasGroup;
 
+        public float Duration
+        {
+            get => duration;
+        }
+
         bool isOn;
 
         public bool IsOn {

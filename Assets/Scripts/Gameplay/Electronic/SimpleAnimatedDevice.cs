@@ -5,21 +5,21 @@ namespace Gameplay.Electronic
     [RequireComponent(typeof(Splittable.SplittableObject))]
     public class SimpleAnimatedDevice : ElectronicObject
     {
-        [SerializeField] Animator doorAnimation;
+        [SerializeField] Animator animator;
         [SerializeField] bool _isOpened = true;
-        Splittable.SplittableObject so;
+        protected Splittable.SplittableObject so;
 
-        bool IsOpened
+        protected bool IsOpened
         {
             get => _isOpened;
             set
             {
                 _isOpened = value;
-                doorAnimation.SetBool("IsOpened", IsOpened);
+                animator.SetBool("IsOpened", IsOpened);
             }
         }
 
-        private void Awake()
+        protected void Awake()
         {
             so = GetComponent<Splittable.SplittableObject>();
             so.ObjectColor.OnColorChanged.AddListener(OnColorChange);

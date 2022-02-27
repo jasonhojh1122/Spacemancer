@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 using System;
 
-namespace Gameplay.Interactable
+namespace Gameplay
 {
     [Serializable]
     public class ZoneEvent : UnityEvent<Collider>{}
@@ -12,25 +12,25 @@ namespace Gameplay.Interactable
     public class Zone : MonoBehaviour
     {
 
-        [SerializeField] ZoneEvent TriggerEnter;
-        [SerializeField] ZoneEvent TriggerStay;
-        [SerializeField] ZoneEvent TriggerExit;
-        Collider col;
+        [SerializeField] protected ZoneEvent TriggerEnter;
+        [SerializeField] protected ZoneEvent TriggerStay;
+        [SerializeField] protected ZoneEvent TriggerExit;
+        protected Collider col;
 
-        private void Awake()
+        protected void Awake()
         {
             col = GetComponent<Collider>();
         }
 
-        private void OnTriggerEnter(Collider other)
+        protected virtual void OnTriggerEnter(Collider other)
         {
             TriggerEnter.Invoke(other);
         }
-        private void OnTriggerStay(Collider other)
+        protected virtual void OnTriggerStay(Collider other)
         {
             TriggerStay.Invoke(other);
         }
-        private void OnTriggerExit(Collider other)
+        protected virtual void OnTriggerExit(Collider other)
         {
             TriggerExit.Invoke(other);
         }

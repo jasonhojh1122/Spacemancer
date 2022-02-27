@@ -185,6 +185,7 @@ GameObject:
   - component: {fileID: 3577899955248818260}
   - component: {fileID: 3577899955248818261}
   - component: {fileID: 3577899955248818262}
+  - component: {fileID: 7631498716333580456}
   m_Layer: 0
   m_Name: Pillar
   m_TagString: Untagged
@@ -299,6 +300,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &7631498716333580456
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3577899955248818259}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3577899955326394647
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,6 +326,7 @@ GameObject:
   - component: {fileID: 3577899955326394648}
   - component: {fileID: 3577899955326394649}
   - component: {fileID: 3577899955326394650}
+  - component: {fileID: 9154488340282858811}
   m_Layer: 0
   m_Name: Pillar
   m_TagString: Untagged
@@ -426,6 +441,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &9154488340282858811
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3577899955326394647}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: -0.00000035762787, y: 0, z: 0}
 --- !u!1 &3577899955395767035
 GameObject:
   m_ObjectHideFlags: 0
@@ -439,6 +467,7 @@ GameObject:
   - component: {fileID: 3577899955395767038}
   - component: {fileID: 3577899955395767039}
   - component: {fileID: 3577899955395767036}
+  - component: {fileID: 2088646720400437339}
   m_Layer: 0
   m_Name: Shelf (2)
   m_TagString: Untagged
@@ -554,6 +583,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &2088646720400437339
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3577899955395767035}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.047999978, z: 0.7}
+  m_Center: {x: -0.0000019073486, y: 0.09300006, z: 0.0000004172325}
 --- !u!1 &3577899956480102547
 GameObject:
   m_ObjectHideFlags: 0
@@ -567,6 +609,7 @@ GameObject:
   - component: {fileID: 3577899956480102548}
   - component: {fileID: 3577899956480102549}
   - component: {fileID: 3577899956480102550}
+  - component: {fileID: 1113230470680740839}
   m_Layer: 0
   m_Name: Pillar
   m_TagString: Untagged
@@ -681,6 +724,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &1113230470680740839
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3577899956480102547}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: -0.000000029802322, z: 0.0000009536743}
 --- !u!1 &3577899956635657282
 GameObject:
   m_ObjectHideFlags: 0
@@ -694,6 +750,7 @@ GameObject:
   - component: {fileID: 3577899956635657287}
   - component: {fileID: 3577899956635657284}
   - component: {fileID: 3577899956635657289}
+  - component: {fileID: 3164167090452195329}
   m_Layer: 0
   m_Name: Pillar
   m_TagString: Untagged
@@ -808,6 +865,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &3164167090452195329
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3577899956635657282}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0.00000023841858, y: -0.000000029802322, z: 0.0000009536743}
 --- !u!1 &3577899957193979117
 GameObject:
   m_ObjectHideFlags: 0
@@ -821,6 +891,7 @@ GameObject:
   - component: {fileID: 3577899957193979088}
   - component: {fileID: 3577899957193979089}
   - component: {fileID: 3577899957193979118}
+  - component: {fileID: 565154110400378010}
   m_Layer: 0
   m_Name: Shelf (1)
   m_TagString: Untagged
@@ -936,3 +1007,16 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &565154110400378010
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3577899957193979117}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.047999978, z: 0.7}
+  m_Center: {x: -0.0000019073486, y: 0.093, z: 0.0000004172325}
