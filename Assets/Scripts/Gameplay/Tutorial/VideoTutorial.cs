@@ -5,35 +5,31 @@ using UnityEngine.EventSystems;
 namespace Gameplay.Tutorial
 {
 
-    [RequireComponent(typeof(UI.CanvasGroupFader), typeof(VideoPlayer))]
+    [RequireComponent(typeof(UI.CanvasGroupFader))]
     public class VideoTutorial : MonoBehaviour
     {
-        [SerializeField] UnityEngine.UI.Button closeButton;
+        [SerializeField] VideoPlayer videoPlayer;
         static EventSystem eventSystem;
         UI.CanvasGroupFader fader;
-        VideoPlayer videoPlayer;
 
         private void Awake()
         {
             if (eventSystem == null)
                 eventSystem = FindObjectOfType<EventSystem>();
             fader = GetComponent<UI.CanvasGroupFader>();
-            videoPlayer = GetComponent<VideoPlayer>();
-            closeButton.onClick.AddListener(OnClose);
         }
 
         public void Show()
         {
-            InputManager.Instance.pause = true;
+            Input.InputManager.Instance.pause = true;
             fader.FadeIn();
-            eventSystem.SetSelectedGameObject(closeButton.gameObject);
             videoPlayer.Play();
         }
 
         public void OnClose()
         {
             fader.FadeOut();
-            InputManager.Instance.pause = false;
+            Input.InputManager.Instance.pause = false;
             videoPlayer.Stop();
         }
     }

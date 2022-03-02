@@ -20,7 +20,21 @@ namespace Core
         [SerializeField] Dimension inactiveRoot;
         [SerializeField] Dimension.Color startDimensionColor = Dimension.Color.WHITE;
         [SerializeField] SpaceDevice.SplitMergeMachine splitMergeMachine;
-        [HideInInspector] public UnityEvent OnDimensionChange = new UnityEvent();
+
+        [HideInInspector]
+        /// <summary>
+        /// On
+        /// </summary>
+        /// <returns></returns>
+        public UnityEvent OnActiveDimChange = new UnityEvent();
+
+        [HideInInspector]
+        /// <summary>
+        /// ABC
+        /// </summary>
+        /// <returns></returns>
+        public UnityEvent OnTransitionStart = new UnityEvent();
+        [HideInInspector] public UnityEvent OnTransitionEnd = new UnityEvent();
         DimensionTransition dimensionTransition;
         Dictionary<Dimension.Color, int> dimId;
         SplittableObjectPool objectPool;
@@ -48,17 +62,26 @@ namespace Core
         /// <summary>
         /// The currently active dimension.
         /// </summary>
-        public Dimension ActiveDimension {
-            get => dimensions[activeDimId];
+        public Dimension ActiveDimension
+        {
+            get => dimensions[ActiveDimId];
         }
 
         /// <summary>
         /// The id of the currently active dimensions.
         /// </summary>
         /// <value></value>
-        public int ActiveDimId {
+        public int ActiveDimId
+        {
             get => activeDimId;
-            set => activeDimId = value;
+            set
+            {
+                if (activeDimId != value)
+                {
+                    activeDimId = value;
+                    OnActiveDimChange.Invoke();
+                }
+            }
         }
 
         /// <summary>
@@ -103,7 +126,7 @@ namespace Core
             foreach (Dimension.Color c in Dimension.ValidColor)
                 dimId.Add(c, -1);
             dimId[Dimension.Color.WHITE] = 0;
-            activeDimId = 0;
+            ActiveDimId = 0;
 
             processedObjects = new Set();
             unprocessedObjects = new Set();
@@ -290,7 +313,7 @@ namespace Core
         {
             Vector3 localPos = so.transform.localPosition;
             Quaternion localRot = so.transform.localRotation;
-            so.Dim = dimensions[activeDimId];
+            so.Dim = dimensions[ActiveDimId];
             MoveTransformToNewParent(so.transform, so.Dim.transform, localPos, localRot);
         }
 
@@ -409,8 +432,8 @@ namespace Core
             {
                 splitted = false;
                 for (int i = 0; i < dimensions.Count; i++)
-                    dimensions[activeDimId].color = Dimension.Color.NONE;
-                dimensions[activeDimId].color = Dimension.Color.WHITE;
+                    dimensions[ActiveDimId].color = Dimension.Color.NONE;
+                dimensions[ActiveDimId].color = Dimension.Color.WHITE;
                 UpdateDimId();
                 StartCoroutine(dimensionTransition.MergeTransition());
             }

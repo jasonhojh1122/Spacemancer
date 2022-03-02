@@ -25,7 +25,7 @@ namespace Gameplay.Electronic
             curOn = defaultOn;
             InitLineRenderer();
             so = GetComponent<Splittable.SplittableObject>();
-            Core.World.Instance.OnDimensionChange.AddListener(CheckFences);
+            Core.World.Instance.OnTransitionEnd.AddListener(CheckFences);
             so.ObjectColor.OnColorChanged.AddListener(CheckFences);
             so.OnInitialized.AddListener(CheckFences);
         }
@@ -86,7 +86,7 @@ namespace Gameplay.Electronic
         {
             ps.Play();
             audioSource.Play();
-            InputManager.Instance.pause = true;
+            Input.InputManager.Instance.pause = true;
             yield return new WaitForSeconds(explosionLength);
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }

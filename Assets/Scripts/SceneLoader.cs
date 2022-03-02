@@ -16,20 +16,34 @@ public class SceneLoader : MonoBehaviour
     private void Awake()
     {
         if (_instance != null)
-            Debug.LogError("Multiple instance of DefaultMaterialColor created");
+            Debug.LogError("Multiple instance of SceneLoader created");
         _instance = this;
     }
 
+    /// <summary>
+    /// Loads the scene with the given name.
+    /// </summary>
+    /// <param name="name"> The name of the scene to be loaded. </param>
     public void Load(string name)
     {
         sceneTransition.FadeIn();
         StartCoroutine(LoadScene(name));
     }
 
+    /// <summary>
+    /// Loads the next scene.
+    /// </summary>
     public void Load()
     {
         sceneTransition.FadeIn();
         string name = SceneManager.GetSceneByBuildIndex(SceneManager.GetActiveScene().buildIndex + 1).name;
+        StartCoroutine(LoadScene(name));
+    }
+
+    public void Reload()
+    {
+        sceneTransition.FadeIn();
+        string name = SceneManager.GetActiveScene().name;
         StartCoroutine(LoadScene(name));
     }
 

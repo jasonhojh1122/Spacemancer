@@ -24,13 +24,6 @@ namespace Core {
             BLACK   = 0b_1000,
         }
 
-        [Serializable]
-        public struct ColorSetting
-        {
-            public Color colorTag;
-            public UnityEngine.Color32 color32;
-        }
-
         /// <summary>
         /// The base color of dimensions.
         /// </summary>

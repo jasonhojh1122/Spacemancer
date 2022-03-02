@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.Animations.Rigging;
 using System.Collections;
 
+using Input;
+
 namespace Gameplay.Interactable
 {
     [RequireComponent(typeof(IK.PlayerIK), typeof(Splittable.Character.Player))]

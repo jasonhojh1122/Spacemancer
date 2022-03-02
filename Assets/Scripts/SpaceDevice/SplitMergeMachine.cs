@@ -3,10 +3,10 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
 
-using System.Linq;
 using System.Collections.Generic;
 
 using Core;
+using Input;
 
 namespace SpaceDevice
 {
@@ -26,6 +26,9 @@ namespace SpaceDevice
         [SerializeField] VisualEffect playerTransitionVFX;
         [SerializeField] CameraController cameraController;
         [SerializeField] float enterDimensionDuration;
+
+        [Header("Animation")]
+        [SerializeField] List<Animator> selectorAnimator;
 
         InputAction toggleAction;
         UI.CanvasGroupFader fader;
@@ -57,9 +60,15 @@ namespace SpaceDevice
             }
         }
 
-        void Toggle(InputAction.CallbackContext context)
+        public void Toggle(InputAction.CallbackContext context)
         {
             if (IsPaused()) return;
+            fader.Toggle();
+            InputManager.Instance.ToggleGameplayInput(fader.IsOn);
+        }
+
+        public void Toggle()
+        {
             fader.Toggle();
             InputManager.Instance.ToggleGameplayInput(fader.IsOn);
         }
@@ -83,36 +92,12 @@ namespace SpaceDevice
         public void RotateColor(int i)
         {
             if (World.Instance.Splitted) return;
+            RotateSelector(i);
             RotateColorId(i);
             if (i == World.Instance.ActiveDimId)
-            {
-                var missingColor = Dimension.MissingColor(GetColorByID(i));
-                for (int j = 0; j < dimColorIds.Count; j++)
-                {
-                    var id = (i+j+1) % dimColorIds.Count;
-                    if (id == i)
-                        continue;
-                    else if (j >= missingColor.Count && id != i)
-                        dimColorIds[id] = -1;
-                    else
-                        dimColorIds[id] = Dimension.ValidColorIndex[missingColor[j]];
-                }
-            }
+                AutoChangeDimColorActive(i);
             else
-            {
-                var missingColor = Dimension.MissingColor(GetColorByID(i));
-                dimColorIds[World.Instance.ActiveDimId] = Dimension.ValidColorIndex[missingColor[0]];
-                for (int j = 1; j < dimColorIds.Count; j++)
-                {
-                    var id = (i+j) % dimColorIds.Count;
-                    if (id == World.Instance.ActiveDimId)
-                        continue;
-                    else if (j >= missingColor.Count)
-                        dimColorIds[id] = -1;
-                    else
-                        dimColorIds[id] = Dimension.ValidColorIndex[missingColor[j]];
-                }
-            }
+                AutoChangeDimColorOther(i);
             UpdateDimColorIndicator();
         }
 
@@ -122,6 +107,52 @@ namespace SpaceDevice
                 dimColorIds[i] = 0;
             else
                 dimColorIds[i] = (dimColorIds[i] + 1) % Dimension.SplittedColor.Count;
+        }
+
+        void AutoChangeDimColorActive(int i)
+        {
+            var missingColor = Dimension.MissingColor(GetColorByID(i));
+            int missingId = 0;
+            for (int j = 0; j < dimColorIds.Count; j++)
+            {
+                var id = (i+j+1) % dimColorIds.Count;
+                if (id == i)
+                    continue;
+                else if (missingId >= missingColor.Count)
+                    dimColorIds[id] = -1;
+                else
+                {
+                    dimColorIds[id] = Dimension.ValidColorIndex[missingColor[missingId]];
+                    missingId += 1;
+                }
+                RotateSelector(id);
+            }
+        }
+
+        void AutoChangeDimColorOther(int i)
+        {
+            var missingColor = Dimension.MissingColor(GetColorByID(i));
+            dimColorIds[World.Instance.ActiveDimId] = Dimension.ValidColorIndex[missingColor[0]];
+            int missingId = 1;
+            for (int j = 0; j < dimColorIds.Count; j++)
+            {
+                var id = (i+j+1) % dimColorIds.Count;
+                if (id == World.Instance.ActiveDimId || id == i)
+                    continue;
+                else if (missingId >= missingColor.Count)
+                    dimColorIds[id] = -1;
+                else
+                {
+                    dimColorIds[id] = Dimension.ValidColorIndex[missingColor[missingId]];
+                    missingId += 1;
+                }
+                RotateSelector(id);
+            }
+        }
+
+        void RotateSelector(int i)
+        {
+            selectorAnimator[i].SetTrigger("Rotate");
         }
 
         void UpdateDimColorIndicator()
@@ -164,13 +195,6 @@ namespace SpaceDevice
             playerTransitionVFX.Stop();
             playerTransitionVFX.Play();
             InputManager.Instance.pause = false;
-            InputManager.Instance.ToggleGameplayInput(fader.IsOn);
-        }
-
-        public void SplitMerge()
-        {
-            World.Instance.Toggle();
-            fader.FadeOut();
             InputManager.Instance.ToggleGameplayInput(fader.IsOn);
         }
 

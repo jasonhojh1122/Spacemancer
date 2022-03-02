@@ -19,7 +19,7 @@ namespace Gameplay
         {
             so = GetComponent<SplittableObject>();
             so.ObjectColor.OnColorChanged.AddListener(OnColorChange);
-            World.Instance.OnDimensionChange.AddListener(OnDimensionChange);
+            World.Instance.OnTransitionEnd.AddListener(OnDimensionChange);
         }
 
         private void Start()

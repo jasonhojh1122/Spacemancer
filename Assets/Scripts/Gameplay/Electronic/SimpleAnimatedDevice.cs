@@ -23,7 +23,7 @@ namespace Gameplay.Electronic
         {
             so = GetComponent<Splittable.SplittableObject>();
             so.ObjectColor.OnColorChanged.AddListener(OnColorChange);
-            Core.World.Instance.OnDimensionChange.AddListener(OnDimensionChange);
+            Core.World.Instance.OnTransitionEnd.AddListener(OnDimensionChange);
         }
 
         public override void TurnOn()

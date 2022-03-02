@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UI
 {
@@ -7,7 +8,10 @@ namespace UI
     {
         [SerializeField] float duration = 0.1f;
         [SerializeField] bool defaultOn = true;
+        [SerializeField] bool pauseGameplayInput = true;
+        [SerializeField] GameObject defaultSelected;
         CanvasGroup canvasGroup;
+        static EventSystem eventSystem;
 
         public float Duration
         {
@@ -23,6 +27,8 @@ namespace UI
         private void Awake()
         {
             canvasGroup = GetComponent<CanvasGroup>();
+            if (eventSystem == null)
+                eventSystem = FindObjectOfType<EventSystem>();
         }
 
         private void Start()
@@ -33,6 +39,12 @@ namespace UI
                 canvasGroup.blocksRaycasts = false;
                 canvasGroup.alpha = 0;
             }
+            else
+            {
+                if (pauseGameplayInput)
+                    Input.InputManager.Instance.ToggleGameplayInput(true);
+                SelectDefault();
+            }
             isOn = defaultOn;
         }
 
@@ -41,6 +53,8 @@ namespace UI
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
             isOn = false;
+            if (pauseGameplayInput)
+                Input.InputManager.Instance.ToggleGameplayInput(false);
             StartCoroutine(Fade(false));
         }
 
@@ -49,6 +63,9 @@ namespace UI
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
             isOn = true;
+            if (pauseGameplayInput)
+                Input.InputManager.Instance.ToggleGameplayInput(true);
+            SelectDefault();
             StartCoroutine(Fade(true));
         }
 
@@ -71,6 +88,12 @@ namespace UI
                 FadeOut();
             else
                 FadeIn();
+        }
+
+        void SelectDefault()
+        {
+            if (defaultSelected != null)
+                eventSystem.SetSelectedGameObject(defaultSelected);
         }
 
     }

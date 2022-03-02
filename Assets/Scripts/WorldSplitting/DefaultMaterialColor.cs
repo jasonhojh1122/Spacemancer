@@ -1,5 +1,6 @@
 
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 namespace Core
@@ -10,7 +11,16 @@ namespace Core
         public static DefaultMaterialColor Instance {
             get => _instance;
         }
-        [SerializeField] List<Dimension.ColorSetting> colorSettings;
+
+        [Serializable]
+        public struct ColorSetting
+        {
+            public Dimension.Color colorTag;
+            public UnityEngine.Color32 color32;
+        }
+
+
+        [SerializeField] List<ColorSetting> colorSettings;
 
         private void Awake()
         {
@@ -20,7 +30,7 @@ namespace Core
 
             if(Dimension.MaterialColor.Count == 0)
             {
-                foreach (Dimension.ColorSetting setting in colorSettings)
+                foreach (ColorSetting setting in colorSettings)
                 {
                     Dimension.MaterialColor.Add(setting.colorTag, setting.color32);
                 }

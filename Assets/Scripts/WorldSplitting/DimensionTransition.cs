@@ -25,10 +25,11 @@ namespace Core
         [SerializeField] float dissolveRadiusMax = 20.0f;
         [SerializeField] float dissolveRadiusMin = -10.0f;
         [SerializeField] float transitionDuration = 1.0f;
-        [SerializeField] CameraController cameraController;
+        [SerializeField] Input.CameraController cameraController;
         [SerializeField] GlitchSetting glitchSetting;
 
         bool transitting;
+        Vector3 gravity = new Vector3(0f, -9.8f, 0f);
 
         public bool Transitting {
             get => transitting;
@@ -49,7 +50,7 @@ namespace Core
 
         public IEnumerator SplitTransition()
         {
-            OnTransitionStartEnd(true);
+            OnTransitionStart();
 
             cameraController.ZoomOut(transitionDuration/10);
             StartCoroutine(Glitch());
@@ -61,25 +62,13 @@ namespace Core
             cameraController.ZoomIn(transitionDuration/10);
             yield return StartCoroutine(MaterialAnim(dissolveRadiusMin, dissolveRadiusMax));
             cameraController.UnFollowPlayer();
-            World.Instance.OnDimensionChange.Invoke();
 
-            OnTransitionStartEnd(false);
-        }
-
-        void ActualSplit()
-        {
-            for (int i = 0; i < targetPos.Count; i++)
-            {
-                World.Instance.Dimensions[i].transform.position = targetPos[i].position;
-                World.Instance.Dimensions[i].gameObject.SetActive(true);
-            }
-            World.Instance.SplitObjects();
-            Physics.SyncTransforms();
+            OnTransitionEnd();
         }
 
         public IEnumerator MergeTransition()
         {
-            OnTransitionStartEnd(true);
+            OnTransitionStart();
 
             cameraController.ZoomOut(transitionDuration/10);
             StartCoroutine(Glitch());
@@ -91,12 +80,46 @@ namespace Core
             cameraController.ZoomIn(transitionDuration/10);
             yield return StartCoroutine(MaterialAnim(dissolveRadiusMin, dissolveRadiusMax));
             cameraController.UnFollowPlayer();
-            World.Instance.OnDimensionChange.Invoke();
 
-            OnTransitionStartEnd(false);
+            OnTransitionEnd();
             yield return null;
         }
 
+        void OnTransitionStart()
+        {
+            Physics.gravity = Vector3.zero;
+            Physics.autoSimulation = false;
+            transitting = true;
+            World.Instance.OnTransitionStart.Invoke();
+            Input.InputManager.Instance.pause = true;
+        }
+
+        void OnTransitionEnd()
+        {
+            Physics.gravity = gravity;
+            Physics.autoSimulation = true;
+            transitting = false;
+            World.Instance.OnTransitionEnd.Invoke();
+            Input.InputManager.Instance.pause = false;
+        }
+
+        /// <summary>
+        /// Physically splits of gameobjects.
+        /// </summary>
+        void ActualSplit()
+        {
+            for (int i = 0; i < targetPos.Count; i++)
+            {
+                World.Instance.Dimensions[i].transform.position = targetPos[i].position;
+                World.Instance.Dimensions[i].gameObject.SetActive(true);
+            }
+            World.Instance.SplitObjects();
+            Physics.SyncTransforms();
+        }
+
+        /// <summary>
+        /// Physically merges the gameobjects.
+        /// </summary>
         void ActualMerge()
         {
             for (int i = 0; i < targetPos.Count; i++)
@@ -110,6 +133,12 @@ namespace Core
             World.Instance.ActiveDimension.gameObject.SetActive(true);
         }
 
+        /// <summary>
+        /// Animates the dissolve radius of the material.
+        /// </summary>
+        /// <param name="startRadius"> The starting radius. </param>
+        /// <param name="endRadius"> The ending radius. </param>
+        /// <returns></returns>
         IEnumerator MaterialAnim(float startRadius, float endRadius)
         {
             float t = 0.0f;
@@ -122,6 +151,9 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Plays the vfx.
+        /// </summary>
         void PlayVFX()
         {
             for (int i = 0; i < targetPos.Count; i++)
@@ -131,6 +163,9 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Stops the vfx.
+        /// </summary>
         void StopVFX()
         {
             for (int i = 0; i < targetPos.Count; i++)
@@ -139,13 +174,10 @@ namespace Core
             }
         }
 
-        void OnTransitionStartEnd(bool isStart)
-        {
-            Physics.gravity = isStart ? Vector3.zero : new Vector3(0f, -9.8f, 0f);
-            Physics.autoSimulation = !isStart;
-            transitting = isStart;
-        }
-
+        /// <summary>
+        /// Animates the global glitch effect.
+        /// </summary>
+        /// <returns></returns>
         IEnumerator Glitch()
         {
             float t = 0.0f;
@@ -171,6 +203,9 @@ namespace Core
             glitchSetting.mat.SetFloat("_Transitting", 0.0f);
         }
 
+        /// <summary>
+        /// Splits the world without animation.
+        /// </summary>
         public void DefaultSplit()
         {
             for (int i = 0; i < targetPos.Count; i++)

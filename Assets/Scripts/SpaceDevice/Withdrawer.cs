@@ -1,8 +1,10 @@
 
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 using Core;
+using Input;
 
 namespace SpaceDevice
 {
@@ -34,6 +36,12 @@ namespace SpaceDevice
 
         InputAction toggle;
         InputAction perform;
+
+        public bool IsOn {
+            get => laser.IsOn;
+        }
+
+        [HideInInspector] public UnityEvent OnToggle = new UnityEvent();
 
         new void Awake()
         {
@@ -71,12 +79,14 @@ namespace SpaceDevice
             else
                 curState = WithdrawerState.TO_WITHDRAW;
             laser.Color = withdrawColor;
+            OnToggle.Invoke();
         }
 
         void TurnOff()
         {
             laser.IsOn = false;
             curState = WithdrawerState.OFF;
+            OnToggle.Invoke();
         }
 
         public void Perform()

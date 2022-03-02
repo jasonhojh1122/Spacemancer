@@ -2,12 +2,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Core
+namespace Input
 {
     public class WorldController : InputController
     {
 
-        [SerializeField] World world;
+        [SerializeField] Core.World world;
 
         InputAction splitMerge;
         InputAction rotateLeft;
@@ -28,7 +28,6 @@ namespace Core
             {
                 world.Toggle();
             }
-
         }
 
 

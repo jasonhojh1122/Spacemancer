@@ -33,7 +33,7 @@ namespace Gameplay.Interactable
 
         IEnumerator Move()
         {
-            InputManager.Instance.pause = true;
+            Input.InputManager.Instance.pause = true;
             InteractionManager.Instance.transform.SetParent(this.transform);
             isMoving = true;
             Vector3 target = isMovingToEnd ? endPosition : startPosition;
@@ -45,7 +45,7 @@ namespace Gameplay.Interactable
             isMoving = false;
             isMovingToEnd = !isMovingToEnd;
             InteractionManager.Instance.transform.SetParent(this.transform.parent);
-            InputManager.Instance.pause = false;
+            Input.InputManager.Instance.pause = false;
         }
 
         public void MoveToEnd()

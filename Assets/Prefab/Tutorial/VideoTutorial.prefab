@@ -683,9 +683,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7469947321140224126}
-        m_TargetAssemblyTypeName: UI.CanvasGroupFader, Assembly-CSharp
-        m_MethodName: FadeOut
+      - m_Target: {fileID: 7469947321140224124}
+        m_TargetAssemblyTypeName: Gameplay.Tutorial.VideoTutorial, Assembly-CSharp
+        m_MethodName: OnClose
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1172,6 +1172,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 0.1
   defaultOn: 0
+  defaultSelected: {fileID: 7469947320096157162}
 --- !u!114 &7469947321140224124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1185,6 +1186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closeButton: {fileID: 7469947320096157160}
+  videoPlayer: {fileID: 7469947320599536065}
 --- !u!1 &7469947321259620738
 GameObject:
   m_ObjectHideFlags: 0

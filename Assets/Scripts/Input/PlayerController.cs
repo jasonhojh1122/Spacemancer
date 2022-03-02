@@ -2,7 +2,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Splittable.Character {
+namespace Input
+{
 
     [RequireComponent(typeof(CharacterController))]
     public class PlayerController : InputController
@@ -16,7 +17,7 @@ namespace Splittable.Character {
         InputAction moveAction;
 
         Animator animator;
-        Player player;
+        Splittable.Character.Player player;
         Vector3 vel;
         [SerializeField] bool moving;
 
@@ -24,7 +25,7 @@ namespace Splittable.Character {
         {
             base.Awake();
             animator = GetComponent<Animator>();
-            player = GetComponent<Player>();
+            player = GetComponent<Splittable.Character.Player>();
             characterController = GetComponent<CharacterController>();
             moveAction = playerInput.actions["Movement"];
             animator.runtimeAnimatorController = idleAC;
@@ -32,18 +33,16 @@ namespace Splittable.Character {
             moving = false;
         }
 
-        private void Start() {
-
-        }
-
         protected void Update()
         {
             if (IsPaused())
             {
                 vel = Vector3.zero;
-                return;
             }
-            UpdateVelocity();
+            else
+            {
+                UpdateVelocity();
+            }
             UpdateMovingState();
             Move();
         }

@@ -44,7 +44,7 @@ namespace Gameplay.Interactable
 
         IEnumerator MoveToPlayer()
         {
-            InputManager.Instance.pause = true;
+            Input.InputManager.Instance.pause = true;
             float t = 0.0f;
             Vector3 startPos = transform.position;
             Vector3 endPos = transform.parent.TransformPoint(pickUpOffset);
@@ -55,7 +55,7 @@ namespace Gameplay.Interactable
                 yield return null;
             }
             transform.localPosition = pickUpOffset;
-            InputManager.Instance.pause = false;
+            Input.InputManager.Instance.pause = false;
         }
 
         void PutDown()
