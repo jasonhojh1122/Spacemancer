@@ -19,9 +19,9 @@ namespace Gameplay.Interactable
 
         public override void Interact()
         {
-            if (container.Count <= 0) return;
+            if (!container.IsSufficient()) return;
             errorSpace.Fix();
-            container.Count -= 1;
+            container.Lose();
         }
 
         public override bool IsInteracting()

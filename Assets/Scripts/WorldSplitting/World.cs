@@ -432,7 +432,7 @@ namespace Core
             {
                 splitted = false;
                 for (int i = 0; i < dimensions.Count; i++)
-                    dimensions[ActiveDimId].color = Dimension.Color.NONE;
+                    dimensions[i].color = Dimension.Color.NONE;
                 dimensions[ActiveDimId].color = Dimension.Color.WHITE;
                 UpdateDimId();
                 StartCoroutine(dimensionTransition.MergeTransition());

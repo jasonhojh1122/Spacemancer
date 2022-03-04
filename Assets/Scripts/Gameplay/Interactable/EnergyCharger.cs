@@ -28,7 +28,7 @@ namespace Gameplay.Interactable
     public class EnergyCharger : Interactable
     {
         [SerializeField] int id;
-        [SerializeField] float energyAmount = 0.2f;
+        [SerializeField] int energyAmount = 2;
         Splittable.SplittableObject so;
         static SpaceDevice.EnergyBar energyBar;
         static EnergyChargerManager manager = new EnergyChargerManager();
@@ -45,7 +45,6 @@ namespace Gameplay.Interactable
         {
             if (so.IsInCorrectDim() && !manager.IsUsed[id])
             {
-                Debug.Log("used");
                 energyBar.AddEnergy(energyAmount);
                 manager.IsUsed[id] = true;
             }

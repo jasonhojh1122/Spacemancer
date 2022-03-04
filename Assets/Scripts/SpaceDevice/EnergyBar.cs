@@ -1,35 +1,108 @@
 
 using UnityEngine;
 
-using System.Collections;
+using System.Collections.Generic;
 
 namespace SpaceDevice
 {
-    [RequireComponent(typeof(UnityEngine.UI.Slider))]
     public class EnergyBar : MonoBehaviour
     {
-        [SerializeField] float decreasePerSec = 0.05f;
-        [SerializeField] float defaultAmount = 0.4f;
+        [SerializeField] List<UnityEngine.UI.Image> lights;
+        [SerializeField] [Range(0, 5)] int defaultAmount;
+        [SerializeField] Color32 lightColor;
+        [SerializeField] UnityEngine.UI.Slider hintSlider;
 
-        UnityEngine.UI.Slider slider;
+        static EnergyBar _instance;
+        int amount;
+        bool dirty;
+        float speed = 0.6f;
+        Color32 transparent = new Color32(0, 0, 0, 0);
 
-        public float Amount
+
+        public int Amount
         {
-            get => slider.value;
-            set => slider.value = Mathf.Max(0, Mathf.Min(value, 1));
+            get => amount;
+            set
+            {
+                amount = Mathf.Clamp(value, 0, 5);
+            }
+        }
+
+        public static EnergyBar Instance
+        {
+            get => _instance;
         }
 
         private void Awake()
         {
-            slider = GetComponent<UnityEngine.UI.Slider>();
+            if (_instance != null)
+                Debug.LogError("Multiple instances of EnergyBar created");
+            _instance = this;
+            dirty = false;
             Amount = defaultAmount;
+            for (int i = 0; i < lights.Count; i++)
+            {
+                if (i < Amount)
+                    lights[i].color = lightColor;
+                else
+                    lights[i].color = transparent;
+            }
         }
 
-        public void AddEnergy(float amount)
+        private void Start()
         {
-            Amount += amount;
+            hintSlider.value = Percentage();
         }
 
+        private void Update()
+        {
+            if (dirty)
+            {
+                float target = Percentage();
+                hintSlider.value = Mathf.MoveTowards(hintSlider.value, target, speed*Time.deltaTime);
+                if (Util.Fuzzy.CloseFloat(hintSlider.value, target))
+                    dirty = false;
+            }
+        }
+
+        float Percentage()
+        {
+            return (float)amount / (float)lights.Count;
+        }
+
+        public void AddEnergy(int amount)
+        {
+            int previous = Amount;
+            Amount += amount;
+            if (previous > Amount)
+            {
+                for (int i = previous; i > Amount; i--)
+                    lights[i-1].color = transparent;
+            }
+            else
+            {
+                for (int i = previous; i < Amount; i++)
+                    lights[i].color = lightColor;
+            }
+            dirty = true;
+        }
+
+        /// <summary>
+        /// Costs the energy for single action.
+        /// </summary>
+        public void CostSingleAction()
+        {
+            AddEnergy(-1);
+        }
+
+        /// <summary>
+        /// If the energy is sufficient for a single action.
+        /// </summary>
+        /// <returns> True if the energy is sufficient. </returns>
+        public bool IsSufficient()
+        {
+            return Amount > 0;
+        }
 
     }
 

@@ -12,30 +12,27 @@ namespace SpaceDevice
 {
     public class SplitMergeMachine : InputController
     {
-        [Header("Sub-device Settings")]
-        [SerializeField] bool withdrawerOn = false;
-        [SerializeField] bool dimChangerOn = false;
         [SerializeField] List<Image> dimColorIndicators;
-        [SerializeField] GameObject dimChanger;
-        [SerializeField] GameObject withdrawer;
-
-        [Header("Energy Cost Per Action")]
-        [SerializeField] float energyCost = 0.1f;
-
-        [Header("Enter Dimension Settings")]
         [SerializeField] VisualEffect playerTransitionVFX;
         [SerializeField] CameraController cameraController;
         [SerializeField] float enterDimensionDuration;
 
-        [Header("Animation")]
-        [SerializeField] List<Animator> selectorAnimator;
+        [Header("Hinting UI")]
+        [SerializeField] List<Image> hintImages;
+        [SerializeField] Animator hintAnimator;
 
         InputAction toggleAction;
         UI.CanvasGroupFader fader;
         List<int> dimColorIds;
 
-        public List<int> DimColorIds {
+        public List<int> DimColorIds
+        {
             get => dimColorIds;
+        }
+
+        public List<Image> DimColorIndicators
+        {
+            get => dimColorIndicators;
         }
 
         private new void Awake()
@@ -47,17 +44,15 @@ namespace SpaceDevice
             toggleAction = playerInput.actions["Toggle"];
             toggleAction.performed += Toggle;
 
-            if (!withdrawerOn)
-                withdrawer.SetActive(false);
-            if (!dimChangerOn)
-                dimChanger.SetActive(false);
-
             dimColorIds = new List<int>();
             for (int i = 0; i < Dimension.BaseColor.Count; i++)
             {
                 dimColorIds.Add(i);
                 UpdateDimColorIndicator();
             }
+            Core.World.Instance.OnTransitionStart.AddListener(PlayHintAnim);
+            Core.World.Instance.OnTransitionEnd.AddListener(UpdateHintColor);
+            Core.World.Instance.OnActiveDimChange.AddListener(UpdateHintColor);
         }
 
         public void Toggle(InputAction.CallbackContext context)
@@ -86,76 +81,9 @@ namespace SpaceDevice
         }
 
         /// <summary>
-        /// Rotates the dimension color to the next one if world is not splitted;
+        /// Updates the dimension indicators images' color.
         /// </summary>
-        /// <param name="i"> The index of the dimension to change. </param>
-        public void RotateColor(int i)
-        {
-            if (World.Instance.Splitted) return;
-            RotateSelector(i);
-            RotateColorId(i);
-            if (i == World.Instance.ActiveDimId)
-                AutoChangeDimColorActive(i);
-            else
-                AutoChangeDimColorOther(i);
-            UpdateDimColorIndicator();
-        }
-
-        void RotateColorId(int i)
-        {
-            if (dimColorIds[i] < 0)
-                dimColorIds[i] = 0;
-            else
-                dimColorIds[i] = (dimColorIds[i] + 1) % Dimension.SplittedColor.Count;
-        }
-
-        void AutoChangeDimColorActive(int i)
-        {
-            var missingColor = Dimension.MissingColor(GetColorByID(i));
-            int missingId = 0;
-            for (int j = 0; j < dimColorIds.Count; j++)
-            {
-                var id = (i+j+1) % dimColorIds.Count;
-                if (id == i)
-                    continue;
-                else if (missingId >= missingColor.Count)
-                    dimColorIds[id] = -1;
-                else
-                {
-                    dimColorIds[id] = Dimension.ValidColorIndex[missingColor[missingId]];
-                    missingId += 1;
-                }
-                RotateSelector(id);
-            }
-        }
-
-        void AutoChangeDimColorOther(int i)
-        {
-            var missingColor = Dimension.MissingColor(GetColorByID(i));
-            dimColorIds[World.Instance.ActiveDimId] = Dimension.ValidColorIndex[missingColor[0]];
-            int missingId = 1;
-            for (int j = 0; j < dimColorIds.Count; j++)
-            {
-                var id = (i+j+1) % dimColorIds.Count;
-                if (id == World.Instance.ActiveDimId || id == i)
-                    continue;
-                else if (missingId >= missingColor.Count)
-                    dimColorIds[id] = -1;
-                else
-                {
-                    dimColorIds[id] = Dimension.ValidColorIndex[missingColor[missingId]];
-                    missingId += 1;
-                }
-                RotateSelector(id);
-            }
-        }
-
-        void RotateSelector(int i)
-        {
-            selectorAnimator[i].SetTrigger("Rotate");
-        }
-
-        void UpdateDimColorIndicator()
+        public void UpdateDimColorIndicator()
         {
             for (int i = 0; i < dimColorIds.Count; i++)
             {
@@ -166,7 +94,12 @@ namespace SpaceDevice
             }
         }
 
-        Dimension.Color GetColorByID(int i)
+        /// <summary>
+        /// Gets the Dimension.Color based on the dimension index.
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public Dimension.Color GetColorByID(int i)
         {
             return Dimension.SplittedColor[dimColorIds[i]];
         }
@@ -178,7 +111,8 @@ namespace SpaceDevice
         public void EnterDimension(int i)
         {
             if (!World.Instance.Splitted || dimColorIds[i] < 0
-                || i == World.Instance.ActiveDimId) return;
+                || i == World.Instance.ActiveDimId || EnergyBar.Instance.IsSufficient()) return;
+            EnergyBar.Instance.CostSingleAction();
             StartCoroutine(EnterAnim(i));
         }
 
@@ -196,6 +130,19 @@ namespace SpaceDevice
             playerTransitionVFX.Play();
             InputManager.Instance.pause = false;
             InputManager.Instance.ToggleGameplayInput(fader.IsOn);
+        }
+
+        private void PlayHintAnim()
+        {
+            hintAnimator.SetBool("IsSplitted", Core.World.Instance.Splitted);
+        }
+
+        private void UpdateHintColor()
+        {
+            foreach (var img in hintImages)
+            {
+                img.color = Core.Dimension.MaterialColor[Core.World.Instance.ActiveDimension.color];
+            }
         }
 
     }

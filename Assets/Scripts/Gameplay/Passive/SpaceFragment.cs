@@ -20,7 +20,7 @@ namespace Gameplay
         {
             if (other.gameObject.tag == "Player")
             {
-                container.Count += 1;
+                container.Gain();
                 gameObject.SetActive(false);
             }
         }
