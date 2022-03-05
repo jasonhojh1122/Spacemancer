@@ -111,7 +111,7 @@ namespace SpaceDevice
         public void EnterDimension(int i)
         {
             if (!World.Instance.Splitted || dimColorIds[i] < 0
-                || i == World.Instance.ActiveDimId || EnergyBar.Instance.IsSufficient()) return;
+                || i == World.Instance.ActiveDimId || !EnergyBar.Instance.IsSufficient()) return;
             EnergyBar.Instance.CostSingleAction();
             StartCoroutine(EnterAnim(i));
         }
