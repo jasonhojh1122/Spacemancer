@@ -44,8 +44,11 @@ namespace Gameplay.Interactable
         {
             foreach (var s in Core.World.Instance.ObjectPool.ActiveObjects[targetObject.gameObject.name])
             {
-                var electron = s.GetComponent<Electronic.ElectronicObject>();
-                electron.TurnOn();
+                if (s.Dim.color == Splittable.Character.Player.Instance.Dim.color)
+                {
+                    var electron = s.GetComponent<Electronic.ElectronicObject>();
+                    electron.Toggle();
+                }
             }
         }
 

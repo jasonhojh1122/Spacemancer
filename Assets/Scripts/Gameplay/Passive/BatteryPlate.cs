@@ -1,5 +1,6 @@
 using UnityEngine;
 
+using System.Collections.Generic;
 using Core;
 using Splittable;
 
@@ -12,6 +13,8 @@ namespace Gameplay
         [SerializeField] string electronicName;
         [SerializeField] string batteryName;
         [SerializeField] Collider trigger;
+        [SerializeField] Dimension.Color activeColor = Dimension.Color.WHITE;
+        [SerializeField] List<ObjectColor> indicators;
         SplittableObject battery;
         SplittableObject so;
 
@@ -20,6 +23,10 @@ namespace Gameplay
             so = GetComponent<SplittableObject>();
             so.ObjectColor.OnColorChanged.AddListener(OnColorChange);
             World.Instance.OnTransitionEnd.AddListener(OnDimensionChange);
+            foreach (var oc in indicators)
+            {
+                oc.Color = activeColor;
+            }
         }
 
         private void Start()
@@ -118,7 +125,8 @@ namespace Gameplay
 
         public void CheckDimensionStatus()
         {
-            if (battery != null && battery.IsInCorrectDim() && so.IsInCorrectDim())
+            if (battery != null && battery.IsInCorrectDim()
+                    && so.IsInCorrectDim() && so.Dim.color == activeColor)
                 ToggleOn();
             else
                 ToggleOff();

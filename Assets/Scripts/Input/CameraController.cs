@@ -20,6 +20,8 @@ namespace Input
         [SerializeField] BoxCollider camConfiner;
         [SerializeField] Cinemachine.CinemachineVirtualCamera cam;
 
+        static CameraController _instance;
+
         float moveSpeed, zoomSpeed, startMoveT, startZoomT, moveSpeedDiff, zoomSpeedDiff;
 
         bool moving, zooming;
@@ -27,9 +29,18 @@ namespace Input
         InputAction moveAction;
         InputAction zoomAction;
 
+        public static CameraController Instance
+        {
+            get => _instance;
+        }
+
         new void Awake()
         {
             base.Awake();
+            if (_instance != null)
+                Debug.LogError("Multiple instances of CameraController were created.");
+            _instance = this;
+
             moveAction = playerInput.actions["Movement"];
             zoomAction = playerInput.actions["Zoom"];
             moving = false;

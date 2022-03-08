@@ -4,14 +4,34 @@ using System.Collections.Generic;
 using Core;
 namespace Splittable.Character
 {
+    [RequireComponent(typeof(CharacterController))]
     public class Player : SplittableObject
     {
         [SerializeField] PlayerDummy dummyPrefab;
+        static Player _instance;
         List<PlayerDummy> dummies;
+        CharacterController characterController;
+
+        public static Player Instance
+        {
+            get => _instance;
+        }
+
+        public CharacterController Controller
+        {
+            get => characterController;
+        }
 
         new void Awake()
         {
             base.Awake();
+
+            if (_instance != null)
+                Debug.LogError("Multiple instances of Player created.");
+            _instance = this;
+
+            characterController = GetComponent<CharacterController>();
+
             dummies = new List<PlayerDummy>();
             for (int i = 0; i < World.Instance.Dimensions.Count; i++)
             {

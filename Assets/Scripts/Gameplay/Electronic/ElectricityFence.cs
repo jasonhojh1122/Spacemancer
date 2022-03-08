@@ -102,6 +102,20 @@ namespace Gameplay.Electronic
             curOn = false;
         }
 
+        public override void Toggle()
+        {
+            if (!so.IsInCorrectDim()) return;
+            if (isOn)
+            {
+                TurnOff();
+            }
+            else
+            {
+                TurnOn();
+            }
+            isOn = !isOn;
+        }
+
         public override void OnColorChange()
         {
             CheckFences();

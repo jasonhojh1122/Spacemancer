@@ -6,15 +6,14 @@ namespace Gameplay.Electronic
     public class SimpleAnimatedDevice : ElectronicObject
     {
         [SerializeField] Animator animator;
-        [SerializeField] bool _isOpened = true;
         protected Splittable.SplittableObject so;
 
         protected bool IsOpened
         {
-            get => _isOpened;
+            get => isOn;
             set
             {
-                _isOpened = value;
+                isOn = value;
                 animator.SetBool("IsOpened", IsOpened);
             }
         }
@@ -24,6 +23,7 @@ namespace Gameplay.Electronic
             so = GetComponent<Splittable.SplittableObject>();
             so.ObjectColor.OnColorChanged.AddListener(OnColorChange);
             Core.World.Instance.OnTransitionEnd.AddListener(OnDimensionChange);
+            IsOpened = false;
         }
 
         public override void TurnOn()
@@ -37,6 +37,19 @@ namespace Gameplay.Electronic
         public override void TurnOff()
         {
             IsOpened = false;
+        }
+
+        public override void Toggle()
+        {
+            if (!so.IsInCorrectDim()) return;
+            if (IsOpened)
+            {
+                TurnOff();
+            }
+            else
+            {
+                TurnOn();
+            }
         }
 
         public override void OnDimensionChange()

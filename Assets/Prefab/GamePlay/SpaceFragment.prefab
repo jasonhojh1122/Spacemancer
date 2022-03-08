@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 2197319563833422061}
   - component: {fileID: 2197319563833422060}
   - component: {fileID: 2197319563833422063}
-  - component: {fileID: 2197319563833422062}
   - component: {fileID: 2197319563833422065}
+  - component: {fileID: 2768871615146991734}
   m_Layer: 0
   m_Name: SpaceFragment
   m_TagString: Untagged
@@ -124,24 +124,6 @@ MonoBehaviour:
   OnColorChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &2197319563833422062
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2197319563833422064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39adbc7ed954af543827ff355f9497d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isPersistentColor: 0
-  defaultInactive: 0
-  isConvex: 1
-  OnInitialized:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &2197319563833422065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,6 +136,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00115804a9f32fe49b809947498d1330, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2768871615146991734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2197319563833422064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e6449881571e4a43b59fade166890c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPersistentColor: 0
+  defaultInactive: 0
+  isConvex: 1
+  OnInitialized:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2197319564328095221
 GameObject:
   m_ObjectHideFlags: 0
