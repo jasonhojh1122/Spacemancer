@@ -25,6 +25,7 @@ namespace SpaceDevice
             set
             {
                 amount = Mathf.Clamp(value, 0, 5);
+                dirty = true;
             }
         }
 
@@ -61,7 +62,10 @@ namespace SpaceDevice
                 float target = Percentage();
                 hintSlider.value = Mathf.MoveTowards(hintSlider.value, target, speed*Time.deltaTime);
                 if (Util.Fuzzy.CloseFloat(hintSlider.value, target))
+                {
                     dirty = false;
+                    hintSlider.value = target;
+                }
             }
         }
 
