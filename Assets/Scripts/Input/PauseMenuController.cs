@@ -2,11 +2,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using System.Collections.Generic;
+
 namespace Input
 {
     [RequireComponent(typeof(UI.CanvasGroupFader))]
     public class PauseMenuController : InputController
     {
+        [SerializeField] List<UI.CanvasGroupFader> popupWindows;
         UI.CanvasGroupFader fader;
         InputAction toggleAction;
 
@@ -25,6 +28,10 @@ namespace Input
             if (isOpened)
             {
                 fader.FadeOut();
+                foreach (var popup in popupWindows)
+                {
+                    popup.FadeOut();
+                }
                 isOpened = false;
             }
             else

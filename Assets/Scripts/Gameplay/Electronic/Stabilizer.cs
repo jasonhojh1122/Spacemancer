@@ -1,11 +1,13 @@
 using UnityEngine;
+using UnityEngine.VFX;
 using System.Collections.Generic;
 
 namespace Gameplay.Electronic
 {
 
-    public class Stabilizer : ElectronicObject
+    public class Stabilizer : SimpleAnimatedDevice
     {
+        [SerializeField] VisualEffect vfx;
         [SerializeField] List<Core.ObjectColor> toStabilized;
         bool used = false;
 
@@ -14,32 +16,34 @@ namespace Gameplay.Electronic
             if (!used)
             {
                 used = true;
-                foreach (var oc in toStabilized)
-                {
-                    oc.Color = Core.Dimension.Color.WHITE;
-                }
+                StartCoroutine(Anim());
             }
+        }
 
+        System.Collections.IEnumerator Anim()
+        {
+            vfx.Play();
+            IsOpened = true;
+            yield return new WaitForSeconds(1.5f);
+            foreach (var oc in toStabilized)
+                oc.Color = Core.Dimension.Color.WHITE;
         }
 
         public override void TurnOff()
         {
-
         }
 
         public override void Toggle()
         {
-
+            TurnOn();
         }
 
         public override void OnColorChange()
         {
-
         }
 
         public override void OnDimensionChange()
         {
-
         }
     }
 }

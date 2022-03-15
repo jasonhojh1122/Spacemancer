@@ -36,10 +36,13 @@ public class SceneLoader : MonoBehaviour
     public void Load()
     {
         sceneTransition.FadeIn();
-        string name = SceneManager.GetSceneByBuildIndex(SceneManager.GetActiveScene().buildIndex + 1).name;
-        StartCoroutine(LoadScene(name));
+        Debug.Log(SceneManager.GetActiveScene().buildIndex);
+        StartCoroutine(LoadScene(SceneManager.GetActiveScene().buildIndex + 1));
     }
 
+    /// <summary>
+    /// Reloads the current scene.
+    /// </summary>
     public void Reload()
     {
         sceneTransition.FadeIn();
@@ -47,15 +50,34 @@ public class SceneLoader : MonoBehaviour
         StartCoroutine(LoadScene(name));
     }
 
+    /// <summary>
+    /// Exits the game.
+    /// </summary>
+    public void Exit()
+    {
+        Application.Quit(); 
+    }
+
+    System.Collections.IEnumerator LoadScene(int id)
+    {
+        async = SceneManager.LoadSceneAsync(id);
+        async.allowSceneActivation = false;
+        yield return StartCoroutine(Anim());
+    }
+
     System.Collections.IEnumerator LoadScene(string name)
     {
-        float t = 0.0f;
         async = SceneManager.LoadSceneAsync(name);
         async.allowSceneActivation = false;
+        yield return StartCoroutine(Anim());
+    }
+
+    System.Collections.IEnumerator Anim()
+    {
+        float t = 0.0f;
         while (!async.isDone)
         {
             t += Time.deltaTime;
-
             if (async.progress >= 0.9f)
             {
                 if (t < sceneTransition.Duration)

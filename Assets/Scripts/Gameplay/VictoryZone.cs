@@ -5,16 +5,17 @@ namespace Gameplay
 {
 
     [RequireComponent(typeof(Collider))]
-    public class VictoryZone : Zone
+    public class VictoryZone : MonoBehaviour
     {
         [SerializeField] string nextScene;
+        bool entered = false;
 
-        new void OnTriggerEnter(Collider other)
+        void OnTriggerEnter(Collider other)
         {
-            TriggerEnter.Invoke(other);
-            if (other.gameObject.tag == "Player")
+            if (other.gameObject.tag == "Player" && !entered)
             {
-                if (nextScene == null)
+                entered = true;
+                if (nextScene == null || nextScene == "")
                 {
                     SceneLoader.Instance.Load();
                 }
