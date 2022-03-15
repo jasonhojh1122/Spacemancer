@@ -20,7 +20,6 @@ namespace Core
 
         [SerializeField] List<Transform> targetPos;
         [SerializeField] List<VisualEffect> vfx;
-        [SerializeField] List<Animator> vfxAnimators;
         [SerializeField] List<Material> soMaterials;
         [SerializeField] float dissolveRadiusMax = 20.0f;
         [SerializeField] float dissolveRadiusMin = -10.0f;

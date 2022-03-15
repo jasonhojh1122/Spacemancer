@@ -160,7 +160,8 @@ namespace Splittable
         protected void ProcessCollidedObjects(ref Dimension.Color mergedColor,
                         List<SplittableObject> siblings, List<SplittableObject> others)
         {
-            Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents - Util.Fuzzy.amountVec3, transform.rotation);
+            Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents - Util.Fuzzy.amountVec3, Quaternion.identity);
+            Util.Debug.DrawBox(col.bounds.center, Quaternion.identity, col.bounds.extents*2, UnityEngine.Color.blue, 50.0f);
             foreach (Collider c in colliders)
             {
                 if (c == null || !c.gameObject.activeSelf || c.gameObject.GetInstanceID() == col.gameObject.GetInstanceID()) continue;

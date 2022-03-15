@@ -12,13 +12,9 @@ public class DeathZone : MonoBehaviour
         Util.Debug.Log(gameObject, col.gameObject.name + " enter death zone.");
         if (col.gameObject.tag == "Player")
         {
-            ReloadLevel();
+            SceneLoader.Instance.Reload();
             return;
         }
     }
-    protected void ReloadLevel()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-    }
 }
