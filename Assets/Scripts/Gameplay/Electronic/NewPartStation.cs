@@ -6,6 +6,7 @@ namespace Gameplay.Electronic
 {
     public class NewPartStation : SecuredObject
     {
+        [SerializeField] Tutorial.VideoTutorial videoTutorial;
         [SerializeField] GameObject newPart;
 
         bool used = false;
@@ -21,6 +22,7 @@ namespace Gameplay.Electronic
             IsOpened = true;
             used = true;
             newPart.SetActive(true);
+            videoTutorial.Show();
         }
 
         public override void TurnOff()

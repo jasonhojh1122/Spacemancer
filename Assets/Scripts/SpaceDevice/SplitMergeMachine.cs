@@ -13,6 +13,7 @@ namespace SpaceDevice
     public class SplitMergeMachine : InputController
     {
         [SerializeField] List<Image> dimColorIndicators;
+        [SerializeField] List<TMPro.TextMeshProUGUI> activeTexts;
         [SerializeField] VisualEffect playerTransitionVFX;
         [SerializeField] CameraController cameraController;
         [SerializeField] float enterDimensionDuration;
@@ -53,6 +54,12 @@ namespace SpaceDevice
             Core.World.Instance.OnTransitionStart.AddListener(PlayHintAnim);
             Core.World.Instance.OnTransitionEnd.AddListener(UpdateHintColor);
             Core.World.Instance.OnActiveDimChange.AddListener(UpdateHintColor);
+            Core.World.Instance.OnActiveDimChange.AddListener(UpdateActiveText);
+        }
+
+        private void Start()
+        {
+            UpdateActiveText();
         }
 
         public void Toggle(InputAction.CallbackContext context)
@@ -142,6 +149,21 @@ namespace SpaceDevice
             foreach (var img in hintImages)
             {
                 img.color = Core.Dimension.MaterialColor[Core.World.Instance.ActiveDimension.color];
+            }
+        }
+
+        void UpdateActiveText()
+        {
+            for (int i = 0; i < activeTexts.Count; i++)
+            {
+                if (i == World.Instance.ActiveDimId)
+                {
+                    activeTexts[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    activeTexts[i].gameObject.SetActive(false);
+                }
             }
         }
 

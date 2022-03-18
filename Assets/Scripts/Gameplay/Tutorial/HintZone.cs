@@ -1,11 +1,11 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Gameplay.Tutorial
 {
     public class HintZone : MonoBehaviour
     {
-        [SerializeField] Animator text;
-        [SerializeField] Animator key;
+        [SerializeField] List<Animator> hintBanner;
         [SerializeField] VideoTutorial videoTutorial;
         [SerializeField] float lastTime = 3.0f;
 
@@ -15,10 +15,13 @@ namespace Gameplay.Tutorial
         {
             if (!shown && other.tag == "Player")
             {
-                if (text != null)
-                    StartCoroutine(Hinting(text));
-                if (key != null)
-                    StartCoroutine(Hinting(key));
+                if (hintBanner != null)
+                {
+                    foreach (var banner in hintBanner)
+                    {
+                        StartCoroutine(Hinting(banner));
+                    }
+                }
                 if (videoTutorial != null)
                     videoTutorial.Show();
                 shown = true;

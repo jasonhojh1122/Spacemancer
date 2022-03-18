@@ -22,7 +22,10 @@ namespace SpaceDevice
 
         public void Toggle()
         {
-            if (!EnergyBar.Instance.IsSufficient()) return;
+            if (!EnergyBar.Instance.IsSufficient())
+                return;
+            if (SpaceDevice.Withdrawer.Instance != null && SpaceDevice.Withdrawer.Instance.IsOn)
+                return;
             EnergyBar.Instance.CostSingleAction();
             animator.SetBool("IsOn", !Core.World.Instance.Splitted);
             pressed = true;

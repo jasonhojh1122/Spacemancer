@@ -26,6 +26,8 @@ namespace Input
             if (IsPaused()) return;
             if (splitMerge.triggered && SpaceDevice.EnergyBar.Instance.IsSufficient())
             {
+                if (SpaceDevice.Withdrawer.Instance != null && SpaceDevice.Withdrawer.Instance.IsOn)
+                    return;
                 SpaceDevice.EnergyBar.Instance.CostSingleAction();
                 world.Toggle();
             }

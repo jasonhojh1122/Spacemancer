@@ -41,6 +41,10 @@ namespace Input
             }
         }
 
+        public void SelectDefault()
+        {
+
+        }
 
     }
 }

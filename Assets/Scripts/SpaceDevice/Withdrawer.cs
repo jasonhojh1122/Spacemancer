@@ -23,6 +23,8 @@ namespace SpaceDevice
         [SerializeField] UnityEngine.UI.Image hintCenter;
         [SerializeField] UnityEngine.UI.Image hintSide;
 
+        static Withdrawer _instance;
+
         /// <summary>
         /// Current color for withdrawing.
         /// </summary>
@@ -40,6 +42,11 @@ namespace SpaceDevice
         InputAction toggle;
         InputAction perform;
 
+        public static Withdrawer Instance
+        {
+            get => _instance;
+        }
+
         public bool IsOn {
             get => laser.IsOn;
         }
@@ -49,6 +56,9 @@ namespace SpaceDevice
         new void Awake()
         {
             base.Awake();
+            if (_instance != null)
+                Debug.LogError("Multiple instances of Withdrawer created.");
+            _instance = this;
             toggle = playerInput.actions["WithdrawerToggle"];
             perform = playerInput.actions["WithdrawerPerform"];
             curState = WithdrawerState.OFF;
@@ -197,6 +207,8 @@ namespace SpaceDevice
         /// </summary>
         public void RotateSkillColor()
         {
+            if (curState != WithdrawerState.TO_WITHDRAW)
+                return;
             withdrawColorIdx = (withdrawColorIdx + 1) % Dimension.BaseColor.Count;
             withdrawColor = Dimension.BaseColor[withdrawColorIdx];
             laser.Color = withdrawColor;

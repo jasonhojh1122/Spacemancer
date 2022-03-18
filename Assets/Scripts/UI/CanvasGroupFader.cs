@@ -90,7 +90,7 @@ namespace UI
                 FadeIn();
         }
 
-        void SelectDefault()
+        public void SelectDefault()
         {
             if (defaultSelected != null)
                 eventSystem.SetSelectedGameObject(defaultSelected);

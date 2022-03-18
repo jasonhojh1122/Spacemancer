@@ -24,7 +24,18 @@ namespace SpaceDevice
             get => amount;
             set
             {
+                int previous = Amount;
                 amount = Mathf.Clamp(value, 0, 5);
+                if (previous > Amount)
+                {
+                    for (int i = previous; i > Amount; i--)
+                        lights[i-1].color = transparent;
+                }
+                else
+                {
+                    for (int i = previous; i < Amount; i++)
+                        lights[i].color = lightColor;
+                }
                 dirty = true;
             }
         }
@@ -74,29 +85,12 @@ namespace SpaceDevice
             return (float)amount / (float)lights.Count;
         }
 
-        public void AddEnergy(int amount)
-        {
-            int previous = Amount;
-            Amount += amount;
-            if (previous > Amount)
-            {
-                for (int i = previous; i > Amount; i--)
-                    lights[i-1].color = transparent;
-            }
-            else
-            {
-                for (int i = previous; i < Amount; i++)
-                    lights[i].color = lightColor;
-            }
-            dirty = true;
-        }
-
         /// <summary>
         /// Costs the energy for single action.
         /// </summary>
         public void CostSingleAction()
         {
-            AddEnergy(-1);
+            Amount -= 1;
         }
 
         /// <summary>

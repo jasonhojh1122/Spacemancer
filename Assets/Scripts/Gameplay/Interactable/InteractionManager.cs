@@ -10,19 +10,25 @@ namespace Gameplay.Interactable
     [RequireComponent(typeof(IK.PlayerIK), typeof(Splittable.Character.Player))]
     public class InteractionManager : InputController
     {
+        [SerializeField] UI.CanvasGroupFader hint;
+
         static InteractionManager _instance;
-        public static InteractionManager Instance {
+        public static InteractionManager Instance
+        {
             get => _instance;
         }
 
-        public bool IsInteracting {
-            get {
+        public bool IsInteracting
+        {
+            get
+            {
                 if (interactable == null) return false;
                 else return interactable.IsInteracting();
             }
         }
 
-        public IK.PlayerIK PlayerIK {
+        public IK.PlayerIK PlayerIK
+        {
             get => playerIK;
         }
 
@@ -56,6 +62,7 @@ namespace Gameplay.Interactable
         {
             if (interactable != null && interactable.IsInteracting())
                 return;
+            hint.FadeIn();
             interactable = newInteractable;
         }
 
@@ -64,7 +71,10 @@ namespace Gameplay.Interactable
             if (interactable == null)
                 return;
             else if (interactable.gameObject.GetInstanceID() == oldInteractable.gameObject.GetInstanceID())
+            {
+                hint.FadeOut();
                 interactable = null;
+            }
         }
     }
 
