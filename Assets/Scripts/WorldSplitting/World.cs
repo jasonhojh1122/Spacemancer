@@ -168,7 +168,6 @@ namespace Core
         /// </summary>
         private void DefaultSplit()
         {
-            dimensionTransition.DefaultSplit();
             dimensions[0].color = startDimensionColor;
             dimId[startDimensionColor] = 0;
             dimId[Dimension.Color.WHITE] = -1;
@@ -182,8 +181,10 @@ namespace Core
             }
             for (; i < dimensions.Count; i++)
                 dimensions[i].color = Dimension.Color.NONE;
+            dimensionTransition.DefaultSplit();
             SplitObjects();
             splitted = true;
+            World.Instance.OnTransitionEnd.Invoke();
         }
 
         /// <summary>

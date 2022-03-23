@@ -170,17 +170,22 @@ namespace Splittable
                 {
                     continue;
                 }
-                else if (c.gameObject.name == gameObject.name)
+                if (!IsPenetrated(so) && (so.isConvex || isConvex))
                 {
-                    siblings.Add(so);
+                    continue;
+                }
+                if (c.gameObject.name == gameObject.name)
+                {
                     if (so.Color == Dimension.Color.BLACK ||
                         !Util.Fuzzy.CloseVector3(c.transform.localPosition, transform.localPosition))
                     {
+                        siblings.Add(so);
                         mergedColor = Dimension.Color.BLACK;
                         Color = Dimension.Color.BLACK;
                     }
                     else
                     {
+                        siblings.Add(so);
                         mergedColor = Dimension.AddColor(mergedColor, so.Color);
                         so.IsMerged = true;
                     }
@@ -188,12 +193,9 @@ namespace Splittable
                 else
                 {
                     others.Add(so);
-                    if (IsPenetrated(so))
-                    {
-                        mergedColor = Dimension.Color.BLACK;
-                        Color = Dimension.Color.BLACK;
-                        so.Merge(this);
-                    }
+                    mergedColor = Dimension.Color.BLACK;
+                    Color = Dimension.Color.BLACK;
+                    so.Merge(this);
                 }
             }
         }
@@ -212,7 +214,8 @@ namespace Splittable
             if (Physics.ComputePenetration(s.col, s.transform.position, s.transform.rotation,
                     col, transform.position, transform.rotation, out dir, out dist))
             {
-                Util.Debug.Log(gameObject, " penetrated with " + s.gameObject.name + " dir " + dir + " dist " + dist);
+                Util.Debug.Log(gameObject, " penetrated with " + s.gameObject.name + " " + s.transform.GetInstanceID() + " dir " + dir + " dist " + dist);
+                Debug.DrawLine(col.transform.position, col.transform.position+dir * dist, UnityEngine.Color.green, 50);
                 if (dist <= Util.Fuzzy.amount)
                     return false;
                 else

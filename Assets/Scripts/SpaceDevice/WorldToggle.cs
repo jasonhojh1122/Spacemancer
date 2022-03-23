@@ -13,11 +13,12 @@ namespace SpaceDevice
         {
             animator = GetComponent<Animator>();
             pressed = false;
+            Core.World.Instance.OnTransitionEnd.AddListener(UpdateMainToggle);
         }
 
         private void Start()
         {
-            Core.World.Instance.OnTransitionEnd.AddListener(UpdateMainToggle);
+            // Core.World.Instance.OnTransitionEnd.AddListener(UpdateMainToggle);
         }
 
         public void Toggle()

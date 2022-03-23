@@ -55,5 +55,14 @@ namespace Splittable
             playing = true;
             Debug.Log("Play ve");
         }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            var so = other.gameObject.GetComponent<SplittableObject>();
+            if (so != null && other.gameObject.tag != "Player")
+            {
+                World.Instance.DeactivateObject(so);
+            }
+        }
     }
 }

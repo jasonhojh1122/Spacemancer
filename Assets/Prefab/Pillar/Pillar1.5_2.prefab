@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3569587751329974458}
   - component: {fileID: 6752370268492100676}
   - component: {fileID: 1236124025444971141}
+  - component: {fileID: 7130468797294906943}
   m_Layer: 0
   m_Name: Pillar1.5_2
   m_TagString: Untagged
@@ -142,6 +143,25 @@ MonoBehaviour:
   OnInitialized:
     m_PersistentCalls:
       m_Calls: []
+--- !u!95 &7130468797294906943
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3569587751329974459}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f491053fb3fa19e4a8148a80c2645754, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &2595996940156062755
 PrefabInstance:
   m_ObjectHideFlags: 0

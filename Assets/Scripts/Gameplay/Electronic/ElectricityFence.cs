@@ -1,33 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Gameplay.Electronic
 {
     [RequireComponent(typeof(Splittable.SplittableObject))]
     public class ElectricityFence : ElectronicObject
     {
-        [SerializeField] bool defaultOn;
         [SerializeField] ParticleSystem ps;
-        [SerializeField] AudioSource audioSource;
         [SerializeField] List<LineRenderer> lineRenderers;
         [SerializeField] float lineWidth;
+        [SerializeField] float explosionLength = 1.2f;
 
         Splittable.SplittableObject so;
-        float explosionLength;
 
-        bool curOn;
+        bool IsOn
+        {
+            get => isOn;
+            set
+            {
+                isOn = value;
+                ToggleLineRenderer(isOn);
+                if (isOn)
+                    UpdateLineRendererColor();
+            }
+        }
 
         private void Awake()
         {
-            explosionLength = Mathf.Max(audioSource.clip.length, ps.main.duration) - 0.3f;
-            curOn = defaultOn;
             InitLineRenderer();
             so = GetComponent<Splittable.SplittableObject>();
-            Core.World.Instance.OnTransitionEnd.AddListener(CheckFences);
-            so.ObjectColor.OnColorChanged.AddListener(CheckFences);
-            so.OnInitialized.AddListener(CheckFences);
+            Core.World.Instance.OnTransitionEnd.AddListener(OnDimensionChange);
+            so.ObjectColor.OnColorChanged.AddListener(OnColorChange);
+        }
+
+        private void Start()
+        {
+            UpdateState();
+        }
+
+        void UpdateState()
+        {
+            if (so.IsInCorrectDim())
+            {
+                IsOn = true;
+            }
+            else
+            {
+                IsOn = false;
+            }
         }
 
         void InitLineRenderer()
@@ -38,7 +59,7 @@ namespace Gameplay.Electronic
                 lr.startWidth = lineWidth;
                 lr.endWidth = lineWidth;
                 lr.SetPosition(0, Vector3.zero);
-                lr.SetPosition(1, new Vector3(0.0f, 0.0f, Mathf.Abs(lr.transform.localPosition.z)*2.0f));
+                lr.SetPosition(1, new Vector3( Mathf.Abs(lr.transform.localPosition.x) * 2.0f, 0.0f, 0.0f));
             }
         }
 
@@ -47,19 +68,6 @@ namespace Gameplay.Electronic
             foreach (LineRenderer lr in lineRenderers)
             {
                 lr.enabled = state;
-            }
-        }
-
-        void CheckFences()
-        {
-            if (so.IsInCorrectDim() && curOn)
-            {
-                ToggleLineRenderer(true);
-                UpdateLineRendererColor();
-            }
-            else
-            {
-                ToggleLineRenderer(false);
             }
         }
 
@@ -74,9 +82,9 @@ namespace Gameplay.Electronic
             }
         }
 
-        void OnTriggerEnter(Collider col)
+        public void OnZoneEnter(Collider other)
         {
-            if (curOn && col.gameObject.tag == "Player")
+            if (IsOn && other.gameObject.tag == "Player")
             {
                 StartCoroutine(Explode());
             }
@@ -85,27 +93,31 @@ namespace Gameplay.Electronic
         IEnumerator Explode()
         {
             ps.Play();
-            audioSource.Play();
             Input.InputManager.Instance.pause = true;
             yield return new WaitForSeconds(explosionLength);
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneLoader.Instance.Reload();
         }
 
         public override void TurnOn()
         {
-            if (so.IsInCorrectDim())
-                curOn = true;
+            if (!IsOn)
+            {
+                IsOn = true;
+            }
         }
 
         public override void TurnOff()
         {
-            curOn = false;
+            if (IsOn)
+            {
+                IsOn = false;
+            }
         }
 
         public override void Toggle()
         {
             if (!so.IsInCorrectDim()) return;
-            if (isOn)
+            if (IsOn)
             {
                 TurnOff();
             }
@@ -113,17 +125,16 @@ namespace Gameplay.Electronic
             {
                 TurnOn();
             }
-            isOn = !isOn;
         }
 
         public override void OnColorChange()
         {
-            CheckFences();
+            UpdateState();
         }
 
         public override void OnDimensionChange()
         {
-            CheckFences();
+            UpdateState();
         }
     }
 

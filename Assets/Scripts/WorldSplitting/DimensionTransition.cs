@@ -20,6 +20,7 @@ namespace Core
 
         [SerializeField] List<Transform> targetPos;
         [SerializeField] List<VisualEffect> vfx;
+        [SerializeField] List<VisualEffect> borderVfx;
         [SerializeField] List<Material> soMaterials;
         [SerializeField] float dissolveRadiusMax = 20.0f;
         [SerializeField] float dissolveRadiusMin = -10.0f;
@@ -44,7 +45,6 @@ namespace Core
                 soMaterials[i].SetVector("_Dim3Pos", World.Instance.Dimensions[2].transform.position);
                 soMaterials[i].SetFloat("_DissolveRadius", dissolveRadiusMax);
             }
-
         }
 
         public IEnumerator SplitTransition()
@@ -53,6 +53,7 @@ namespace Core
 
             cameraController.ZoomOut(transitionDuration/10);
             StartCoroutine(Glitch());
+            PlayBorderVFX();
             PlayVFX();
             yield return StartCoroutine(MaterialAnim(dissolveRadiusMax, dissolveRadiusMin));
             ActualSplit();
@@ -71,6 +72,7 @@ namespace Core
 
             cameraController.ZoomOut(transitionDuration/10);
             StartCoroutine(Glitch());
+            StopBorderVFX();
             PlayVFX();
             yield return StartCoroutine(MaterialAnim(dissolveRadiusMax, dissolveRadiusMin));
             ActualMerge();
@@ -110,7 +112,10 @@ namespace Core
             for (int i = 0; i < targetPos.Count; i++)
             {
                 World.Instance.Dimensions[i].transform.position = targetPos[i].position;
-                World.Instance.Dimensions[i].gameObject.SetActive(true);
+                if (World.Instance.Dimensions[i].color != Dimension.Color.NONE)
+                    World.Instance.Dimensions[i].gameObject.SetActive(true);
+                else
+                    World.Instance.Dimensions[i].gameObject.SetActive(false);
             }
             World.Instance.SplitObjects();
             Physics.SyncTransforms();
@@ -148,6 +153,8 @@ namespace Core
                     mat.SetFloat("_DissolveRadius", Mathf.Lerp(startRadius, endRadius, t / transitionDuration));
                 yield return null;
             }
+            foreach (var mat in soMaterials)
+                mat.SetFloat("_DissolveRadius", endRadius);
         }
 
         /// <summary>
@@ -170,6 +177,29 @@ namespace Core
             for (int i = 0; i < targetPos.Count; i++)
             {
                 vfx[i].Stop();
+            }
+        }
+
+        void PlayBorderVFX()
+        {
+            for (int i = 0; i < World.Instance.Dimensions.Count - 1; i++)
+            {
+                var c1 = World.Instance.Dimensions[i].color;
+                var c2 = World.Instance.Dimensions[i+1].color;
+                if (c1 != Dimension.Color.NONE && c2 != Dimension.Color.NONE)
+                {
+                    borderVfx[i].SetVector4("Color1", Dimension.MaterialColor[c1]);
+                    borderVfx[i].SetVector4("Color2", Dimension.MaterialColor[c2]);
+                    borderVfx[i].Play();
+                }
+            }
+        }
+
+        void StopBorderVFX()
+        {
+            for (int i = 0; i < borderVfx.Count; i++)
+            {
+                borderVfx[i].Stop();
             }
         }
 
@@ -210,9 +240,12 @@ namespace Core
             for (int i = 0; i < targetPos.Count; i++)
             {
                 World.Instance.Dimensions[i].transform.position = targetPos[i].transform.position;
-                World.Instance.Dimensions[i].gameObject.SetActive(true);
+                if (World.Instance.Dimensions[i].color != Dimension.Color.NONE)
+                    World.Instance.Dimensions[i].gameObject.SetActive(true);
+                else
+                    World.Instance.Dimensions[i].gameObject.SetActive(false);
             }
-            Physics.SyncTransforms();
+            PlayBorderVFX();
         }
 
     }

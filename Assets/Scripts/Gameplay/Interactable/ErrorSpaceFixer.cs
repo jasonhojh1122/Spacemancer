@@ -19,7 +19,7 @@ namespace Gameplay.Interactable
 
         public override void Interact()
         {
-            if (!container.IsSufficient()) return;
+            if (container == null || !container.IsSufficient()) return;
             errorSpace.Fix();
             container.Lose();
         }

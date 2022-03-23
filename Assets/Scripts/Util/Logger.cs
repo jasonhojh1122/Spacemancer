@@ -33,7 +33,6 @@ namespace Util
             var point7 = m.MultiplyPoint(new Vector3(0.5f, 0.5f, -0.5f));
             var point8 = m.MultiplyPoint(new Vector3(-0.5f, 0.5f, -0.5f));
 
-            UnityEngine.Debug.Log(point1 + " " + point2);
             UnityEngine.Debug.DrawLine(point1, point2, c, t);
             UnityEngine.Debug.DrawLine(point2, point3, c, t);
             UnityEngine.Debug.DrawLine(point3, point4, c, t);
