@@ -40,9 +40,9 @@ namespace Core
             transitting = false;
             for (int i = 0; i < soMaterials.Count; i++)
             {
-                soMaterials[i].SetVector("_Dim1Pos", World.Instance.Dimensions[0].transform.position);
-                soMaterials[i].SetVector("_Dim2Pos", World.Instance.Dimensions[1].transform.position);
-                soMaterials[i].SetVector("_Dim3Pos", World.Instance.Dimensions[2].transform.position);
+                soMaterials[i].SetVector("_Dim1Pos", targetPos[0].position);
+                soMaterials[i].SetVector("_Dim2Pos", targetPos[1].position);
+                soMaterials[i].SetVector("_Dim3Pos", targetPos[2].position);
                 soMaterials[i].SetFloat("_DissolveRadius", dissolveRadiusMax);
             }
         }

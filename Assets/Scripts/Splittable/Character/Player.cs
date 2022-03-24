@@ -8,6 +8,12 @@ namespace Splittable.Character
     public class Player : SplittableObject
     {
         [SerializeField] PlayerDummy dummyPrefab;
+
+        [Header("IK")]
+        [SerializeField] IK.PlayerIK playerIK;
+        [SerializeField] IK.IKSetting machineIKSetting;
+        [SerializeField] GameObject machine;
+
         static Player _instance;
         List<PlayerDummy> dummies;
         CharacterController characterController;
@@ -41,6 +47,7 @@ namespace Splittable.Character
                 World.Instance.MoveObjectToDimension(dummies[i].gameObject, i);
                 dummies[i].gameObject.SetActive(false);
             }
+            machine.SetActive(false);
         }
 
         public override void Split()
@@ -106,6 +113,24 @@ namespace Splittable.Character
             if (World.Instance.Transitting) return;
             if (Dim.color != World.Instance.ActiveDimension.color)
                 MoveToActiveDimension(World.Instance.Splitted);
+        }
+
+        public void TakeOutSpaceDevice()
+        {
+            playerIK.OnPosed.AddListener(OnPose);
+            playerIK.Pose(machineIKSetting);
+        }
+
+        void OnPose()
+        {
+            machine.SetActive(true);
+            playerIK.OnPosed.RemoveListener(OnPose);
+        }
+
+        public void PutAwaySpaceDevice()
+        {
+            machine.SetActive(false);
+            playerIK.EndPose();
         }
     }
 

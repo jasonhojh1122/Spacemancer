@@ -7,9 +7,11 @@ using Core;
 
 public class DeathZone : MonoBehaviour
 {
+    public static bool pause = false;
+    
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "Player")
+        if (!pause && col.gameObject.tag == "Player")
         {
             SceneLoader.Instance.Reload();
             return;

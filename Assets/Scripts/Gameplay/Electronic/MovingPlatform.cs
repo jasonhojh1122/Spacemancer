@@ -67,7 +67,7 @@ namespace Gameplay.Electronic
         {
             Input.InputManager.Instance.pause = true;
             Input.CameraController.Instance.FollowPlayer();
-            // Splittable.Character.Player.Instance.transform.SetParent(this.transform);
+            DeathZone.pause = true;
             while (!Util.Fuzzy.CloseVector3(transform.localPosition, target))
             {
                 transform.localPosition = Vector3.MoveTowards(transform.localPosition, target, moveSpeed * Time.deltaTime);
@@ -75,7 +75,7 @@ namespace Gameplay.Electronic
                 yield return null;
             }
             Input.CameraController.Instance.UnFollowPlayer();
-            // Splittable.Character.Player.Instance.transform.SetParent(this.transform.parent);
+            DeathZone.pause = false;
             Input.InputManager.Instance.pause = false;
         }
 

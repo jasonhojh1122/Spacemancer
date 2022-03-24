@@ -66,12 +66,20 @@ namespace SpaceDevice
         {
             if (IsPaused()) return;
             fader.Toggle();
+            if (fader.IsOn)
+                Splittable.Character.Player.Instance.TakeOutSpaceDevice();
+            else if (Withdrawer.Instance == null || !Withdrawer.Instance.IsOn)
+                Splittable.Character.Player.Instance.PutAwaySpaceDevice();
             InputManager.Instance.ToggleGameplayInput(fader.IsOn);
         }
 
         public void Toggle()
         {
             fader.Toggle();
+            if (fader.IsOn)
+                Splittable.Character.Player.Instance.TakeOutSpaceDevice();
+            else
+                Splittable.Character.Player.Instance.PutAwaySpaceDevice();
             InputManager.Instance.ToggleGameplayInput(fader.IsOn);
         }
 

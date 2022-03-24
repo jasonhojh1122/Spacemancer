@@ -19,6 +19,7 @@ namespace Input
         [SerializeField] Transform player;
         [SerializeField] BoxCollider camConfiner;
         [SerializeField] Cinemachine.CinemachineVirtualCamera cam;
+        [SerializeField] Vector3 unFollowPlayerOffset = new Vector3(-2.0f, 0.0f, 2.0f);
 
         static CameraController _instance;
 
@@ -77,7 +78,8 @@ namespace Input
                     accelCurve.Evaluate((Time.time - startMoveT) / accelInterval) * moveSpeedDiff;
                 var vel = new Vector3(dir2d.x, 0, dir2d.y) * moveSpeed;
                 var newPos = followTarget.position + vel * Time.deltaTime;
-                followTarget.position = newPos;
+                if (camConfiner.bounds.Contains(newPos))
+                    followTarget.position = newPos;
             }
         }
 
@@ -112,7 +114,7 @@ namespace Input
 
         public void UnFollowPlayer()
         {
-            followTarget.position = player.transform.position;
+            followTarget.position = player.transform.position + unFollowPlayerOffset;
             cam.Follow = followTarget;
         }
 

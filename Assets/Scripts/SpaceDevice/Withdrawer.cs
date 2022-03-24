@@ -79,9 +79,15 @@ namespace SpaceDevice
         {
             if (curState == WithdrawerState.WAIT) return;
             if (curState == WithdrawerState.OFF)
+            {
+                Splittable.Character.Player.Instance.TakeOutSpaceDevice();
                 TurnOn();
+            }                
             else
+            {
+                Splittable.Character.Player.Instance.PutAwaySpaceDevice();
                 TurnOff();
+            }                
         }
 
         void TurnOn()

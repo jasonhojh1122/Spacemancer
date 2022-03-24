@@ -103,6 +103,7 @@ namespace SpaceDevice
             set
             {
                 _curLength = Mathf.Min(value, maxLength);
+                _curLength = Mathf.Max(value, 0);
                 _contactPoint = transform.position + player.forward * CurLength;
                 _localEndPoint = transform.InverseTransformPoint(_contactPoint);
             }
@@ -176,7 +177,7 @@ namespace SpaceDevice
         {
             while (CurLength > 0.1f)
             {
-                CurLength -= speed * Time.deltaTime;
+                CurLength -= speed * 10.0f * Time.deltaTime;
                 lr.SetPosition(1, LocalEndPoint);
                 yield return null;
             }
