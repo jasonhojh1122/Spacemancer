@@ -161,7 +161,13 @@ namespace Core
         }
 
         public ObjectColor Root {
-            get => root;
+            get
+            {
+                if (IsRoot)
+                    return this;
+                else
+                    return root;
+            }
         }
 
         public Animator Animator {

@@ -195,7 +195,8 @@ namespace SpaceDevice
             foreach (RaycastHit hit in orderedHits)
             {
                 if (hit.collider != null && !hit.collider.isTrigger &&
-                    (newHittedObject = hit.collider.gameObject.GetComponent<ObjectColor>()) != null)
+                    (newHittedObject = hit.collider.gameObject.GetComponent<ObjectColor>()) != null &&
+                    newHittedObject.Root.transform.parent.GetInstanceID() == player.transform.parent.GetInstanceID())
                 {
                     ContactPoint = hit.point;
                     return newHittedObject;

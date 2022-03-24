@@ -1,19 +1,17 @@
 
 using UnityEngine;
 using System.Collections.Generic;
-
+using System;
 using Core;
 
 namespace Splittable
 {
-    // TODO: persistent color?
     /// <summary>
     /// Base class of splittable object.
     /// </summary>
     [RequireComponent(typeof(ObjectColor))]
     public class SplittableObject : MonoBehaviour
     {
-        [SerializeField] protected bool isPersistentColor;
         [SerializeField] protected bool defaultInactive;
         [SerializeField] protected bool isConvex = true;
 
@@ -70,11 +68,8 @@ namespace Splittable
             }
         }
 
-        /// <summary>
-        /// If the object's color is persistent.
-        /// </summary>
-        public bool IsPersistentColor {
-            get => isPersistentColor;
+        public bool IsConvex {
+            get => isConvex;
         }
 
         /// <summary>
@@ -164,28 +159,35 @@ namespace Splittable
             Util.Debug.DrawBox(col.bounds.center, Quaternion.identity, col.bounds.extents*2, UnityEngine.Color.blue, 50.0f);
             foreach (Collider c in colliders)
             {
-                if (c == null || !c.gameObject.activeSelf || c.gameObject.GetInstanceID() == col.gameObject.GetInstanceID()) continue;
+                Debug.Log("Processing " + c.gameObject.name);
+                if (c == null || !c.gameObject.activeSelf || c.transform.GetInstanceID() == col.transform.GetInstanceID())
+                {
+                    continue;
+                }
                 var so = c.gameObject.GetComponent<SplittableObject>();
                 if (so == null || so.IsMerged || so.gameObject.name == "ErrorSpace")
                 {
                     continue;
                 }
-                if (!IsPenetrated(so) && (so.isConvex || isConvex))
-                {
+
+                var isConvexCollision = (so.IsConvex || this.IsConvex);
+                if (isConvexCollision && !IsPenetrated(so))
                     continue;
-                }
+
+                var isClose = Util.Fuzzy.CloseVector3(c.transform.localPosition, transform.localPosition);
+                if (!isConvexCollision && !isClose)
+                    continue;
+
                 if (c.gameObject.name == gameObject.name)
                 {
-                    if (so.Color == Dimension.Color.BLACK ||
-                        !Util.Fuzzy.CloseVector3(c.transform.localPosition, transform.localPosition))
+                    siblings.Add(so);
+                    if (so.Color == Dimension.Color.BLACK || !isClose)
                     {
-                        siblings.Add(so);
                         mergedColor = Dimension.Color.BLACK;
                         Color = Dimension.Color.BLACK;
                     }
                     else
                     {
-                        siblings.Add(so);
                         mergedColor = Dimension.AddColor(mergedColor, so.Color);
                         so.IsMerged = true;
                     }
@@ -207,15 +209,11 @@ namespace Splittable
         /// <returns>True if they are overlapped.</returns>
         protected bool IsPenetrated(SplittableObject s)
         {
-            if (!this.isConvex && !s.isConvex)
-                return false;
             float dist;
             Vector3 dir;
             if (Physics.ComputePenetration(s.col, s.transform.position, s.transform.rotation,
                     col, transform.position, transform.rotation, out dir, out dist))
             {
-                Util.Debug.Log(gameObject, " penetrated with " + s.gameObject.name + " " + s.transform.GetInstanceID() + " dir " + dir + " dist " + dist);
-                Debug.DrawLine(col.transform.position, col.transform.position+dir * dist, UnityEngine.Color.green, 50);
                 if (dist <= Util.Fuzzy.amount)
                     return false;
                 else
