@@ -65,6 +65,7 @@ namespace Gameplay.Electronic
 
         IEnumerator Move(Vector3 target)
         {
+            OnTurnOn.Invoke();
             Input.InputManager.Instance.pause = true;
             Input.CameraController.Instance.FollowPlayer();
             DeathZone.pause = true;
@@ -74,9 +75,10 @@ namespace Gameplay.Electronic
                 Splittable.Character.Player.Instance.transform.position = transform.position;
                 yield return null;
             }
-            Input.CameraController.Instance.UnFollowPlayer();
             DeathZone.pause = false;
             Input.InputManager.Instance.pause = false;
+            Input.CameraController.Instance.UnFollowPlayer();
+            OnTurnOff.Invoke();
         }
 
     }

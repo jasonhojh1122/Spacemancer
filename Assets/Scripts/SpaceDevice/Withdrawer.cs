@@ -22,6 +22,8 @@ namespace SpaceDevice
         [SerializeField] Animator hintAnimator;
         [SerializeField] UnityEngine.UI.Image hintCenter;
         [SerializeField] UnityEngine.UI.Image hintSide;
+        [SerializeField] UnityEngine.Events.UnityEvent OnInsert;
+        [SerializeField] UnityEngine.Events.UnityEvent OnWithdraw;
 
         static Withdrawer _instance;
 
@@ -82,12 +84,11 @@ namespace SpaceDevice
             {
                 Splittable.Character.Player.Instance.TakeOutSpaceDevice();
                 TurnOn();
-            }                
+            }
             else
             {
-                Splittable.Character.Player.Instance.PutAwaySpaceDevice();
                 TurnOff();
-            }                
+            }
         }
 
         void TurnOn()
@@ -106,6 +107,7 @@ namespace SpaceDevice
 
         void TurnOff()
         {
+            Splittable.Character.Player.Instance.PutAwaySpaceDevice();
             laser.IsOn = false;
             curState = WithdrawerState.OFF;
             OnToggle.Invoke();
@@ -160,6 +162,7 @@ namespace SpaceDevice
             laser.HittedObject.Withdraw();
             curState = WithdrawerState.WAIT;
             InputManager.Instance.pause = true;
+            OnWithdraw.Invoke();
         }
 
         public void OnWithdrawCallback()
@@ -197,6 +200,7 @@ namespace SpaceDevice
             curState = WithdrawerState.WAIT;
             withdrawContainer.color = transparentColor;
             InputManager.Instance.pause = true;
+            OnInsert.Invoke();
         }
 
         public void OnInsertCallback()

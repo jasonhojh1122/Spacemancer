@@ -9,6 +9,7 @@ namespace Gameplay.Interactable
     {
 
         [SerializeField] Electronic.ElectronicObject targetObject;
+        [SerializeField] UnityEvent OnScanHand;
         [SerializeField] UnityEvent OnUnlock;
 
         Core.ObjectColor objectColor;
@@ -35,6 +36,7 @@ namespace Gameplay.Interactable
 
         IEnumerator ScanHand()
         {
+            OnScanHand.Invoke();
             yield return new WaitForSeconds(0.5f);
             Open();
             InteractionManager.Instance.PlayerIK.EndPose();
@@ -42,14 +44,18 @@ namespace Gameplay.Interactable
 
         void Open()
         {
-            foreach (var s in Core.World.Instance.ObjectPool.ActiveObjects[targetObject.gameObject.name])
+            if (targetObject != null)
             {
-                if (s.Dim.color == Splittable.Character.Player.Instance.Dim.color)
+                foreach (var s in Core.World.Instance.ObjectPool.ActiveObjects[targetObject.gameObject.name])
                 {
-                    var electron = s.GetComponent<Electronic.ElectronicObject>();
-                    electron.Toggle();
+                    if (s.Dim.color == Splittable.Character.Player.Instance.Dim.color)
+                    {
+                        var electron = s.GetComponent<Electronic.ElectronicObject>();
+                        electron.Toggle();
+                    }
                 }
             }
+            OnUnlock.Invoke();
         }
 
         public override bool IsInteracting()

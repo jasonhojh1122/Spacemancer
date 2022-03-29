@@ -8,8 +8,10 @@ namespace UI
     {
         [SerializeField] float duration = 0.1f;
         [SerializeField] bool defaultOn = true;
+        [SerializeField] bool pauseUIInput = false;
         [SerializeField] bool pauseGameplayInput = true;
         [SerializeField] GameObject defaultSelected;
+        public UnityEngine.Events.UnityEvent OnFadeIn;
         CanvasGroup canvasGroup;
         static EventSystem eventSystem;
 
@@ -55,16 +57,22 @@ namespace UI
             isOn = false;
             if (pauseGameplayInput)
                 Input.InputManager.Instance.ToggleGameplayInput(false);
+            if (pauseUIInput)
+                Input.InputManager.Instance.ToggleUIInput(false);
             StartCoroutine(Fade(false));
+            eventSystem.SetSelectedGameObject(null);
         }
 
         public void FadeIn()
         {
+            OnFadeIn.Invoke();
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
             isOn = true;
             if (pauseGameplayInput)
                 Input.InputManager.Instance.ToggleGameplayInput(true);
+            if (pauseUIInput)
+                Input.InputManager.Instance.ToggleUIInput(true);
             SelectDefault();
             StartCoroutine(Fade(true));
         }

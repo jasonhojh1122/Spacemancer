@@ -12,6 +12,9 @@ namespace Input
         [SerializeField] float rotateSpeed;
         [SerializeField] RuntimeAnimatorController idleAC;
         [SerializeField] RuntimeAnimatorController walkAC;
+        [SerializeField] bool moving;
+        [SerializeField] UnityEngine.Events.UnityEvent OnMovingStart;
+        [SerializeField] UnityEngine.Events.UnityEvent OnMovingEnd;
 
         CharacterController characterController;
         InputAction moveAction;
@@ -19,7 +22,6 @@ namespace Input
         Animator animator;
         Splittable.Character.Player player;
         Vector3 vel;
-        [SerializeField] bool moving;
 
         new void Awake()
         {
@@ -70,6 +72,7 @@ namespace Input
                 {
                     SetAnimatorController(walkAC);
                     moving = true;
+                    OnMovingStart.Invoke();
                 }
             }
             else
@@ -78,6 +81,7 @@ namespace Input
                 {
                     SetAnimatorController(idleAC);
                     moving = false;
+                    OnMovingEnd.Invoke();
                 }
             }
         }

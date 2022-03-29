@@ -29,14 +29,21 @@ namespace Gameplay.Electronic
         public override void TurnOn()
         {
             if (so.IsInCorrectDim())
+            {
+                OnTurnOn.Invoke();
                 IsOpened = true;
+            }
             else
                 IsOpened = false;
         }
 
         public override void TurnOff()
         {
-            IsOpened = false;
+            if (IsOpened)
+            {
+                OnTurnOff.Invoke();
+                IsOpened = false;
+            }
         }
 
         public override void Toggle()

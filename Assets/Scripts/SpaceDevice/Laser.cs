@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Core;
 
@@ -13,6 +10,8 @@ namespace SpaceDevice
         [SerializeField] float speed;
         [SerializeField] Transform player;
         [SerializeField] float maxLength = 50.0f;
+        [SerializeField] UnityEngine.Events.UnityEvent OnLaserOn;
+        [SerializeField] UnityEngine.Events.UnityEvent OnLaserOff;
         LineRenderer lr;
         MaterialPropertyBlock _property;
         ObjectColor _hittedObject;
@@ -127,6 +126,7 @@ namespace SpaceDevice
         void TurnOn()
         {
             StopAllCoroutines();
+            OnLaserOn.Invoke();
             StartCoroutine(ActiveLoop());
         }
 
@@ -181,6 +181,7 @@ namespace SpaceDevice
                 lr.SetPosition(1, LocalEndPoint);
                 yield return null;
             }
+            OnLaserOff.Invoke();
             lr.enabled = false;
         }
 

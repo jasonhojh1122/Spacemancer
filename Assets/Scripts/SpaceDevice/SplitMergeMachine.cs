@@ -67,20 +67,25 @@ namespace SpaceDevice
             if (IsPaused()) return;
             fader.Toggle();
             if (fader.IsOn)
-                Splittable.Character.Player.Instance.TakeOutSpaceDevice();
+                SetPlayerIK(true);
             else if (Withdrawer.Instance == null || !Withdrawer.Instance.IsOn)
-                Splittable.Character.Player.Instance.PutAwaySpaceDevice();
+                SetPlayerIK(false);
             InputManager.Instance.ToggleGameplayInput(fader.IsOn);
         }
 
         public void Toggle()
         {
             fader.Toggle();
-            if (fader.IsOn)
+            SetPlayerIK(fader.IsOn);
+            InputManager.Instance.ToggleGameplayInput(fader.IsOn);
+        }
+
+        void SetPlayerIK(bool isOn)
+        {
+            if (isOn)
                 Splittable.Character.Player.Instance.TakeOutSpaceDevice();
             else
                 Splittable.Character.Player.Instance.PutAwaySpaceDevice();
-            InputManager.Instance.ToggleGameplayInput(fader.IsOn);
         }
 
         public void SyncColorFromWorld()
@@ -134,6 +139,7 @@ namespace SpaceDevice
         System.Collections.IEnumerator EnterAnim(int i)
         {
             fader.FadeOut();
+            SetPlayerIK(false);
             InputManager.Instance.pause = true;
             playerTransitionVFX.Stop();
             playerTransitionVFX.Play();

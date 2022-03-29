@@ -31,6 +31,16 @@ public class SceneLoader : MonoBehaviour
     }
 
     /// <summary>
+    /// Loads the scene with the given build id.
+    /// </summary>
+    /// <param name="id"> The build id of the scene to be loaded.</param>
+    public void Load(int id)
+    {
+        sceneTransition.FadeIn();
+        StartCoroutine(LoadScene(id));
+    }
+
+    /// <summary>
     /// Loads the next scene.
     /// </summary>
     public void Load()
@@ -55,7 +65,7 @@ public class SceneLoader : MonoBehaviour
     /// </summary>
     public void Exit()
     {
-        Application.Quit(); 
+        Application.Quit();
     }
 
     System.Collections.IEnumerator LoadScene(int id)
@@ -63,6 +73,7 @@ public class SceneLoader : MonoBehaviour
         async = SceneManager.LoadSceneAsync(id);
         async.allowSceneActivation = false;
         yield return StartCoroutine(Anim());
+        Saving.GameSaveManager.Instance.Save();
     }
 
     System.Collections.IEnumerator LoadScene(string name)
@@ -70,6 +81,7 @@ public class SceneLoader : MonoBehaviour
         async = SceneManager.LoadSceneAsync(name);
         async.allowSceneActivation = false;
         yield return StartCoroutine(Anim());
+        Saving.GameSaveManager.Instance.Save();
     }
 
     System.Collections.IEnumerator Anim()

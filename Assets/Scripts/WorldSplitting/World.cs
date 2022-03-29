@@ -21,12 +21,7 @@ namespace Core
         [SerializeField] Dimension.Color startDimensionColor = Dimension.Color.WHITE;
         [SerializeField] SpaceDevice.SplitMergeMachine splitMergeMachine;
 
-        [HideInInspector]
-        /// <summary>
-        /// On
-        /// </summary>
-        /// <returns></returns>
-        public UnityEvent OnActiveDimChange = new UnityEvent();
+        public UnityEvent OnActiveDimChange;
 
         [HideInInspector]
         /// <summary>

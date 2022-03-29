@@ -454,7 +454,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 3, y: 50}
+  m_SizeDelta: {x: 3, y: 25}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &6225034185990196801
 CanvasRenderer:
@@ -1306,7 +1306,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.0627451, g: 0.14117648, b: 0.14901961, a: 1}
+  m_Color: {r: 0.0627451, g: 0.14117648, b: 0.14901961, a: 0.9490196}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1351,6 +1351,9 @@ MonoBehaviour:
   defaultOn: 0
   pauseGameplayInput: 1
   defaultSelected: {fileID: 7469947320096157162}
+  OnFadeIn:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7469947321140224124
 MonoBehaviour:
   m_ObjectHideFlags: 0

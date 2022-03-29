@@ -10,7 +10,10 @@ namespace Gameplay.Electronic
         public override void TurnOn()
         {
             if (so.IsInCorrectDim() && so.Dim.color == activeColor)
+            {
                 IsOpened = true;
+                OnTurnOn.Invoke();
+            }
             else
                 IsOpened = false;
         }

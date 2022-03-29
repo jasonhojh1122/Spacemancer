@@ -27,6 +27,7 @@ namespace Core
         [SerializeField] float transitionDuration = 1.0f;
         [SerializeField] Input.CameraController cameraController;
         [SerializeField] GlitchSetting glitchSetting;
+        [SerializeField] UnityEngine.Events.UnityEvent OnTransitionStarted;
 
         bool transitting;
         Vector3 gravity = new Vector3(0f, -9.8f, 0f);
@@ -88,6 +89,7 @@ namespace Core
 
         void OnTransitionStart()
         {
+            OnTransitionStarted.Invoke();
             Physics.gravity = Vector3.zero;
             Physics.autoSimulation = false;
             transitting = true;

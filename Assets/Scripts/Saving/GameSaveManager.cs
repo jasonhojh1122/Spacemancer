@@ -10,7 +10,6 @@ namespace Saving
         static GameSaveManager _instance;
         GameSave gameSave;
         string dest;
-        string json;
 
         public static GameSaveManager Instance
         {
@@ -31,13 +30,14 @@ namespace Saving
             dest = Application.persistentDataPath + "/save.dat";
             Load();
             GameSave.highestScene = Mathf.Max(SceneManager.GetActiveScene().buildIndex, GameSave.highestScene);
+            Save();
         }
 
         void Load()
         {
             if (File.Exists(dest))
             {
-                json = File.ReadAllText(dest);
+                var json = File.ReadAllText(dest);
                 gameSave = JsonUtility.FromJson<GameSave>(json);
             }
             else
@@ -49,7 +49,7 @@ namespace Saving
 
         public void Save()
         {
-            json = JsonUtility.ToJson(gameSave);
+            var json = JsonUtility.ToJson(gameSave);
             File.WriteAllText(dest, json);
         }
     }
