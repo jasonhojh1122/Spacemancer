@@ -15,8 +15,12 @@ namespace Gameplay
         [SerializeField] Collider trigger;
         [SerializeField] Dimension.Color activeColor = Dimension.Color.WHITE;
         [SerializeField] List<ObjectColor> indicators;
+        [SerializeField] UnityEngine.Events.UnityEvent OnCharged;
+        [SerializeField] UnityEngine.Events.UnityEvent OnUncharged;
         SplittableObject battery;
         SplittableObject so;
+
+        bool toggled;
 
         private void Awake()
         {
@@ -27,6 +31,7 @@ namespace Gameplay
             {
                 oc.Color = activeColor;
             }
+            toggled = false;
         }
 
         private void Start()
@@ -91,6 +96,8 @@ namespace Gameplay
 
         private void ToggleOn()
         {
+            toggled = true;
+            OnCharged.Invoke();
             foreach (var device in World.Instance.ObjectPool.ActiveObjects[electronicName])
             {
                 if (so.Dim.color == device.Dim.color)
@@ -103,6 +110,8 @@ namespace Gameplay
 
         private void ToggleOff()
         {
+            toggled = false;
+            OnUncharged.Invoke();
             foreach (var device in World.Instance.ObjectPool.ActiveObjects[electronicName])
             {
                 if (so.Dim.color == device.Dim.color)
@@ -125,11 +134,16 @@ namespace Gameplay
 
         public void CheckDimensionStatus()
         {
-            if (battery != null && battery.IsInCorrectDim()
-                    && so.IsInCorrectDim() && so.Dim.color == activeColor)
+            var correctStatus = battery != null && battery.IsInCorrectDim()
+                && so.IsInCorrectDim() && so.Dim.color == activeColor;
+            if (correctStatus && !toggled)
+            {
                 ToggleOn();
-            else
+            }
+            else if (!correctStatus && toggled)
+            {
                 ToggleOff();
+            }
         }
     }
 

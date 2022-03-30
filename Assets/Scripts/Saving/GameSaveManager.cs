@@ -10,6 +10,7 @@ namespace Saving
         static GameSaveManager _instance;
         GameSave gameSave;
         string dest;
+        bool isNewGame;
 
         public static GameSaveManager Instance
         {
@@ -21,6 +22,11 @@ namespace Saving
             get => gameSave;
         }
 
+        public bool IsNewGame
+        {
+            get => isNewGame;
+        }
+
 
         private void Awake()
         {
@@ -28,6 +34,7 @@ namespace Saving
                 Debug.LogError("Multiple instances of GameSaveManager created.");
             _instance = this;
             dest = Application.persistentDataPath + "/save.dat";
+            isNewGame = false;
             Load();
             GameSave.highestScene = Mathf.Max(SceneManager.GetActiveScene().buildIndex, GameSave.highestScene);
             Save();
@@ -42,7 +49,8 @@ namespace Saving
             }
             else
             {
-                gameSave = new GameSave(0);
+                isNewGame = true;
+                gameSave = new GameSave(0, 0);
                 Save();
             }
         }
@@ -51,6 +59,12 @@ namespace Saving
         {
             var json = JsonUtility.ToJson(gameSave);
             File.WriteAllText(dest, json);
+        }
+
+        public void NewGame()
+        {
+            gameSave = new GameSave(0, 0);
+            Save();
         }
     }
 }

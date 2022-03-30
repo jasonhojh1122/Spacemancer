@@ -28,8 +28,9 @@ namespace Gameplay.Electronic
 
         public override void TurnOn()
         {
-            if (so.IsInCorrectDim())
+            if (so.IsInCorrectDim() && !IsOpened)
             {
+                Debug.Log("A");
                 OnTurnOn.Invoke();
                 IsOpened = true;
             }
@@ -41,6 +42,7 @@ namespace Gameplay.Electronic
         {
             if (IsOpened)
             {
+                Debug.Log("B");
                 OnTurnOff.Invoke();
                 IsOpened = false;
             }

@@ -15,6 +15,7 @@ namespace Gameplay
             if (other.gameObject.tag == "Player" && !entered)
             {
                 entered = true;
+                Saving.GameSaveManager.Instance.Save();
                 if (nextScene == null || nextScene == "")
                 {
                     SceneLoader.Instance.Load();

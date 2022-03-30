@@ -9,6 +9,7 @@ namespace Gameplay.Electronic
     {
         [SerializeField] VisualEffect vfx;
         [SerializeField] List<Core.ObjectColor> toStabilized;
+        [SerializeField] int phase;
         bool used = false;
 
         public override void TurnOn()
@@ -16,7 +17,9 @@ namespace Gameplay.Electronic
             if (!used)
             {
                 used = true;
+                OnTurnOn.Invoke();
                 StartCoroutine(Anim());
+                Saving.GameSaveManager.Instance.GameSave.phase = phase;
             }
         }
 

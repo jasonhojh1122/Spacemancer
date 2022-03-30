@@ -11,6 +11,7 @@ namespace Gameplay.Interactable
         [SerializeField] Electronic.ElectronicObject targetObject;
         [SerializeField] UnityEvent OnScanHand;
         [SerializeField] UnityEvent OnUnlock;
+        [SerializeField] bool singleUse = false;
 
         Core.ObjectColor objectColor;
 
@@ -31,6 +32,10 @@ namespace Gameplay.Interactable
         public void OnPosed()
         {
             InteractionManager.Instance.PlayerIK.OnPosed.RemoveListener(this.OnPosed);
+            if (singleUse)
+            {
+                InteractionManager.Instance.ClearInteractable(this);
+            }
             StartCoroutine(ScanHand());
         }
 

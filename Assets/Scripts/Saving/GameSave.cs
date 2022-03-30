@@ -6,10 +6,12 @@ namespace Saving
     public class GameSave
     {
         public int highestScene;
+        public int phase;
 
-        public GameSave(int highestScene)
+        public GameSave(int highestScene, int phase)
         {
             this.highestScene = highestScene;
+            this.phase = phase;
         }
     }
 }

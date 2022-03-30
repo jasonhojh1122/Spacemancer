@@ -23,6 +23,17 @@ namespace Input
         Splittable.Character.Player player;
         Vector3 vel;
 
+        bool overrideControl;
+
+        /// <summary>
+        /// If the player's control is overridden by Timeline.
+        /// </summary>
+        public bool OverrideControl
+        {
+            get => overrideControl;
+            set => overrideControl = value;
+        }
+
         new void Awake()
         {
             base.Awake();
@@ -33,10 +44,15 @@ namespace Input
             animator.runtimeAnimatorController = idleAC;
             vel = Vector3.zero;
             moving = false;
+            OverrideControl = false;
         }
 
         protected void Update()
         {
+            if (OverrideControl)
+            {
+                return;
+            }
             if (IsPaused())
             {
                 vel = Vector3.zero;
@@ -90,6 +106,24 @@ namespace Input
         {
             animator.runtimeAnimatorController = controller;
             player.SetDummyAnimatorController(controller);
+        }
+
+        /// <summary>
+        /// Sets the animation controller to walk.
+        /// </summary>
+        public void OverrideWalk()
+        {
+            animator.runtimeAnimatorController = walkAC;
+            player.SetDummyAnimatorController(walkAC);
+        }
+
+        /// <summary>
+        /// Sets the animation controller to IDLE.
+        /// </summary>
+        public void OverrideIdle()
+        {
+            animator.runtimeAnimatorController = idleAC;
+            player.SetDummyAnimatorController(idleAC);
         }
 
     }

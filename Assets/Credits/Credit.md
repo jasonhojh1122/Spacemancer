@@ -46,6 +46,14 @@
   - https://freesound.org/people/InspectorJ/sounds/397948/
 - Sci-fi-engine by lewis100011
   - https://freesound.org/people/lewis100011/sounds/241262/
+- Retro SciFi_machine sound by cabled_mess
+  - https://freesound.org/people/cabled_mess/sounds/342458/
+
+#### Stabilizer
+- Electricity by FlashTrauma
+  - https://freesound.org/people/FlashTrauma/sounds/398274/
+- bubbles by cdonahueucsd
+  - https://freesound.org/people/cdonahueucsd/sounds/337130/
 
 #### Menu
 - Menu UI Click 216 by Erokia
@@ -61,7 +69,6 @@
 - digi code door uncatch by jak damage
   - https://freesound.org/people/jak%20damage/sounds/36106/
 
-
 #### Player
 - splash3 by Rocktopus
   - https://freesound.org/people/Rocktopus/sounds/233422/
@@ -69,4 +76,9 @@
   - https://freesound.org/people/BennettFilmTeacher/sounds/523784/
 - boots on carpet loop by LukeWSkywalker
   - https://freesound.org/people/LukeWSkywalker/sounds/581398/
--
+
+#### Scene
+- Retro Sci-Fi, horror 04 by cabled_mess
+  - https://freesound.org/people/cabled_mess/sounds/340806/
+- Retro Sci-Fi/Horror [loop] (Ambient 16072016 Part I // SmoothSliding) by cabled_mess
+- https://freesound.org/people/cabled_mess/sounds/350611/
