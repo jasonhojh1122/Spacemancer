@@ -1250,7 +1250,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 2, y: 2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7102322163268588250
 CanvasRenderer:
@@ -2185,8 +2185,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9047020480818453262}
-  m_LocalRotation: {x: 0.35355338, y: -0.35355338, z: 0.1464466, w: 0.8535535}
-  m_LocalPosition: {x: 8.85, y: 12, z: -8.85}
+  m_LocalRotation: {x: 0.27667546, y: -0.22443867, z: 0.06662677, w: 0.93200797}
+  m_LocalPosition: {x: 10.14, y: 12, z: -10.84}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9047020481753923300}
@@ -2216,10 +2216,10 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.001
-  far clip plane: 100
+  far clip plane: 1000
   field of view: 45
   orthographic: 1
-  orthographic size: 4
+  orthographic size: 20
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
