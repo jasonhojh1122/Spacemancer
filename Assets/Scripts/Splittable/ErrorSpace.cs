@@ -9,6 +9,7 @@ namespace Splittable
 {
     public class ErrorSpace : SplittableObject
     {
+        [SerializeField] UnityEngine.Events.UnityEvent OnFixed;
         public bool splitted;
         [SerializeField] VisualEffect vf;
         bool playing;
@@ -45,6 +46,7 @@ namespace Splittable
             vf.Stop();
             col.enabled = false;
             playing = false;
+            OnFixed.Invoke();
         }
 
         void ReEnableVF()

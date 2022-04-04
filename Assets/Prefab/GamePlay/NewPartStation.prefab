@@ -666,7 +666,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 327a39762b97de54b9d04d49eb9d4b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPersistentColor: 0
   defaultInactive: 0
   isConvex: 1
   OnInitialized:
@@ -697,6 +696,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1969b87a646f7c1429681fc7018622eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnTurnOn:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTurnOff:
+    m_PersistentCalls:
+      m_Calls: []
   animator: {fileID: 628699110028764325}
   activeColor: 7
   indicators:
@@ -717,9 +722,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ikSetting: {fileID: 2714401406660337451}
   targetObject: {fileID: 2671891780395286637}
+  OnScanHand:
+    m_PersistentCalls:
+      m_Calls: []
   OnUnlock:
     m_PersistentCalls:
       m_Calls: []
+  singleUse: 1
 --- !u!1 &3630184699406615052
 GameObject:
   m_ObjectHideFlags: 0

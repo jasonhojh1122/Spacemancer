@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1348493698449106439}
   - component: {fileID: 1348493698449106438}
   - component: {fileID: 1348493698449106436}
+  - component: {fileID: 8021771493572649880}
   m_Layer: 0
   m_Name: Wall_Side_Deco_3
   m_TagString: Untagged
@@ -121,7 +122,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 327a39762b97de54b9d04d49eb9d4b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPersistentColor: 0
   defaultInactive: 0
   isConvex: 1
   OnInitialized:
@@ -140,3 +140,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.88, y: 0.39999998, z: 0.057785008}
   m_Center: {x: 0, y: 0, z: -0.028892325}
+--- !u!95 &8021771493572649880
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348493698449106441}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f491053fb3fa19e4a8148a80c2645754, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

@@ -156,7 +156,7 @@ namespace Splittable
                         List<SplittableObject> siblings, List<SplittableObject> others)
         {
             Collider[] colliders = Physics.OverlapBox(col.bounds.center, col.bounds.extents - Util.Fuzzy.amountVec3, Quaternion.identity);
-            Util.Debug.DrawBox(col.bounds.center, Quaternion.identity, col.bounds.extents*2, UnityEngine.Color.blue, 50.0f);
+            // Util.Debug.DrawBox(col.bounds.center, Quaternion.identity, col.bounds.extents*2, UnityEngine.Color.blue, 50.0f);
             foreach (Collider c in colliders)
             {
                 Debug.Log("Processing " + c.gameObject.name);

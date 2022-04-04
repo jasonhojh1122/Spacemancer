@@ -113,6 +113,7 @@ namespace Input
         /// </summary>
         public void OverrideWalk()
         {
+            if (animator == null) return;
             animator.runtimeAnimatorController = walkAC;
             player.SetDummyAnimatorController(walkAC);
         }
@@ -122,6 +123,7 @@ namespace Input
         /// </summary>
         public void OverrideIdle()
         {
+            if (animator == null) return;
             animator.runtimeAnimatorController = idleAC;
             player.SetDummyAnimatorController(idleAC);
         }

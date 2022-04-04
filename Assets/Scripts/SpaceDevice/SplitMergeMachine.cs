@@ -49,7 +49,6 @@ namespace SpaceDevice
             for (int i = 0; i < Dimension.BaseColor.Count; i++)
             {
                 dimColorIds.Add(i);
-                UpdateDimColorIndicator();
             }
             Core.World.Instance.OnTransitionStart.AddListener(PlayHintAnim);
             Core.World.Instance.OnTransitionEnd.AddListener(UpdateHintColor);
@@ -59,6 +58,7 @@ namespace SpaceDevice
 
         private void Start()
         {
+            UpdateDimColorIndicator();
             UpdateActiveText();
         }
 

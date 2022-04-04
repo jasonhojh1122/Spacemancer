@@ -9,8 +9,6 @@ namespace Gameplay.Electronic
         [SerializeField] Tutorial.VideoTutorial videoTutorial;
         [SerializeField] GameObject newPart;
 
-        bool used = false;
-
         public override void Toggle()
         {
             TurnOn();
@@ -18,9 +16,8 @@ namespace Gameplay.Electronic
 
         public override void TurnOn()
         {
-            if (used || !so.IsInCorrectDim() || so.Dim.color != activeColor) return;
+            if (!so.IsInCorrectDim() || so.Dim.color != activeColor) return;
             IsOpened = true;
-            used = true;
             newPart.SetActive(true);
             videoTutorial.Show();
         }

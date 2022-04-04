@@ -68,6 +68,8 @@
   - https://freesound.org/people/cabled_mess/sounds/351446/
 - digi code door uncatch by jak damage
   - https://freesound.org/people/jak%20damage/sounds/36106/
+- Sci-Fi_Explosion.wav by Anomaex
+  - https://freesound.org/people/Anomaex/sounds/490253/
 
 #### Player
 - splash3 by Rocktopus

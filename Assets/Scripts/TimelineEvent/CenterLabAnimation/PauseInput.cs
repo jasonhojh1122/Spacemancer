@@ -7,12 +7,14 @@ namespace TimelineEvent.CenterLabAnimation
     {
         private void OnEnable()
         {
-            Input.InputManager.Instance.pause = true;
+            if (Input.InputManager.Instance != null)
+                Input.InputManager.Instance.pause = true;
         }
 
         private void OnDisable()
         {
-            Input.InputManager.Instance.pause = false;
+            if (Input.InputManager.Instance != null)
+                Input.InputManager.Instance.pause = false;
         }
     }
 }

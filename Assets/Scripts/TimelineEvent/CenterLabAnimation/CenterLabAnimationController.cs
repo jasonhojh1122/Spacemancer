@@ -9,6 +9,8 @@ namespace TimelineEvent.CenterLabAnimation
     {
         [SerializeField] List<Core.ObjectColor> phase1FixedObjects;
         [SerializeField] List<Core.ObjectColor> phase2FixedObjects;
+        [SerializeField] List<GameObject> phase1HideObjects;
+        [SerializeField] List<GameObject> phase2HideObjects;
 
         private void Start()
         {
@@ -19,10 +21,18 @@ namespace TimelineEvent.CenterLabAnimation
                 case 1:
                     foreach (var obj in phase1FixedObjects)
                         obj.Color = Core.Dimension.Color.WHITE;
+                    foreach (var obj in phase1HideObjects)
+                        obj.SetActive(false);
                     break;
                 case 2:
+                    foreach (var obj in phase1FixedObjects)
+                        obj.Color = Core.Dimension.Color.WHITE;
                     foreach (var obj in phase2FixedObjects)
                         obj.Color = Core.Dimension.Color.WHITE;
+                    foreach (var obj in phase1HideObjects)
+                        obj.SetActive(false);
+                    foreach (var obj in phase1HideObjects)
+                        obj.SetActive(false);
                     break;
                 default:
                     break;

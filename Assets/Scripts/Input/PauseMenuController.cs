@@ -25,6 +25,7 @@ namespace Input
 
         public void Toggle(InputAction.CallbackContext callbackContext)
         {
+            if (IsPaused()) return;
             if (isOpened)
             {
                 fader.FadeOut();
@@ -39,11 +40,6 @@ namespace Input
                 fader.FadeIn();
                 isOpened = true;
             }
-        }
-
-        public void SelectDefault()
-        {
-
         }
 
     }

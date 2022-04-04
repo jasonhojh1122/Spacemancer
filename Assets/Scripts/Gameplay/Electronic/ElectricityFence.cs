@@ -11,6 +11,7 @@ namespace Gameplay.Electronic
         [SerializeField] List<LineRenderer> lineRenderers;
         [SerializeField] float lineWidth;
         [SerializeField] float explosionLength = 1.2f;
+        [SerializeField] UnityEngine.Events.UnityEvent OnPlayerEnter;
 
         Splittable.SplittableObject so;
 
@@ -86,6 +87,7 @@ namespace Gameplay.Electronic
         {
             if (IsOn && other.gameObject.tag == "Player")
             {
+                OnPlayerEnter.Invoke();
                 StartCoroutine(Explode());
             }
         }

@@ -18,9 +18,11 @@ public class MainMenu : MonoBehaviour
             continueButton.gameObject.SetActive(false);
             Navigation navigation = newGameButton.navigation;
             navigation.selectOnUp = exitButton;
+            navigation.selectOnDown = exitButton;
             newGameButton.navigation = navigation;
 
             navigation = exitButton.navigation;
+            navigation.selectOnUp = newGameButton;
             navigation.selectOnDown = newGameButton;
             exitButton.navigation = navigation;
 
