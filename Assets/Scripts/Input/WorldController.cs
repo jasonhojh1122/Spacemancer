@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using Gameplay.Interactable;
+
 namespace Input
 {
     public class WorldController : InputController
@@ -27,6 +29,8 @@ namespace Input
             if (splitMerge.triggered && SpaceDevice.EnergyBar.Instance.IsSufficient())
             {
                 if (SpaceDevice.Withdrawer.Instance != null && SpaceDevice.Withdrawer.Instance.IsOn)
+                    return;
+                if (InteractionManager.Instance != null && InteractionManager.Instance.IsInteracting)
                     return;
                 SpaceDevice.EnergyBar.Instance.CostSingleAction();
                 world.Toggle();

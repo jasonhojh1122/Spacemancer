@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 using Core;
 using Input;
+using Gameplay.Interactable;
 
 namespace SpaceDevice
 {
@@ -79,6 +80,8 @@ namespace SpaceDevice
 
         public void Toggle()
         {
+            if (InteractionManager.Instance != null && InteractionManager.Instance.IsInteracting)
+                return;
             if (curState == WithdrawerState.WAIT) return;
             if (curState == WithdrawerState.OFF)
             {

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 using Core;
 using Input;
+using Gameplay.Interactable;
 
 namespace SpaceDevice
 {
@@ -64,7 +65,10 @@ namespace SpaceDevice
 
         public void Toggle(InputAction.CallbackContext context)
         {
-            if (IsPaused()) return;
+            if (InteractionManager.Instance != null && InteractionManager.Instance.IsInteracting)
+                return;
+            if (IsPaused())
+                return;
             fader.Toggle();
             if (fader.IsOn)
                 SetPlayerIK(true);
@@ -75,6 +79,8 @@ namespace SpaceDevice
 
         public void Toggle()
         {
+            if (InteractionManager.Instance != null && InteractionManager.Instance.IsInteracting)
+                return;
             fader.Toggle();
             SetPlayerIK(fader.IsOn);
             InputManager.Instance.ToggleGameplayInput(fader.IsOn);

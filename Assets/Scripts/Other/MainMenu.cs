@@ -11,6 +11,13 @@ public class MainMenu : MonoBehaviour
     [SerializeField] int stabilizer1BuildId;
     [SerializeField] int stabilizer2BuildId;
 
+    bool loading;
+
+    private void Awake()
+    {
+        loading = false;
+    }
+
     private void Start()
     {
         if (Saving.GameSaveManager.Instance.IsNewGame)
@@ -37,6 +44,9 @@ public class MainMenu : MonoBehaviour
 
     public void ContinueGame()
     {
+        if (loading)
+            return;
+        loading = true;
         var highestScene = Saving.GameSaveManager.Instance.GameSave.highestScene;
         var phase = Saving.GameSaveManager.Instance.GameSave.phase;
         if ( (highestScene == stabilizer1BuildId && phase == 1) ||
@@ -44,11 +54,17 @@ public class MainMenu : MonoBehaviour
         {
             SceneLoader.Instance.Load("CenterLab");
         }
-        SceneLoader.Instance.Load(Saving.GameSaveManager.Instance.GameSave.highestScene);
+        else
+        {
+            SceneLoader.Instance.Load(Saving.GameSaveManager.Instance.GameSave.highestScene);
+        }
     }
 
     public void NewGame()
     {
+        if (loading)
+            return;
+        loading = true;
         Saving.GameSaveManager.Instance.NewGame();
         SceneLoader.Instance.Load("StartAnimation");
     }

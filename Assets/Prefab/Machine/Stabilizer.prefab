@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 755318121619816018}
   - component: {fileID: 755318121619816017}
   - component: {fileID: 6104774780295098337}
+  - component: {fileID: 6703700229400295142}
   m_Layer: 0
   m_Name: Stabilizer
   m_TagString: Untagged
@@ -236,6 +237,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  phase: 0
 --- !u!82 &6104774780295098337
 AudioSource:
   m_ObjectHideFlags: 0
@@ -332,6 +334,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &6703700229400295142
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755318121619816029}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f491053fb3fa19e4a8148a80c2645754, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5282032105879698312
 GameObject:
   m_ObjectHideFlags: 0
@@ -506,6 +527,7 @@ GameObject:
   - component: {fileID: 7113518286030644160}
   - component: {fileID: 4998076913345550090}
   - component: {fileID: 6799379944597452508}
+  - component: {fileID: 8741612657803465165}
   m_Layer: 0
   m_Name: Stabilizer_Side
   m_TagString: Untagged
@@ -601,3 +623,22 @@ MonoBehaviour:
   OnColorChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!95 &8741612657803465165
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6799379944597452511}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f491053fb3fa19e4a8148a80c2645754, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
