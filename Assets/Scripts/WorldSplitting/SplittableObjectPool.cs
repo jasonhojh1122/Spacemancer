@@ -2,8 +2,8 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 
-
-using Set = System.Collections.Generic.HashSet<Core.SplittableObject>;
+using Splittable;
+using Set = System.Collections.Generic.HashSet<Splittable.SplittableObject>;
 
 namespace Core
 {
@@ -77,7 +77,7 @@ namespace Core
         /// A <c>Dictionary</c> mapping from a string to a set of
         /// active <c>SplittableObject</c> with a same name as the key.
         /// </summary>
-        public Dictionary<string, Set> ActiveObjectsPool {
+        public Dictionary<string, Set> ActiveObjects {
             get => active.Pool;
         }
 
@@ -85,7 +85,7 @@ namespace Core
         /// A <c>Dictionary</c> mapping from a string to a set of
         /// inactive <c>SplittableObject</c> with a same name as the key.
         /// </summary>
-        public Dictionary<string, Set> InactiveObjectsPool {
+        public Dictionary<string, Set> InactiveObjects {
             get => inactive.Pool;
         }
 
@@ -104,7 +104,7 @@ namespace Core
         {
             inactive.Remove(so);
             active.Add(so);
-            so.gameObject.SetActive(true);
+            // so.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Core
         {
             active.Remove(so);
             inactive.Add(so);
-            so.gameObject.SetActive(false);
+            // so.gameObject.SetActive(false);
         }
 
         /// <summary>

@@ -1,10 +1,12 @@
 
+using UnityEngine;
 using System;
 using System.Collections.Generic;
 
 namespace Core {
 
-    public class Dimension {
+    public class Dimension : MonoBehaviour
+    {
 
         /// <summary>
         /// The bit flag of object's color.
@@ -22,17 +24,18 @@ namespace Core {
             BLACK   = 0b_1000,
         }
 
-        [Serializable]
-        public struct ColorSetting
-        {
-            public Color colorTag;
-            public UnityEngine.Color32 color32;
-        }
-
         /// <summary>
         /// The base color of dimensions.
         /// </summary>
         public static List<Color> BaseColor = new List<Color> {Color.RED, Color.GREEN, Color.BLUE};
+
+        /// <summary>
+        /// A list of all the valid color.
+        /// </summary>
+        public static List<Color> SplittedColor = new List<Color>
+        {
+            Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.MAGENTA
+        };
 
         /// <summary>
         /// A list of all the valid color.
@@ -120,6 +123,8 @@ namespace Core {
             }
             return ret;
         }
+
+        public Color color;
 
     }
 

@@ -1,8 +1,13 @@
 
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
+using System.Collections.Generic;
+
 using Core;
+using Input;
+using Gameplay.Interactable;
 
 namespace SpaceDevice
 {
@@ -13,10 +18,15 @@ namespace SpaceDevice
             OFF, TO_WITHDRAW, TO_INSERT, WAIT
         }
         [SerializeField] Laser laser;
-        [SerializeField] EnergyBar energyBar;
         [SerializeField] RectTransform colorSelector;
         [SerializeField] UnityEngine.UI.Image withdrawContainer;
-        [SerializeField] float energyCost = 0.2f;
+        [SerializeField] Animator hintAnimator;
+        [SerializeField] UnityEngine.UI.Image hintCenter;
+        [SerializeField] UnityEngine.UI.Image hintSide;
+        [SerializeField] UnityEngine.Events.UnityEvent OnInsert;
+        [SerializeField] UnityEngine.Events.UnityEvent OnWithdraw;
+
+        static Withdrawer _instance;
 
         /// <summary>
         /// Current color for withdrawing.
@@ -35,9 +45,23 @@ namespace SpaceDevice
         InputAction toggle;
         InputAction perform;
 
+        public static Withdrawer Instance
+        {
+            get => _instance;
+        }
+
+        public bool IsOn {
+            get => laser.IsOn;
+        }
+
+        [HideInInspector] public UnityEvent OnToggle = new UnityEvent();
+
         new void Awake()
         {
             base.Awake();
+            if (_instance != null)
+                Debug.LogError("Multiple instances of Withdrawer created.");
+            _instance = this;
             toggle = playerInput.actions["WithdrawerToggle"];
             perform = playerInput.actions["WithdrawerPerform"];
             curState = WithdrawerState.OFF;
@@ -47,7 +71,7 @@ namespace SpaceDevice
 
         private void Update()
         {
-            if (pause) return;
+            if (IsPaused()) return;
             if (toggle.triggered)
                 Toggle();
             if (perform.triggered)
@@ -56,11 +80,18 @@ namespace SpaceDevice
 
         public void Toggle()
         {
+            if (InteractionManager.Instance != null && InteractionManager.Instance.IsInteracting)
+                return;
             if (curState == WithdrawerState.WAIT) return;
             if (curState == WithdrawerState.OFF)
+            {
+                Splittable.Character.Player.Instance.TakeOutSpaceDevice();
                 TurnOn();
+            }
             else
+            {
                 TurnOff();
+            }
         }
 
         void TurnOn()
@@ -69,16 +100,22 @@ namespace SpaceDevice
             if (holdColor != Dimension.Color.NONE)
                 curState = WithdrawerState.TO_INSERT;
             else
+            {
                 curState = WithdrawerState.TO_WITHDRAW;
+                hintSide.color = Dimension.MaterialColor[withdrawColor];
+            }
             laser.Color = withdrawColor;
+            OnToggle.Invoke();
         }
 
         void TurnOff()
         {
-            if (laser.HittedObject != null)
-                laser.HittedObject.ObjectColor.Reset();
+            Splittable.Character.Player.Instance.PutAwaySpaceDevice();
             laser.IsOn = false;
             curState = WithdrawerState.OFF;
+            OnToggle.Invoke();
+            if (holdColor == Dimension.Color.NONE)
+                hintSide.color = Dimension.MaterialColor[Dimension.Color.WHITE];
         }
 
         public void Perform()
@@ -87,17 +124,28 @@ namespace SpaceDevice
                 return;
             else if (curState == WithdrawerState.TO_WITHDRAW) // Try to withdraw the color.
             {
-                if (laser.HittedObject != null && !laser.HittedObject.IsPersistentColor &&
-                    ((laser.HittedObject.Color & withdrawColor) != Dimension.Color.NONE) )
+                if (laser.HittedObject != null &&
+                    ((laser.HittedObject.Color & withdrawColor) != Dimension.Color.NONE) &&
+                    EnergyBar.Instance.IsSufficient() )
+                {
+                    hintAnimator.SetTrigger("Withdraw");
+                    hintCenter.color = Dimension.MaterialColor[withdrawColor];
+                    EnergyBar.Instance.CostSingleAction();
                     Withdraw();
+                }
                 else
                     TurnOff();
             }
             else if (curState == WithdrawerState.TO_INSERT)
             {
-                if (laser.HittedObject != null && !laser.HittedObject.IsPersistentColor &&
-                    ((laser.HittedObject.Color & holdColor) == Dimension.Color.NONE) )
+                if (laser.HittedObject != null &&
+                    ((laser.HittedObject.Color & holdColor) == Dimension.Color.NONE) &&
+                    EnergyBar.Instance.IsSufficient() )
+                {
+                    hintAnimator.SetTrigger("Insert");
+                    EnergyBar.Instance.CostSingleAction();
                     Insert();
+                }
                 else
                     TurnOff();
             }
@@ -109,27 +157,33 @@ namespace SpaceDevice
         /// </summary>
         private void Withdraw()
         {
-            var oc = laser.HittedObject.ObjectColor;
-            oc.SecondColor = oc.Color;
-            oc.Color = Dimension.SubColor(oc.Color, withdrawColor);
-            oc.OnWithdrew.RemoveAllListeners();
-            oc.OnWithdrew.AddListener(OnWithdrawCallback);
-            oc.Withdraw(laser.ContactPoint);
+            laser.HittedObject.SecondColor =  laser.HittedObject.Color;
+            laser.HittedObject.Color = Dimension.SubColor(laser.HittedObject.Color, withdrawColor);
+            laser.HittedObject.ContactPoint = laser.ContactPoint;
+            laser.HittedObject.OnWithdrew.RemoveAllListeners();
+            laser.HittedObject.OnWithdrew.AddListener(OnWithdrawCallback);
+            laser.HittedObject.Withdraw();
             curState = WithdrawerState.WAIT;
             InputManager.Instance.pause = true;
+            OnWithdraw.Invoke();
         }
 
         public void OnWithdrawCallback()
         {
             holdColor = withdrawColor;
-            curState = WithdrawerState.TO_INSERT;
             laser.Color = holdColor;
             withdrawContainer.color = Dimension.MaterialColor[holdColor];
+            curState = WithdrawerState.TO_INSERT;
             if (laser.HittedObject.Color == Dimension.Color.NONE)
             {
-                World.Instance.DeactivateObject(laser.HittedObject);
-                laser.HittedObject = null;
+                Splittable.SplittableObject so;
+                if (laser.HittedObject.IsRoot)
+                    so = laser.HittedObject.GetComponent<Splittable.SplittableObject>();
+                else
+                    so = laser.HittedObject.Root.GetComponent<Splittable.SplittableObject>();
+                World.Instance.DeactivateObject(so);
             }
+            laser.HittedObject = null;
             TurnOff();
             InputManager.Instance.pause = false;
         }
@@ -140,23 +194,24 @@ namespace SpaceDevice
         /// </summary>
         private void Insert()
         {
-            Debug.Log("INSERT");
-            var oc = laser.HittedObject.ObjectColor;
-            oc.SecondColor = Dimension.AddColor(holdColor, oc.Color);
-            oc.OnInserted.RemoveAllListeners();
-            oc.OnInserted.AddListener(OnInsertCallback);
-            oc.Insert(laser.ContactPoint);
+            laser.HittedObject.SecondColor = laser.HittedObject.Color;
+            laser.HittedObject.Color = Dimension.AddColor(holdColor, laser.HittedObject.Color);
+            laser.HittedObject.ContactPoint = laser.ContactPoint;
+            laser.HittedObject.OnInserted.RemoveAllListeners();
+            laser.HittedObject.OnInserted.AddListener(OnInsertCallback);
+            laser.HittedObject.Insert();
             curState = WithdrawerState.WAIT;
             withdrawContainer.color = transparentColor;
-            energyBar.AddEnergy(-energyCost);
             InputManager.Instance.pause = true;
+            OnInsert.Invoke();
         }
 
         public void OnInsertCallback()
         {
-            laser.HittedObject.ObjectColor.Color = laser.HittedObject.ObjectColor.SecondColor;
             holdColor = Dimension.Color.NONE;
+            laser.HittedObject = null;
             TurnOff();
+            hintSide.color = Dimension.MaterialColor[Dimension.Color.WHITE];
             InputManager.Instance.pause = false;
         }
 
@@ -165,12 +220,16 @@ namespace SpaceDevice
         /// </summary>
         public void RotateSkillColor()
         {
+            if (curState != WithdrawerState.TO_WITHDRAW)
+                return;
             withdrawColorIdx = (withdrawColorIdx + 1) % Dimension.BaseColor.Count;
             withdrawColor = Dimension.BaseColor[withdrawColorIdx];
             laser.Color = withdrawColor;
             var zAngle = (colorSelector.eulerAngles.z + 120) % 360;
             colorSelector.eulerAngles = new Vector3(0, 0, zAngle);
+            hintSide.color = Dimension.MaterialColor[withdrawColor];
         }
+
     }
 
 }

@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Core;
 
@@ -12,14 +9,26 @@ namespace SpaceDevice
         [SerializeField] float width;
         [SerializeField] float speed;
         [SerializeField] Transform player;
+        [SerializeField] float maxLength = 50.0f;
+        [SerializeField] UnityEngine.Events.UnityEvent OnLaserOn;
+        [SerializeField] UnityEngine.Events.UnityEvent OnLaserOff;
         LineRenderer lr;
         MaterialPropertyBlock _property;
-        SplittableObject hittedObject;
+        ObjectColor _hittedObject;
         Dimension.Color _color;
         bool _IsOn = false;
-        Vector3 lastContactPoint;
-        float maxDistance = 150.0f;
-        float curDistance;
+        Vector3 _contactPoint, _localEndPoint;
+        float _curLength;
+
+        /// <summary>
+        /// The <c>ObjectColor</c> hitted by laser.
+        /// </summary>
+        /// <value></value>
+        public ObjectColor HittedObject
+        {
+            get => _hittedObject;
+            set => _hittedObject = value;
+        }
 
         /// <summary>
         /// Sets or gets the color of the laser.
@@ -33,10 +42,8 @@ namespace SpaceDevice
                 lr.GetPropertyBlock(_property);
                 _property.SetColor("_LaserColor", Dimension.MaterialColor[value]);
                 lr.SetPropertyBlock(_property);
-                if (hittedObject != null)
-                {
-                    hittedObject.ObjectColor.SelectColor = _color;
-                }
+                if (HittedObject != null)
+                    HittedObject.SelectColor = Color;
             }
         }
 
@@ -51,11 +58,11 @@ namespace SpaceDevice
                 _IsOn = value;
                 if(value == false)
                 {
-                    if (hittedObject != null && hittedObject.gameObject.activeSelf)
+                    if (HittedObject != null)
                     {
-                        hittedObject.ObjectColor.Unselect(lastContactPoint);
+                        HittedObject.Unselect();
+                        HittedObject = null;
                     }
-                    hittedObject = null;
                     TurnOff();
                 }
                 else
@@ -66,20 +73,39 @@ namespace SpaceDevice
         }
 
         /// <summary>
-        /// The <c>SplittableObject</c> hitted by laser.
-        /// </summary>
-        /// <value></value>
-        public SplittableObject HittedObject
-        {
-            get => hittedObject;
-            set => hittedObject = value;
-        }
-
-        /// <summary>
         /// The contact point between the laser and the hitted object.
         /// </summary>
-        public Vector3 ContactPoint {
-            get => lastContactPoint;
+        public Vector3 ContactPoint
+        {
+            get => _contactPoint;
+            set
+            {
+                _contactPoint = value;
+                _localEndPoint = transform.InverseTransformPoint(_contactPoint);
+                _curLength = _localEndPoint.magnitude;
+            }
+        }
+
+        Vector3 LocalEndPoint {
+            get => _localEndPoint;
+            set
+            {
+                _localEndPoint = value;
+                _curLength = _localEndPoint.magnitude;
+                _contactPoint = transform.TransformPoint(_localEndPoint);
+            }
+        }
+
+        float CurLength
+        {
+            get => _curLength;
+            set
+            {
+                _curLength = Mathf.Min(value, maxLength);
+                _curLength = Mathf.Max(value, 0);
+                _contactPoint = transform.position + player.forward * CurLength;
+                _localEndPoint = transform.InverseTransformPoint(_contactPoint);
+            }
         }
 
         void Awake()
@@ -90,7 +116,7 @@ namespace SpaceDevice
             lr.endWidth = width;
             lr.SetPosition(0, Vector3.zero);
             lr.SetPosition(1, Vector3.zero);
-            curDistance = 0.0f;
+            CurLength = 0.0f;
             _property = new MaterialPropertyBlock();
         }
 
@@ -100,7 +126,8 @@ namespace SpaceDevice
         void TurnOn()
         {
             StopAllCoroutines();
-            StartCoroutine(ActiveAnim());
+            OnLaserOn.Invoke();
+            StartCoroutine(ActiveLoop());
         }
 
         /// <summary>
@@ -116,96 +143,29 @@ namespace SpaceDevice
         /// Continuously updates the laser end points and checks for
         /// new hitted objects.
         /// </summary>
-        System.Collections.IEnumerator ActiveAnim()
+        System.Collections.IEnumerator ActiveLoop()
         {
             lr.enabled = true;
-            lastContactPoint = Vector3.zero;
-            curDistance = 0.0f;
+            ContactPoint = Vector3.zero;
+            CurLength = 0.0f;
             while (true)
             {
-                curDistance += Time.deltaTime * speed;
-                curDistance = Mathf.Min(curDistance, maxDistance);
-
-                bool hitted = CheckHit();
-                if (!hitted)
+                var newHittedObject = CheckHit();
+                if (newHittedObject != null && newHittedObject.UsingMaterial)
                 {
-                    var endPos = transform.position + player.forward * curDistance;
-                    var endPosLocal = transform.InverseTransformPoint(endPos);
-                    lr.SetPosition(1, endPosLocal);
-                    if (hittedObject != null && hittedObject.gameObject.activeSelf)
-                    {
-                        hittedObject.ObjectColor.Unselect(endPos);
-                    }
-                    hittedObject = null;
-                    lastContactPoint = endPos;
-                }
-                yield return null;
-            }
-        }
-
-        /// <summary>
-        /// Checks if the laser hitted any <c>SplittableObject</c>. If hits then
-        /// updates the <c>HittedObject</c> and its materials.
-        /// </summary>
-        /// <returns> True if hits <c>SplittableObject</c> </returns>
-        bool CheckHit()
-        {
-            RaycastHit[] hits = Physics.RaycastAll(transform.position, player.forward);
-            SplittableObject newHittedObject;
-            bool hitted = false;;
-            IEnumerable<RaycastHit> orderedHits = hits.OrderBy(hit => hit.distance);
-            foreach (RaycastHit hit in orderedHits)
-            {
-                if (hit.collider != null && !hit.collider.isTrigger &&
-                    (newHittedObject = hit.collider.gameObject.GetComponent<SplittableObject>()) != null)
-                {
-                    var hitPosLocal = transform.InverseTransformPoint(hit.point);
-                    lr.SetPosition(1, hitPosLocal);
-                    curDistance = hitPosLocal.magnitude;
-                    UpdateObjectAndMaterial(hit.point, newHittedObject);
-                    lastContactPoint = hit.point;
-                    hitted = true;
-                    break;
-                }
-            }
-            return hitted;
-        }
-
-        /// <summary>
-        /// Updates the <c>HittedObject</c> by checking new hitted object and the
-        /// contact point.
-        /// </summary>
-        /// <param name="contactPoint"> The contact position hitted on the object. </param>
-        /// <param name="newHittedObject"> The new hitted object. </param>
-        void UpdateObjectAndMaterial(Vector3 contactPoint, SplittableObject newHittedObject)
-        {
-            bool selectNew = false, unselectOld = false;
-            if (hittedObject == null)
-            {
-                selectNew = true;
-            }
-            else if (hittedObject.gameObject.GetInstanceID() != newHittedObject.gameObject.GetInstanceID())
-            {
-                selectNew = true;
-                unselectOld = true;
-            }
-
-            if (unselectOld)
-            {
-                hittedObject.ObjectColor.Unselect(lastContactPoint);
-            }
-            hittedObject = newHittedObject;
-            if (selectNew)
-            {
-                if (hittedObject.IsPersistentColor)
-                {
-                    hittedObject = null;
+                    UpdateHittedObject(newHittedObject);
                 }
                 else
                 {
-                    hittedObject.ObjectColor.SelectColor = _color;
-                    hittedObject.ObjectColor.Select(contactPoint);
+                    CurLength += speed * Time.deltaTime;
+                    if (HittedObject != null && HittedObject.gameObject.activeSelf)
+                    {
+                        UnselectHittedObject();
+                        HittedObject = null;
+                    }
                 }
+                lr.SetPosition(1, LocalEndPoint);
+                yield return null;
             }
         }
 
@@ -215,15 +175,83 @@ namespace SpaceDevice
         /// <returns></returns>
         System.Collections.IEnumerator TurnOffAnim()
         {
-            while (curDistance > 0.1f)
+            while (CurLength > 0.1f)
             {
-                curDistance -= speed * Time.deltaTime;
-                lastContactPoint = transform.position + player.forward * curDistance;
-                var endPosLocal = transform.InverseTransformPoint(lastContactPoint);
-                lr.SetPosition(1, endPosLocal);
+                CurLength -= speed * 10.0f * Time.deltaTime;
+                lr.SetPosition(1, LocalEndPoint);
                 yield return null;
             }
+            OnLaserOff.Invoke();
             lr.enabled = false;
+        }
+
+        /// <summary>
+        /// Checks if the laser hitted any <c>SplittableObject</c>.
+        /// Updates <c>contactPoint</c> if hits.
+        /// </summary>
+        /// <returns> The <c>ObjectColor</c> is hitted, otherwise null is returned </returns>
+        ObjectColor CheckHit()
+        {
+            var orderedHits = Util.Ray.OrderedHits(transform.position, player.forward);
+            ObjectColor newHittedObject;
+            foreach (RaycastHit hit in orderedHits)
+            {
+                if (hit.collider != null && !hit.collider.isTrigger &&
+                    (newHittedObject = hit.collider.gameObject.GetComponent<ObjectColor>()) != null &&
+                    newHittedObject.Root.transform.parent.GetInstanceID() == player.transform.parent.GetInstanceID())
+                {
+                    ContactPoint = hit.point;
+                    return newHittedObject;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Updates the <c>HittedObject</c> by checking new hitted object and the
+        /// contact point.
+        /// </summary>
+        /// <param name="newHittedObject"> The new hitted object. </param>
+        void UpdateHittedObject(ObjectColor newHittedObject)
+        {
+            bool selectNew = false, unselectOld = false;
+            if (HittedObject == null)
+            {
+                selectNew = true;
+            }
+            else if (HittedObject.GetInstanceID() != newHittedObject.GetInstanceID() &&
+                        !IsInSameGroup(newHittedObject))
+            {
+                selectNew = true;
+                unselectOld = true;
+            }
+
+            if (unselectOld)
+                UnselectHittedObject();
+            HittedObject = newHittedObject;
+            if (selectNew)
+                SelectHittedObject();
+        }
+
+        void SelectHittedObject()
+        {
+            HittedObject.SelectColor = Color;
+            HittedObject.ContactPoint = ContactPoint;
+            HittedObject.Select();
+        }
+
+        void UnselectHittedObject()
+        {
+            HittedObject.ContactPoint = ContactPoint;
+            HittedObject.Unselect();
+        }
+
+        bool IsInSameGroup(ObjectColor newHittedObject)
+        {
+            if (HittedObject.IsRoot)
+                return HittedObject.GroupSet.Contains(newHittedObject);
+            else
+                return HittedObject.Root.GroupSet.Contains(newHittedObject);
         }
 
     }

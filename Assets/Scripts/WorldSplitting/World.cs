@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Splittable;
 
-using Set = System.Collections.Generic.HashSet<Core.SplittableObject>;
+using Set = System.Collections.Generic.HashSet<Splittable.SplittableObject>;
 
 namespace Core
 {
@@ -15,12 +16,20 @@ namespace Core
         public static World Instance {
             get => _instance;
         }
-        [SerializeField] List<ObjectColor> dimensions;
-        [SerializeField] Transform inactiveRoot;
+        [SerializeField] List<Dimension> dimensions;
+        [SerializeField] Dimension inactiveRoot;
         [SerializeField] Dimension.Color startDimensionColor = Dimension.Color.WHITE;
         [SerializeField] SpaceDevice.SplitMergeMachine splitMergeMachine;
-        [HideInInspector] public UnityEvent BeforeMerge = new UnityEvent();
-        [HideInInspector] public UnityEvent BeforeSplit = new UnityEvent();
+
+        public UnityEvent OnActiveDimChange;
+
+        [HideInInspector]
+        /// <summary>
+        /// ABC
+        /// </summary>
+        /// <returns></returns>
+        public UnityEvent OnTransitionStart = new UnityEvent();
+        [HideInInspector] public UnityEvent OnTransitionEnd = new UnityEvent();
         DimensionTransition dimensionTransition;
         Dictionary<Dimension.Color, int> dimId;
         SplittableObjectPool objectPool;
@@ -32,10 +41,15 @@ namespace Core
         /// The list of dimensions' root.
         /// </summary>
         /// <value></value>
-        public List<ObjectColor> Dimensions {
+        public List<Dimension> Dimensions {
             get => dimensions;
         }
 
+        /// <summary>
+        /// A <c>Dictionary</c> that maps Dimensions' color to their id.
+        /// </summary>
+        /// <value> Returns the id of the dimension if the given color's dimension
+        /// is active, otherwise return negative number. </value>
         public Dictionary<Dimension.Color, int> DimId {
             get => dimId;
         }
@@ -43,13 +57,26 @@ namespace Core
         /// <summary>
         /// The currently active dimension.
         /// </summary>
-        public ObjectColor ActiveDimension {
-            get => dimensions[activeDimId];
+        public Dimension ActiveDimension
+        {
+            get => dimensions[ActiveDimId];
         }
 
-        public int ActiveDimId {
+        /// <summary>
+        /// The id of the currently active dimensions.
+        /// </summary>
+        /// <value></value>
+        public int ActiveDimId
+        {
             get => activeDimId;
-            set => activeDimId = value;
+            set
+            {
+                if (activeDimId != value)
+                {
+                    activeDimId = value;
+                    OnActiveDimChange.Invoke();
+                }
+            }
         }
 
         /// <summary>
@@ -76,11 +103,10 @@ namespace Core
         }
 
         /// <summary>
-        /// The dimension color at start time.
+        /// The inactive root of not-used objects.
         /// </summary>
-        /// <value></value>
-        public Dimension.Color StartDimensionColor {
-            get => startDimensionColor;
+        public Dimension InactiveRoot {
+            get => inactiveRoot;
         }
 
         void Awake()
@@ -95,7 +121,7 @@ namespace Core
             foreach (Dimension.Color c in Dimension.ValidColor)
                 dimId.Add(c, -1);
             dimId[Dimension.Color.WHITE] = 0;
-            activeDimId = 0;
+            ActiveDimId = 0;
 
             processedObjects = new Set();
             unprocessedObjects = new Set();
@@ -113,6 +139,8 @@ namespace Core
                 var localPos = s.transform.position;
                 var localRot = s.transform.rotation;
                 MoveObjectToDimension(s, Dimension.Color.WHITE);
+                s.transform.localPosition = localPos;
+                s.transform.localRotation = localRot;
                 if (s.DefaultInactive)
                 {
                     DeactivateObject(s);
@@ -124,14 +152,18 @@ namespace Core
                 }
             }
             if (startDimensionColor != Dimension.Color.WHITE)
+            {
                 DefaultSplit();
-            splitMergeMachine.SyncColorFromWorld();
+                splitMergeMachine.SyncColorFromWorld();
+            }
         }
 
+        /// <summary>
+        /// Splits the world if the start color is not white.
+        /// </summary>
         private void DefaultSplit()
         {
-            dimensionTransition.DefaultSplit();
-            dimensions[0].Color = startDimensionColor;
+            dimensions[0].color = startDimensionColor;
             dimId[startDimensionColor] = 0;
             dimId[Dimension.Color.WHITE] = -1;
 
@@ -139,13 +171,15 @@ namespace Core
             int i = 1;
             for (; i < missingColors.Count + 1; i++)
             {
-                dimensions[i].Color = missingColors[i-1];
+                dimensions[i].color = missingColors[i-1];
                 dimId[missingColors[i-1]] = i;
             }
             for (; i < dimensions.Count; i++)
-                dimensions[i].Color = Dimension.Color.NONE;
+                dimensions[i].color = Dimension.Color.NONE;
+            dimensionTransition.DefaultSplit();
             SplitObjects();
             splitted = true;
+            World.Instance.OnTransitionEnd.Invoke();
         }
 
         /// <summary>
@@ -184,7 +218,7 @@ namespace Core
         {
             unprocessedObjects.Remove(so);
             if (!processedObjects.Add(so))
-                Util.Debug.Log(gameObject, so.gameObject.name + " " + so.Dim.Color.ToString() + " existed in processed objects");
+                Util.Debug.Log(gameObject, so.gameObject.name + " " + so.Dim.color.ToString() + " existed in processed objects");
         }
 
         /// <summary>
@@ -207,12 +241,11 @@ namespace Core
         }
 
         /// <summary>
-        /// Instantiates a <c>SplittableObject</c> into a specified dimension.
+        /// Instainates the given <c>SplittableObject</c>.
         /// </summary>
-        /// <param name="so"> The <c>SplittableObject</c> to be instantiated. </param>
-        /// <param name="color"> The color of the target dimension to instantiate into. </param>
-        /// <returns> The instantiated <c>SplittableObject</c>. </returns>
-        public SplittableObject InstantiateNewObjectToDimension(SplittableObject so, Dimension.Color color)
+        /// <param name="so"> The <c>SplittableObject</c> to instantiate. </param>
+        /// <returns> The instantiated object. </returns>
+        SplittableObject InstantiateNewObject(SplittableObject so)
         {
             var newSo = objectPool.Instantiate(so.name);
             if (newSo == null)
@@ -222,7 +255,33 @@ namespace Core
                 objectPool.SetActive(newSo);
             }
             newSo.gameObject.name = so.name;
+            return newSo;
+        }
+
+        /// <summary>
+        /// Instantiates a <c>SplittableObject</c> into a specified dimension.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be instantiated. </param>
+        /// <param name="color"> The color of the target dimension to instantiate into. </param>
+        /// <returns> The instantiated <c>SplittableObject</c>. </returns>
+        public SplittableObject InstantiateNewObjectToDimension(SplittableObject so, Dimension.Color color)
+        {
+            var newSo = InstantiateNewObject(so);
             newSo.Dim = dimensions[dimId[color]];
+            MoveTransformToNewParent(newSo.transform, newSo.Dim.transform, so.transform.localPosition, so.transform.localRotation);
+            return newSo;
+        }
+
+        /// <summary>
+        /// Instantiates a <c>SplittableObject</c> into a specified dimension.
+        /// </summary>
+        /// <param name="so"> The <c>SplittableObject</c> to be instantiated. </param>
+        /// <param name="id"> The id of the target dimension to instantiate into. </param>
+        /// <returns> The instantiated <c>SplittableObject</c>. </returns>
+        public SplittableObject InstantiateNewObjectToDimension(SplittableObject so, int id)
+        {
+            var newSo = InstantiateNewObject(so);
+            newSo.Dim = dimensions[id];
             MoveTransformToNewParent(newSo.transform, newSo.Dim.transform, so.transform.localPosition, so.transform.localRotation);
             return newSo;
         }
@@ -250,7 +309,7 @@ namespace Core
         {
             Vector3 localPos = so.transform.localPosition;
             Quaternion localRot = so.transform.localRotation;
-            so.Dim = dimensions[activeDimId];
+            so.Dim = dimensions[ActiveDimId];
             MoveTransformToNewParent(so.transform, so.Dim.transform, localPos, localRot);
         }
 
@@ -263,8 +322,12 @@ namespace Core
         {
             Vector3 localPos = so.transform.localPosition;
             Quaternion localRot = so.transform.localRotation;
-            so.Dim = dimensions[dimId[color]];
+            if (color == Dimension.Color.BLACK)
+                so.Dim = inactiveRoot;
+            else
+                so.Dim = dimensions[dimId[color]];
             MoveTransformToNewParent(so.transform, so.Dim.transform, localPos, localRot);
+
         }
 
         /// <summary>
@@ -311,9 +374,7 @@ namespace Core
         public void DeactivateObject(SplittableObject so)
         {
             RemoveFromSet(so);
-            Vector3 localPos = so.transform.localPosition;
-            Quaternion localRot = so.transform.localRotation;
-            MoveTransformToNewParent(so.transform, inactiveRoot, localPos, localRot);
+            MoveObjectToDimension(so, Dimension.Color.BLACK);
             objectPool.SetInactive(so);
         }
 
@@ -340,7 +401,7 @@ namespace Core
         /// <param name="parent"> The <c>Transform</c> of the parent</param>
         /// <param name="localPos"> The local position. </param>
         /// <param name="localRot"> The local rotation. </param>
-        void MoveTransformToNewParent(Transform child, Transform parent, Vector3 localPos, Quaternion localRot)
+        public void MoveTransformToNewParent(Transform child, Transform parent, Vector3 localPos, Quaternion localRot)
         {
             child.SetParent(parent);
             child.localPosition = localPos;
@@ -357,57 +418,47 @@ namespace Core
             processedObjects = tmp;
         }
 
+        /// <summary>
+        /// Toggles world's splitting and merging.
+        /// </summary>
         public void Toggle()
         {
+            if (Gameplay.Interactable.InteractionManager.Instance.IsInteracting) return;
             if (splitted)
             {
                 splitted = false;
-                BeforeMerge.Invoke();
                 for (int i = 0; i < dimensions.Count; i++)
-                    dimensions[activeDimId].Color = Dimension.Color.NONE;
-                dimensions[activeDimId].Color = Dimension.Color.WHITE;
+                    dimensions[i].color = Dimension.Color.NONE;
+                dimensions[ActiveDimId].color = Dimension.Color.WHITE;
                 UpdateDimId();
                 StartCoroutine(dimensionTransition.MergeTransition());
             }
             else
             {
                 splitted = true;
-                BeforeSplit.Invoke();
                 for (int i = 0; i < dimensions.Count; i++)
                 {
-                    if (splitMergeMachine.DimColorIds[i] == -1)
-                        dimensions[i].Color = Dimension.Color.NONE;
+                    if (splitMergeMachine.DimColorIds[i] < 0)
+                        dimensions[i].color = Dimension.Color.NONE;
                     else
-                        dimensions[i].Color = Dimension.ValidColor[splitMergeMachine.DimColorIds[i]];
+                        dimensions[i].color = Dimension.ValidColor[splitMergeMachine.DimColorIds[i]];
                 }
                 UpdateDimId();
                 StartCoroutine(dimensionTransition.SplitTransition());
-
             }
         }
 
+        /// <summary>
+        /// Updates <c>dimId</c> based on the dimensions' colors.
+        /// </summary>
         void UpdateDimId()
         {
             foreach (var c in Dimension.ValidColor)
                 dimId[c] = -1;
 
             for (int i = 0; i < dimensions.Count; i++)
-                if (dimensions[i].Color != Dimension.Color.NONE)
-                    dimId[dimensions[i].Color] = i;
-        }
-
-        /// <summary>
-        /// Gets the dimension based on the color.
-        /// </summary>
-        /// <param name="color"> The dimension color. </param>
-        /// <returns> If the dimension is active, the the <c>ObjectColor</c> of the dimension is returned,
-        /// otherwise null is returned. </returns>
-        public ObjectColor GetDim(Dimension.Color color)
-        {
-            if (dimId[color] > 0 && dimId[color] < dimensions.Count)
-                return dimensions[dimId[color]];
-            else
-                return null;
+                if (dimensions[i].color != Dimension.Color.NONE)
+                    dimId[dimensions[i].color] = i;
         }
 
     }

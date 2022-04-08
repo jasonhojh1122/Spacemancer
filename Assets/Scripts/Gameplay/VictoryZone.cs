@@ -1,0 +1,30 @@
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+namespace Gameplay
+{
+
+    [RequireComponent(typeof(Collider))]
+    public class VictoryZone : MonoBehaviour
+    {
+        [SerializeField] string nextScene;
+        bool entered = false;
+
+        void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.tag == "Player" && !entered)
+            {
+                entered = true;
+                Saving.GameSaveManager.Instance.Save();
+                if (nextScene == null || nextScene == "")
+                {
+                    SceneLoader.Instance.Load();
+                }
+                else
+                {
+                    SceneLoader.Instance.Load(nextScene);
+                }
+            }
+        }
+    }
+}

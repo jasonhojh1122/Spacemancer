@@ -7,18 +7,15 @@ using Core;
 
 public class DeathZone : MonoBehaviour
 {
+    public static bool pause = false;
+    
     void OnTriggerEnter(Collider col)
     {
-        Util.Debug.Log(gameObject, col.gameObject.name + " enter death zone.");
-        if (col.gameObject.tag == "Player")
+        if (!pause && col.gameObject.tag == "Player")
         {
-            ReloadLevel();
+            SceneLoader.Instance.Reload();
             return;
         }
     }
-    protected void ReloadLevel()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-    }
 }
