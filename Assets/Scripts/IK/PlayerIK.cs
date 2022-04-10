@@ -46,7 +46,7 @@ namespace IK
             weight = 0;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (setting != null)
                 SyncIKTargets();
@@ -70,9 +70,11 @@ namespace IK
                 t += Time.deltaTime;
                 var p = t / setting.TransitionTime;
                 weight = Mathf.Lerp(0.0f, 1.0f, p);
+                SetIKWeight();
                 yield return null;
             }
             weight = 1.0f;
+            SetIKWeight();
             OnPosed.Invoke();
         }
 
@@ -92,8 +94,12 @@ namespace IK
                 t += Time.deltaTime;
                 var p = t / setting.TransitionTime;
                 weight = Mathf.Lerp(weight, 0.0f, p);
+                SetIKWeight();
                 yield return null;
             }
+            weight = 0.0f;
+            SetIKWeight();
+            setting = null;
         }
 
         /// <summary>
@@ -133,7 +139,7 @@ namespace IK
             {
                 rightArmConstraint.data.targetPositionWeight = weight;
                 rightArmConstraint.data.targetRotationWeight = weight;
-                leftArmConstraint.data.hintWeight = weight;
+                rightArmConstraint.data.hintWeight = weight;
             }
         }
     }

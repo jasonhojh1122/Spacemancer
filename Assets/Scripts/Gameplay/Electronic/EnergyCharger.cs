@@ -38,6 +38,7 @@ namespace Gameplay.Electronic
                 used = true;
                 IsOpened = false;
                 energyBar.Amount += energyAmount;
+                OnTurnOn.Invoke();
             }
         }
 

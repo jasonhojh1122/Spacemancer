@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SplittableObjectTransparent
-  m_Shader: {fileID: -6465566751694194690, guid: 221f47c4e8183304880921255d8f30d3, type: 3}
+  m_Name: SplittableObjectComputer
+  m_Shader: {fileID: -6465566751694194690, guid: 6287fd6150ff4ed469a0c0bbbd6c4db1, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -76,12 +76,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Boolean_870302c3c50b4bda9d2c1e28ea8f0312: 1
-    - _Alpha: 1
     - _AlphaClip: 0
     - _Blend: 0
-    - _BlockHeight: 90
-    - _BlockWidth: 160
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -89,15 +85,12 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _Dissolve: 0
     - _DissolveDistEnd: 100
     - _DissolveDistStart: 100
     - _DissolveRadius: 25
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _Error: 0
-    - _ErrorBlockHeight: 200
-    - _ErrorBlockWidth: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -124,7 +117,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Black: {r: 0.23529407, g: 0.23529407, b: 0.23529407, a: 1}
     - _Blue: {r: 0.34901956, g: 0.34901956, b: 0.6784314, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 255}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ContactPos: {r: 0, g: 0, b: 0, a: 0}
     - _Cyan: {r: 0.27450976, g: 0.58431375, b: 0.58431375, a: 1}
     - _Dim1Pos: {r: 0, g: 0, b: 0, a: 0}
@@ -138,7 +131,7 @@ Material:
     - _White: {r: 0.882353, g: 0.882353, b: 0.882353, a: 1}
     - _Yellow: {r: 0.5960785, g: 0.5960785, b: 0.29411766, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &5321995574637192728
+--- !u!114 &148064319151869143
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

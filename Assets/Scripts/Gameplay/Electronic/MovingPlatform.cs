@@ -23,6 +23,7 @@ namespace Gameplay.Electronic
             so = GetComponent<SplittableObject>();
             startPosition = transform.TransformPoint(startPoint.localPosition);
             endPosition = transform.TransformPoint(endPoint.localPosition);
+            Core.World.Instance.OnTransitionEnd.AddListener(OnDimensionChange);
         }
 
         public override void TurnOn()
@@ -53,14 +54,19 @@ namespace Gameplay.Electronic
 
         public override void OnDimensionChange()
         {
-            if (!so.IsInCorrectDim()) return;
-            StartCoroutine(Move(startPosition));
+            if (Util.Fuzzy.CloseVector3(transform.localPosition, startPosition))
+            {
+                isOn = false;
+            }
+            else
+            {
+                isOn = true;
+            }
         }
 
         public override void OnColorChange()
         {
-            if (!so.IsInCorrectDim()) return;
-            StartCoroutine(Move(startPosition));
+            return;
         }
 
         IEnumerator Move(Vector3 target)
