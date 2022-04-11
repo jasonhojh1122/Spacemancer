@@ -18,12 +18,15 @@ namespace Gameplay.Electronic
         Vector3 startPosition;
         Vector3 endPosition;
 
+        bool isMoving;
+
         void Awake()
         {
             so = GetComponent<SplittableObject>();
             startPosition = transform.TransformPoint(startPoint.localPosition);
             endPosition = transform.TransformPoint(endPoint.localPosition);
             Core.World.Instance.OnTransitionEnd.AddListener(OnDimensionChange);
+            isMoving = false;
         }
 
         public override void TurnOn()
@@ -40,7 +43,7 @@ namespace Gameplay.Electronic
 
         public override void Toggle()
         {
-            if (!so.IsInCorrectDim()) return;
+            if (!so.IsInCorrectDim() || isMoving) return;
             if (isOn)
             {
                 TurnOff();
@@ -62,6 +65,7 @@ namespace Gameplay.Electronic
             {
                 isOn = true;
             }
+            isMoving = false;
         }
 
         public override void OnColorChange()
@@ -72,6 +76,7 @@ namespace Gameplay.Electronic
         IEnumerator Move(Vector3 target)
         {
             OnTurnOn.Invoke();
+            isMoving = true;
             Input.InputManager.Instance.pause = true;
             Input.CameraController.Instance.FollowPlayer();
             DeathZone.pause = true;
@@ -84,6 +89,7 @@ namespace Gameplay.Electronic
             DeathZone.pause = false;
             Input.InputManager.Instance.pause = false;
             Input.CameraController.Instance.UnFollowPlayer();
+            isMoving = false;
             OnTurnOff.Invoke();
         }
 
