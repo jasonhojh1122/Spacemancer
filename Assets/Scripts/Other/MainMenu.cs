@@ -8,6 +8,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] Button continueButton;
     [SerializeField] Button newGameButton;
     [SerializeField] Button exitButton;
+    [SerializeField] Button unlockButton;
     [SerializeField] int stabilizer1BuildId;
     [SerializeField] int stabilizer2BuildId;
 
@@ -23,15 +24,16 @@ public class MainMenu : MonoBehaviour
         if (Saving.GameSaveManager.Instance.IsNewGame)
         {
             continueButton.gameObject.SetActive(false);
+
             Navigation navigation = newGameButton.navigation;
-            navigation.selectOnUp = exitButton;
+            navigation.selectOnUp = unlockButton;
             navigation.selectOnDown = exitButton;
             newGameButton.navigation = navigation;
 
-            navigation = exitButton.navigation;
-            navigation.selectOnUp = newGameButton;
+            navigation = unlockButton.navigation;
+            navigation.selectOnUp = exitButton;
             navigation.selectOnDown = newGameButton;
-            exitButton.navigation = navigation;
+            unlockButton.navigation = navigation;
 
             eventSystem.SetSelectedGameObject(newGameButton.gameObject);
         }
@@ -68,4 +70,13 @@ public class MainMenu : MonoBehaviour
         Saving.GameSaveManager.Instance.NewGame();
         SceneLoader.Instance.Load("StartAnimation");
     }
+
+    public void UnlockAll()
+    {
+        Saving.GameSaveManager.Instance.GameSave.highestScene = stabilizer2BuildId;
+        Saving.GameSaveManager.Instance.GameSave.phase = 2;
+        Saving.GameSaveManager.Instance.Save();
+        SceneLoader.Instance.Load("CenterLab");
+    }
+
 }

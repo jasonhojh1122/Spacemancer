@@ -26,6 +26,7 @@ namespace Gameplay
         {
             so = GetComponent<SplittableObject>();
             so.ObjectColor.OnColorChanged.AddListener(OnColorChange);
+            World.Instance.OnTransitionStart.AddListener(OnTransitionStart);
             World.Instance.OnTransitionEnd.AddListener(OnDimensionChange);
             foreach (var oc in indicators)
             {
@@ -37,6 +38,11 @@ namespace Gameplay
         private void Start()
         {
             InvokeRepeating("CheckBattery", 0.0f, 0.1f);
+        }
+
+        void OnTransitionStart()
+        {
+            toggled = false;
         }
 
         void CheckBattery()

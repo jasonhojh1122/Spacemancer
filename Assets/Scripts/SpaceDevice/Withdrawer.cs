@@ -96,6 +96,7 @@ namespace SpaceDevice
 
         void TurnOn()
         {
+            InteractionManager.Instance.pause = true;
             laser.IsOn = true;
             if (holdColor != Dimension.Color.NONE)
                 curState = WithdrawerState.TO_INSERT;
@@ -110,6 +111,7 @@ namespace SpaceDevice
 
         void TurnOff()
         {
+            InteractionManager.Instance.pause = false;
             Splittable.Character.Player.Instance.PutAwaySpaceDevice();
             laser.IsOn = false;
             curState = WithdrawerState.OFF;

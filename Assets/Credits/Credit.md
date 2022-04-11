@@ -84,3 +84,9 @@
   - https://freesound.org/people/cabled_mess/sounds/340806/
 - Retro Sci-Fi/Horror [loop] (Ambient 16072016 Part I // SmoothSliding) by cabled_mess
 - https://freesound.org/people/cabled_mess/sounds/350611/
+
+### Font
+- TaipeiSansTCBeta-Light
+  - https://sites.google.com/view/jtfoundry/zh-tw/downloads
+- USSR STENCIL
+  - https://www.dafont.com/ussr-stencil.font?l[]=10&l[]=1
