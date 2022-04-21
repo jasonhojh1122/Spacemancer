@@ -159,7 +159,7 @@ namespace Splittable
             // Util.Debug.DrawBox(col.bounds.center, Quaternion.identity, col.bounds.extents*2, UnityEngine.Color.blue, 50.0f);
             foreach (Collider c in colliders)
             {
-                Debug.Log("Processing " + c.gameObject.name);
+                // Debug.Log("Processing " + c.gameObject.name);
                 if (c == null || !c.gameObject.activeSelf || c.transform.GetInstanceID() == col.transform.GetInstanceID())
                 {
                     continue;

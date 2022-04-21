@@ -85,6 +85,12 @@
 - Retro Sci-Fi/Horror [loop] (Ambient 16072016 Part I // SmoothSliding) by cabled_mess
 - https://freesound.org/people/cabled_mess/sounds/350611/
 
+#### Trailer
+- fluorescent light flickering 1 sby TemperMode
+  - https://freesound.org/people/TemperMode/sounds/484157/
+- Glitch by AmicaSys
+  - https://freesound.org/people/AmicaSys/sounds/332711/
+
 ### Font
 - TaipeiSansTCBeta-Light
   - https://sites.google.com/view/jtfoundry/zh-tw/downloads

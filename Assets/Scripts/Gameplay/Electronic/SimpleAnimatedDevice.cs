@@ -30,7 +30,6 @@ namespace Gameplay.Electronic
         {
             if (so.IsInCorrectDim() && !IsOpened)
             {
-                Debug.Log("A");
                 OnTurnOn.Invoke();
                 IsOpened = true;
             }
@@ -42,7 +41,6 @@ namespace Gameplay.Electronic
         {
             if (IsOpened)
             {
-                Debug.Log("B");
                 OnTurnOff.Invoke();
                 IsOpened = false;
             }

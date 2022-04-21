@@ -27,7 +27,7 @@ namespace Gameplay
             so = GetComponent<SplittableObject>();
             so.ObjectColor.OnColorChanged.AddListener(OnColorChange);
             World.Instance.OnTransitionStart.AddListener(OnTransitionStart);
-            World.Instance.OnTransitionEnd.AddListener(OnDimensionChange);
+            // World.Instance.OnTransitionEnd.AddListener(OnDimensionChange);
             foreach (var oc in indicators)
             {
                 oc.Color = activeColor;
@@ -42,14 +42,21 @@ namespace Gameplay
 
         void OnTransitionStart()
         {
-            toggled = false;
+            if (battery != null)
+            {
+                toggled = false;
+                RemoveListener();
+                battery = null;
+            }
         }
 
         void CheckBattery()
         {
+            if (World.Instance.Transitting || so.Dim.color == Dimension.Color.BLACK) return;
             var newBattery = GetNewBattery();
             if (newBattery != null && battery == null)
             {
+                Debug.Log(transform.GetInstanceID() + " A");
                 battery = newBattery;
                 AddListener();
                 CheckDimensionStatus();
@@ -58,17 +65,21 @@ namespace Gameplay
             {
                 if (newBattery.GetInstanceID() != battery.GetInstanceID())
                 {
+                    Debug.Log(newBattery.transform.GetInstanceID() + " " + battery.transform.GetInstanceID());
+                    Debug.Log(transform.GetInstanceID() + " B");
                     RemoveListener();
                     battery = newBattery;
                     AddListener();
                 }
                 else
                 {
+                    Debug.Log(transform.GetInstanceID() + " C");
                     CheckDimensionStatus();
                 }
             }
             else if (newBattery == null && battery != null)
             {
+                Debug.Log(transform.GetInstanceID() + " D");
                 RemoveListener();
                 ToggleOff();
                 battery = null;
@@ -106,7 +117,7 @@ namespace Gameplay
             OnCharged.Invoke();
             foreach (var device in World.Instance.ObjectPool.ActiveObjects[electronicName])
             {
-                if (so.Dim.color == device.Dim.color)
+                if (so.Dim.color == device.Dim.color && so.Color == device.Dim.color)
                 {
                     var electronic = device.GetComponent<Electronic.ElectronicObject>();
                     electronic.TurnOn();
@@ -135,6 +146,13 @@ namespace Gameplay
 
         public override void OnDimensionChange()
         {
+            Debug.Log(transform.GetInstanceID() + " OnTransitionENd");
+            if (battery != null)
+            {
+                toggled = false;
+                RemoveListener();
+                battery = null;
+            }
             CheckBattery();
         }
 
