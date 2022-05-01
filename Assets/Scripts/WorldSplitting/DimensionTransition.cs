@@ -89,10 +89,10 @@ namespace Core
 
         void OnTransitionStart()
         {
+            transitting = true;
             OnTransitionStarted.Invoke();
             Physics.gravity = Vector3.zero;
             Physics.autoSimulation = false;
-            transitting = true;
             World.Instance.OnTransitionStart.Invoke();
             Input.InputManager.Instance.pause = true;
         }
@@ -101,9 +101,9 @@ namespace Core
         {
             Physics.gravity = gravity;
             Physics.autoSimulation = true;
-            transitting = false;
             World.Instance.OnTransitionEnd.Invoke();
             Input.InputManager.Instance.pause = false;
+            transitting = false;
         }
 
         /// <summary>

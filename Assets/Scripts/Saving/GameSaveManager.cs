@@ -3,6 +3,8 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
 
+using Newtonsoft.Json;
+
 namespace Saving
 {
     public class GameSaveManager : MonoBehaviour
@@ -45,26 +47,25 @@ namespace Saving
             if (File.Exists(dest))
             {
                 var json = File.ReadAllText(dest);
-                gameSave = JsonUtility.FromJson<GameSave>(json);
+                gameSave = JsonConvert.DeserializeObject<GameSave>(json);
+                // gameSave = JsonUtility.FromJson<GameSave>(json);
             }
             else
             {
                 isNewGame = true;
-                gameSave = new GameSave(0, 0);
-                Save();
+                NewGame();
             }
         }
 
         public void Save()
         {
-            var json = JsonUtility.ToJson(gameSave);
+            var json = JsonConvert.SerializeObject(gameSave, Formatting.Indented);
             File.WriteAllText(dest, json);
         }
 
         public void NewGame()
         {
-            gameSave = new GameSave(0, 0);
-            Save();
+            gameSave = new GameSave(0, 0, "English");
         }
     }
 }

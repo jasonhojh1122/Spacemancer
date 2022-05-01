@@ -539,6 +539,7 @@ GameObject:
   - component: {fileID: 56473067}
   - component: {fileID: 56473069}
   - component: {fileID: 56473068}
+  - component: {fileID: 56473070}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -585,7 +586,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u756B\u9762\u79FB\u52D5"
+  m_text: "\u76F8\u6A5F\u79FB\u52D5"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d07a1313db0065843bd1ad34f0509eb1, type: 2}
   m_sharedMaterial: {fileID: 2897007752846542117, guid: d07a1313db0065843bd1ad34f0509eb1, type: 2}
@@ -662,6 +663,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 56473066}
   m_CullTransparentMesh: 1
+--- !u!114 &56473070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56473066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21a5204798d52834f9952056b921e8c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: VIDEO_1_KEY_2
+  tmp: {fileID: 0}
+  tmpUGUI: {fileID: 56473068}
 --- !u!114 &57697633 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 957277155626864023, guid: 2be982bc58549e145afb4285588d356f, type: 3}
@@ -3036,6 +3052,7 @@ GameObject:
   - component: {fileID: 365117508}
   - component: {fileID: 365117510}
   - component: {fileID: 365117509}
+  - component: {fileID: 365117511}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -3159,6 +3176,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 365117507}
   m_CullTransparentMesh: 1
+--- !u!114 &365117511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 365117507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21a5204798d52834f9952056b921e8c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: VIDEO_1_KEY_3
+  tmp: {fileID: 0}
+  tmpUGUI: {fileID: 365117509}
 --- !u!4 &373940441 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 197987474714306844, guid: 9eedfb5813cebbd4989d3a8fe6735b1f, type: 3}
@@ -15347,6 +15379,7 @@ GameObject:
   - component: {fileID: 1600885429}
   - component: {fileID: 1600885431}
   - component: {fileID: 1600885430}
+  - component: {fileID: 1600885432}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -15470,6 +15503,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1600885428}
   m_CullTransparentMesh: 1
+--- !u!114 &1600885432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1600885428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21a5204798d52834f9952056b921e8c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: VIDEO_1_KEY_4
+  tmp: {fileID: 0}
+  tmpUGUI: {fileID: 1600885430}
 --- !u!114 &1602408094 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3164559465915257411, guid: 6e0286659837412479cb4337f08d33cc, type: 3}
@@ -17725,6 +17773,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1033930017}
     m_Modifications:
+    - target: {fileID: 1126047707724442202, guid: 293ff33ee4b587849a494d8869fdc634, type: 3}
+      propertyPath: key
+      value: VIDEO_2
+      objectReference: {fileID: 0}
     - target: {fileID: 1201365596296728080, guid: 293ff33ee4b587849a494d8869fdc634, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -19604,7 +19656,7 @@ PrefabInstance:
     - target: {fileID: 488280921885865525, guid: ad1d32c64a760de48937271ababaf284, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 07c5effa0cbffe84f86bdc6029f18b79, type: 3}
+      objectReference: {fileID: 21300000, guid: baeb1c1b959e5db4596e05ada8384e86, type: 3}
     - target: {fileID: 488280922390341853, guid: ad1d32c64a760de48937271ababaf284, type: 3}
       propertyPath: m_text
       value: 1-6
@@ -20778,6 +20830,10 @@ PrefabInstance:
     - target: {fileID: 6181177100543874856, guid: 24b661de1ca1567478c041c61535b3d3, type: 3}
       propertyPath: m_text
       value: "\u73FE\u5728\u61C9\u8A72\u5148\u524D\u5F80\u7B2C\u4E00\u5340"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6750777734395513015, guid: 24b661de1ca1567478c041c61535b3d3, type: 3}
+      propertyPath: key
+      value: BANNER_HINT
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 24b661de1ca1567478c041c61535b3d3, type: 3}
@@ -25004,6 +25060,7 @@ GameObject:
   - component: {fileID: 7469947319985881258}
   - component: {fileID: 7469947319985881252}
   - component: {fileID: 7469947319985881259}
+  - component: {fileID: 7469947319985881260}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -25119,6 +25176,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7469947319985881260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7469947319985881257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21a5204798d52834f9952056b921e8c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: SCENE_VIDEO_OK
+  tmp: {fileID: 0}
+  tmpUGUI: {fileID: 7469947319985881259}
 --- !u!222 &7469947320132245844
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -25739,6 +25811,7 @@ GameObject:
   - component: {fileID: 5711586419622387333}
   - component: {fileID: 5767520764251039065}
   - component: {fileID: 1642026333362308074}
+  - component: {fileID: 7682579779607999624}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -25746,6 +25819,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7682579779607999624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7682579779607999623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21a5204798d52834f9952056b921e8c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: VIDEO_1_KEY_1
+  tmp: {fileID: 0}
+  tmpUGUI: {fileID: 1642026333362308074}
 --- !u!1001 &8040128469242242513
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27488,6 +27576,14 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 7896188362595681155, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
+      propertyPath: settings.Array.data[0].commonPack
+      value: 
+      objectReference: {fileID: 4900000, guid: df658b5dbc122f04eb2cbc9552e01d5a, type: 3}
+    - target: {fileID: 7896188362595681155, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
+      propertyPath: settings.Array.data[1].commonPack
+      value: 
+      objectReference: {fileID: 4900000, guid: 052815e97bb5b5f42b15ae6ed49e768e, type: 3}
     - target: {fileID: 7918950167969271182, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
