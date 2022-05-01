@@ -56,7 +56,6 @@ namespace Gameplay
             var newBattery = GetNewBattery();
             if (newBattery != null && battery == null)
             {
-                Debug.Log(transform.GetInstanceID() + " A");
                 battery = newBattery;
                 AddListener();
                 CheckDimensionStatus();
@@ -65,21 +64,17 @@ namespace Gameplay
             {
                 if (newBattery.GetInstanceID() != battery.GetInstanceID())
                 {
-                    Debug.Log(newBattery.transform.GetInstanceID() + " " + battery.transform.GetInstanceID());
-                    Debug.Log(transform.GetInstanceID() + " B");
                     RemoveListener();
                     battery = newBattery;
                     AddListener();
                 }
                 else
                 {
-                    Debug.Log(transform.GetInstanceID() + " C");
                     CheckDimensionStatus();
                 }
             }
             else if (newBattery == null && battery != null)
             {
-                Debug.Log(transform.GetInstanceID() + " D");
                 RemoveListener();
                 ToggleOff();
                 battery = null;

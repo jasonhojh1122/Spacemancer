@@ -36,6 +36,7 @@ namespace Input
             if (_instance != null)
                 Debug.LogError("Multiple instance of InputManager created");
             _instance = this;
+            Cursor.visible = false;
         }
 
     }

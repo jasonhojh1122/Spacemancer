@@ -1819,6 +1819,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 749966379}
     m_Modifications:
+    - target: {fileID: 1126047707724442202, guid: 293ff33ee4b587849a494d8869fdc634, type: 3}
+      propertyPath: key
+      value: SCENE_VIDEO
+      objectReference: {fileID: 0}
     - target: {fileID: 1201365596296728080, guid: 293ff33ee4b587849a494d8869fdc634, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -2045,7 +2049,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8931063815577391500, guid: 293ff33ee4b587849a494d8869fdc634, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8931063815577391500, guid: 293ff33ee4b587849a494d8869fdc634, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -3384,6 +3388,14 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 7896188362595681155, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
+      propertyPath: settings.Array.data[0].commonPack
+      value: 
+      objectReference: {fileID: 4900000, guid: 9f59b6e755b15ed4eab3cc4b82c51702, type: 3}
+    - target: {fileID: 7896188362595681155, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
+      propertyPath: settings.Array.data[1].commonPack
+      value: 
+      objectReference: {fileID: 4900000, guid: 7bfec052308996b4e9f42724d8e1761c, type: 3}
     - target: {fileID: 7925672048539441063, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
       propertyPath: m_SettingsGUIToggle
       value: 1

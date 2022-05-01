@@ -1287,6 +1287,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.75
       objectReference: {fileID: 0}
+    - target: {fileID: 7896188362595681155, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
+      propertyPath: settings.Array.data[0].commonPack
+      value: 
+      objectReference: {fileID: 4900000, guid: 43ead05b878ef3a44b365585bf6b0a69, type: 3}
+    - target: {fileID: 7896188362595681155, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
+      propertyPath: settings.Array.data[1].commonPack
+      value: 
+      objectReference: {fileID: 4900000, guid: d75a1f1d8daa39b48b49f30e5760bf72, type: 3}
     - target: {fileID: 8014553346289699019, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1505,7 +1513,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9047020480818453259, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
       propertyPath: orthographic size
-      value: 1.332442
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 9047020480843971473, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1605,7 +1613,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9047020481667267910, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
       propertyPath: m_Lens.OrthographicSize
-      value: 1.332442
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 9047020481710662013, guid: 1705fe7033760024e825b069712ff0b0, type: 3}
       propertyPath: m_IsActive
@@ -1788,6 +1796,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 260454854}
     m_Modifications:
+    - target: {fileID: 1126047707724442202, guid: 293ff33ee4b587849a494d8869fdc634, type: 3}
+      propertyPath: key
+      value: SCENE_VIDEO
+      objectReference: {fileID: 0}
     - target: {fileID: 1201365596296728080, guid: 293ff33ee4b587849a494d8869fdc634, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1

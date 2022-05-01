@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
+using TMPro;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] PlayableDirector director;
@@ -9,6 +10,8 @@ public class MainMenu : MonoBehaviour
     [SerializeField] Button newGameButton;
     [SerializeField] Button exitButton;
     [SerializeField] Button unlockButton;
+    [SerializeField] Button languageButton;
+    [SerializeField] TextMeshProUGUI language;
     [SerializeField] int stabilizer1BuildId;
     [SerializeField] int stabilizer2BuildId;
 
@@ -17,6 +20,7 @@ public class MainMenu : MonoBehaviour
     private void Awake()
     {
         loading = false;
+        Localization.LocalizationManager.Instance.onLanguageChange.AddListener(OnLanguageChange);
     }
 
     private void Start()
@@ -35,12 +39,17 @@ public class MainMenu : MonoBehaviour
             navigation.selectOnDown = newGameButton;
             unlockButton.navigation = navigation;
 
+            navigation = languageButton.navigation;
+            navigation.selectOnLeft = newGameButton;
+            languageButton.navigation = navigation;
+
             eventSystem.SetSelectedGameObject(newGameButton.gameObject);
         }
         else
         {
             eventSystem.SetSelectedGameObject(continueButton.gameObject);
         }
+
         director.Play();
     }
 
@@ -50,6 +59,7 @@ public class MainMenu : MonoBehaviour
             return;
         loading = true;
         var highestScene = Saving.GameSaveManager.Instance.GameSave.highestScene;
+        Saving.GameSaveManager.Instance.Save();
         var phase = Saving.GameSaveManager.Instance.GameSave.phase;
         if ( (highestScene == stabilizer1BuildId && phase == 1) ||
                 (highestScene == stabilizer2BuildId && phase == 2) )
@@ -68,6 +78,7 @@ public class MainMenu : MonoBehaviour
             return;
         loading = true;
         Saving.GameSaveManager.Instance.NewGame();
+        Saving.GameSaveManager.Instance.Save();
         SceneLoader.Instance.Load("StartAnimation");
     }
 
@@ -79,4 +90,8 @@ public class MainMenu : MonoBehaviour
         SceneLoader.Instance.Load("CenterLab");
     }
 
+    public void OnLanguageChange()
+    {
+        language.text = Saving.GameSaveManager.Instance.GameSave.language;
+    }
 }
